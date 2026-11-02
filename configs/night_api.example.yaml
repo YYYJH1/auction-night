@@ -1,0 +1,133 @@
+# Example configuration of a paid night. Copy it, then replace every value written as
+# <like-this> before a run. Neither keys nor the deal seed appear here: endpoints and the
+# night name the environment variables that hold them.
+#
+# Claude 5.5 notes (see docs/contracts.md): no sampling parameters at all, no forced
+# tool_choice on claude-sonnet-5-5, and thinking plus effort are pinned explicitly.
+night:
+  id: s1-d03-r1                   # season 1, deck 3, rotation 1
+  # A committed season configuration never holds the deal seed. The variable named here holds
+  # it, and the commitment (the sha256 of the seed text) is published before the season.
+  seed_env: AUCTION_NIGHT_SEED_S1_D03
+  deal_seed_commitment: "<commitment-of-the-deal-seed>"   # sha256:<64 hex digits>
+  lang: zh
+  mode: plain
+  lots_per_format: 2
+  tags: [海洋, 机械, 甜品, 怪谈]
+  tiers: {100: 5, 200: 4, 400: 3}
+  budget: {c: 300, spread: [0.5, 1.5], rounding: floor}
+  dutch: {levels: 10, mode: one_shot}
+  english: {revise_when_remaining_le: 4, revise_timeout: keep_previous}
+  blind: {value_range: [0.5, 1.5], noise: 0.2}
+  missions:
+    bonus: 150
+    collectors: 3
+    shills: 3
+    shill_threshold: 0.95
+    shill_formats: [english, sealed_second]
+  plan_and_mindreading: true
+  chat: {max_chars: 60, window_lots: 2, order: rotate, persona_max_chars: 60}
+  thought: {max_chars: 100, keep_last: 2}
+
+season:
+  id: s1
+  format: rotation                # the same deck is played once per rotation
+  decks:
+    - {id: d03}                   # add seed_commitment: "sha256:..." for a published season
+  deck: d03
+  rotation: 1
+  max_seats_per_vendor: 2
+
+seats:
+  - {seat: 1, codename: 鲸落, kind: llm, vendor: vendor-a, endpoint: vendor_a, model: "<model-a1>"}
+  - seat: 2
+    codename: 阿铁
+    kind: llm
+    vendor: anthropic
+    endpoint: anthropic
+    model: claude-haiku-5-5
+    thinking: {type: adaptive}    # adaptive means the field is left out of the request
+    effort: medium
+    max_tokens: 2048              # no temperature, top_p or top_k: the API rejects them
+  - seat: 3
+    codename: 小满
+    kind: llm
+    vendor: anthropic
+    endpoint: anthropic
+    model: claude-sonnet-5-5
+    thinking: {type: adaptive}
+    effort: medium
+    max_tokens: 2048
+  - {seat: 4, codename: 拾光, kind: llm, vendor: vendor-a, endpoint: vendor_a, model: "<model-a2>"}
+  - {seat: 5, codename: 青柠, kind: llm, vendor: vendor-b, endpoint: vendor_b, model: "<model-b1>"}
+  - {seat: 6, codename: 麦芽, kind: llm, vendor: vendor-b, endpoint: vendor_b, model: "<model-b2>"}
+  - {seat: 7, codename: 老实人, kind: bot, policy: truthful}
+  - {seat: 8, codename: 经济学家, kind: bot, policy: economist, pacing: true}
+
+endpoints:
+  anthropic:
+    kind: anthropic
+    api_key_env: ANTHROPIC_API_KEY
+    tool_choice: auto             # never force the tool: Sonnet 5.5 answers 400
+    strict_tools: true
+    max_concurrency: 4
+    # Capability records are per model. The first one is the default for unlisted models.
+    capabilities:
+      supports_sampling_params: false
+      supports_forced_tool_choice: false
+      supports_strict_tools: true
+      thinking_modes: [adaptive]
+      efforts: [low, medium, high, xhigh, max]
+      explicit_thinking_max_effort: high
+    model_capabilities:
+      claude-haiku-5-5:
+        supports_sampling_params: false
+        supports_forced_tool_choice: true     # accepted, but the reply has no thinking block
+        supports_strict_tools: true
+        thinking_modes: [adaptive, disabled]  # disabled works up to effort high
+        efforts: [low, medium, high, xhigh, max]
+        explicit_thinking_max_effort: high
+      claude-sonnet-5-5:
+        supports_sampling_params: false
+        supports_forced_tool_choice: false    # HTTP 400
+        supports_strict_tools: true
+        thinking_modes: [adaptive, between_tools]  # disabled is rejected
+        efforts: [low, medium, high, xhigh, max]
+        explicit_thinking_max_effort: high
+  vendor_a:
+    kind: openai_compatible
+    base_url_env: VENDOR_A_BASE_URL
+    api_key_env: VENDOR_A_API_KEY
+    sampling: {temperature: 0.7}
+    capabilities: {supports_sampling_params: true}
+  vendor_b:
+    kind: openai_compatible
+    base_url_env: VENDOR_B_BASE_URL
+    api_key_env: VENDOR_B_API_KEY
+    capabilities: {supports_sampling_params: true}
+  vendor_c:
+    kind: openai_compatible
+    base_url_env: VENDOR_C_BASE_URL
+    api_key_env: VENDOR_C_API_KEY
+  vendor_d:
+    kind: openai_compatible
+    base_url_env: VENDOR_D_BASE_URL
+    api_key_env: VENDOR_D_API_KEY
+
+# Host, judges and the classifier must come from vendors that have no seat tonight.
+show:
+  host_offline: {kind: llm, vendor: vendor-c, endpoint: vendor_c, model: "<model-c1>"}
+  judges:
+    - {kind: llm, vendor: vendor-c, endpoint: vendor_c, model: "<model-c1>"}
+    - {kind: llm, vendor: vendor-d, endpoint: vendor_d, model: "<model-d1>"}
+  content_scan:
+    wordlist: null                # or the path of a word list, one term or regular expression per line
+    classifier: {kind: llm, vendor: vendor-d, endpoint: vendor_d, model: "<model-d1>"}
+
+limits:
+  call_timeout_s: 90
+  human_timeout_s: null
+  syntax_retries: 1
+  transient_retries: 2
+  max_cost_per_night_usd: null    # null only records cost. Set a cap before a paid run.
+  prices_file: configs/prices.example.yaml

@@ -1,0 +1,18 @@
+# Instruction of each protocol phase, shown after 【现在要做】. The keys are the instruction keys
+# of the phase table in the act contract ("phase.<name>").
+
+plan = '''交作战计划：plan_priorities（{n_lots} 个 0 到 3 的整数，按拍品顺序）、plan_budget（{n_lots} 个整数）、plan_persona（不超过 {persona_max} 字）和 thought。'''
+
+talk = '''在公开频道说一句话（say，不超过 {say_max} 字，可以是空字符串），需要时填誓约，再填 guess_budget 和 thought。誓约用 pledge_kind（no_bid、max_bid、let_win 三选一）和 pledge_lot（第几件）填写：max_bid 还要填 pledge_amount，let_win 还要填 pledge_to；不立誓约就把四个 pledge_ 字段都填 null。'''
+
+talk_without_guess = '''在公开频道说一句话（say，不超过 {say_max} 字，可以是空字符串），需要时填誓约，再填 thought，guess_budget 填 0。誓约用 pledge_kind（no_bid、max_bid、let_win 三选一）和 pledge_lot（第几件）填写：max_bid 还要填 pledge_amount，let_win 还要填 pledge_to；不立誓约就把四个 pledge_ 字段都填 null。'''
+
+english_init = '''初报：报退出价 exit_price（整数，0 表示不参加）和 thought。'''
+
+english_revise = '''{lead}当前价 {price}，还剩 {remaining} 人：{seats}。你的退出价是 {mine}。填新的 exit_price（不能低于 {price}；不改就填 {mine}）和 thought。'''
+
+english_revise_lead = '''{seat} 号刚在 {price} 退出，'''
+
+dutch = '''报出手价 grab_price（整数，0 表示不参加；价格高于你剩余预算的档位不会出手）和 thought。'''
+
+sealed = '''写出价 bid（整数，0 表示不参加）和 thought。'''

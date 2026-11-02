@@ -1,0 +1,146 @@
+# Template of the first night with real models, played through Alibaba Cloud Model Studio
+# (Bailian): the OpenAI-compatible interface of DashScope, mainland China endpoint.
+#
+# This is a trial line-up, and every model in it is cheap: six seats with two models each from
+# Qwen, DeepSeek and Zhipu, and the two rule bots. Prices are in configs/prices.bailian.yaml
+# (yuan, converted to dollars at the dated rate written there). The cost cap is 1.50 USD, about
+# 10 yuan. On 2026-11-02 (UTC) a whole night of this line-up cost 0.89 USD in the seats and 0.06 USD in
+# the show layer, above the high estimate of `auction-night estimate -c configs/night_bailian.yaml`,
+# because the opening plan made some models think for several thousand tokens.
+#
+# The file is the template of `auction-night seeds plan`, so it holds no deal seed: plan writes
+# the configuration of every night from it, with the variable that holds the seed of the deck and
+# the commitment of the deck. The key is read from the environment variable DASHSCOPE_API_KEY.
+#
+# What was measured on Bailian on 2026-11-01, without streaming, on qwen3.7-plus, qwen3.8-max,
+# deepseek-v4-pro, kimi-k3 and glm-5.3. Only qwen3.7-plus is also in this line-up, so for the other
+# models below these points are what to expect and not what was seen:
+# * The models think by default, and this night leaves thinking on. Replies carry their reasoning
+#   in message.reasoning_content, those of Kimi and Qwen included. usage.completion_tokens counts
+#   the reasoning tokens, so the reasoning is billed as output. The program reads message.content
+#   and the tool call and never takes reasoning_content for an answer.
+# * The act tool is called correctly with tool_choice auto. Forcing the tool was tried on
+#   qwen3.7-plus only, so only that model declares it below, and the endpoint still sends auto.
+# * strict is accepted but not enforced (qwen3.7-plus returned the whole-number bid as the text
+#   "80"), so strict_tools stays off and the reader of replies takes numbers written as text.
+# * A request is made of model, messages, tools, tool_choice and max_tokens, the fields of those
+#   tests. The capability records below keep everything else out of it: no sampling parameters,
+#   no reasoning_effort and no thinking switch. The validator refuses a seat that asks for one.
+night:
+  id: bailian-trial
+  seed_env: AUCTION_NIGHT_SEED_BAILIAN
+  deal_seed_commitment: "<commitment-of-the-deal-seed>"   # `seeds plan` fills this in
+  lang: zh
+  mode: plain
+  lots_per_format: 2              # 6 formats x 2 lots = 12 lots
+  tags: [海洋, 机械, 甜品, 怪谈]
+  tiers: {100: 5, 200: 4, 400: 3}
+  budget: {c: 300, spread: [0.5, 1.5], rounding: floor}
+  dutch: {levels: 10, mode: one_shot}
+  english: {revise_when_remaining_le: 4, revise_timeout: keep_previous}
+  blind: {value_range: [0.5, 1.5], noise: 0.2}
+  missions:
+    bonus: 150
+    collectors: 3
+    shills: 3
+    shill_threshold: 0.95
+    shill_formats: [english, sealed_second]
+  plan_and_mindreading: true
+  chat: {max_chars: 60, window_lots: 2, order: rotate, persona_max_chars: 60}
+  thought: {max_chars: 100, keep_last: 2}
+
+season:
+  format: single                  # `seeds plan` turns it into a rotation season
+  max_seats_per_vendor: 2
+
+# Each vendor has two seats. max_tokens is generous because a thinking model spends part of its
+# output on reasoning (completion_tokens includes it); the cost cap is what stops a model that
+# thinks for too long.
+seats:
+  - seat: 1
+    codename: 鲸落
+    kind: llm
+    vendor: qwen
+    endpoint: bailian
+    model: qwen3.7-plus
+    max_tokens: 8192
+  - seat: 2
+    codename: 阿铁
+    kind: llm
+    vendor: qwen
+    endpoint: bailian
+    model: qwen-flash
+    max_tokens: 8192
+  - seat: 3
+    codename: 小满
+    kind: llm
+    vendor: deepseek
+    endpoint: bailian
+    model: deepseek-v4.1-flash
+    max_tokens: 8192
+  - seat: 4
+    codename: 拾光
+    kind: llm
+    vendor: deepseek
+    endpoint: bailian
+    model: deepseek-v4-flash-0731
+    max_tokens: 8192
+  - seat: 5
+    codename: 青柠
+    kind: llm
+    vendor: zhipu
+    endpoint: bailian
+    model: glm-5
+    max_tokens: 8192
+  - seat: 6
+    codename: 麦芽
+    kind: llm
+    vendor: zhipu
+    endpoint: bailian
+    model: glm-5.1
+    max_tokens: 8192
+  - {seat: 7, codename: 老实人, kind: bot, policy: truthful}
+  - {seat: 8, codename: 经济学家, kind: bot, policy: economist, pacing: true}
+
+endpoints:
+  bailian:
+    kind: openai_compatible
+    base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    api_key_env: DASHSCOPE_API_KEY
+    tool_choice: auto             # the only choice sent; a seat cannot ask for another one
+    strict_tools: false           # accepted by the API, but it does not hold the model to the schema
+    # The record of an endpoint is what the program may send. Sampling parameters were not tried
+    # on Bailian, so none is declared and none can be set. Neither can thinking or effort.
+    capabilities:
+      supports_sampling_params: false
+      supports_forced_tool_choice: false
+      supports_strict_tools: false
+    model_capabilities:
+      qwen3.7-plus:               # the one model on which forcing the act tool was tried
+        supports_sampling_params: false
+        supports_forced_tool_choice: true
+        supports_strict_tools: false
+
+# Qwen has seats, and the host may not share a vendor with a seat, so the host is Kimi, the one
+# vendor on Bailian that does not play. The judges must come from two vendors. Kimi is one, and
+# Qwen is the other, so a judge shares a vendor with two seats and allow_judge_vendor_overlap is
+# on: only four vendors are on Bailian. The content classifier is Kimi as well, which has no seat.
+# The roles carry no max_tokens: a judge's list of extractions is long, so the limit of the model
+# itself applies, and the cost cap holds for the show layer as it does for the seats.
+show:
+  host_offline: {kind: llm, vendor: moonshot, endpoint: bailian, model: kimi-k2.5}
+  judges:
+    - {kind: llm, vendor: moonshot, endpoint: bailian, model: kimi-k2.5}
+    - {kind: llm, vendor: qwen, endpoint: bailian, model: qwen-plus}
+  content_scan:
+    wordlist: null
+    classifier: {kind: llm, vendor: moonshot, endpoint: bailian, model: kimi-k2.5}
+  allow_judge_vendor_overlap: true
+
+limits:
+  call_timeout_s: 300             # the opening plan made qwen3.7-plus think past 180 s
+  human_timeout_s: null
+  syntax_retries: 1
+  transient_retries: 2
+  max_cost_per_night_usd: 1.50    # about 10 yuan
+  prices_file: configs/prices.bailian.yaml

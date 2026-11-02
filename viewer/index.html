@@ -1,0 +1,108 @@
+<!doctype html>
+<!--
+  AI Auction Night: replay viewer (static page, no build step, no dependencies).
+
+  What it does
+    Plays one night from one replay.json file (schema auction-night/replay@1). Five parts, as
+    links in the top bar:
+      lots           the lots one by one: the lot that is playing on the stage, the public chat,
+                     a bid animation for each format (sealed envelopes, the English price bar,
+                     the Dutch clock of ten cells), the overlay with the reference numbers of
+                     the lot and a glossary of its terms, and the hole-card lens (on by default)
+                     that shows what the players did not see: private values, missions, battle
+                     plans, inner monologues, and the reference numbers that depend on them.
+                     The first lot opens with the predictions of the host;
+      recap          the three-minute version: the best highlights, each with a title card, in
+                     the order of the night;
+      highlights     the list of highlights with their fun score, each a link to its moment;
+      awards         the awards with the rule of each and the figure behind it, then the
+                     findings (broken pledges, false claims, collusion) with what each rests
+                     on and a notice when a judge was absent, and the bots listed apart as a
+                     reference;
+      review         the review of the host: its recap of the night, and its predictions with
+                     what became of them.
+    The highlights, the awards and the review spoil the night. The list of highlights and the
+    review stay folded until the night has been watched to its end or the reader unfolds them.
+    With the lens off, whatever rests on something private is held back: awards and highlights
+    by their `basis` in the replay, false claims, collusion, the results of the predictions and
+    the recap of the host as a whole, and the engine's record line of a broken pledge.
+
+  How to open it
+    Serve the repository folder with any static file server, then open
+      viewer/index.html?replay=<relative path to a replay.json on the same site>
+    or open the page without a query and choose a file. Plain ES modules do not load from
+    file:// in most browsers, so a server is needed.
+    Deep links work with back and forward:
+      #/n/<night id>/lot/<k>         a lot
+      #/n/<night id>/moment/<id>     the lot of a highlight, at the moment where it begins
+      #/n/<night id>/recap           the three-minute version
+      #/n/<night id>/highlights      the list of highlights
+      #/n/<night id>/awards          the awards and the findings
+      #/n/<night id>/review          the review of the host
+    Keys: space plays or pauses, left and right arrows change lot (segment in the recap).
+
+  Safety rules
+    Replay text is written by language models and is never trusted. It reaches the page only
+    as text nodes (lib/dom.js builds every element; unknown tags and attributes throw), and it
+    is cleaned and shortened on the way in (lib/safe.js). The page loads only files from its
+    own site, has no inline script or style, and declares the policy below. A test scans this
+    folder for the DOM calls that parse markup and fails if one appears.
+
+  Layout of this folder
+    app.js        wiring: address, clock, keyboard, controls, the five parts
+    lib/          pure functions: reading and checking a replay, text hygiene, the script of a
+                  lot, playback state, addresses, the hole-card lens, the overlay numbers, the
+                  awards, the highlights, the findings, the review, the plan of the
+                  three-minute version
+    anim/         bid animations: frameAt(lot, t) is pure, the *_view.js files draw frames
+    ui/           DOM pieces: stage, seats, chat, lot list, verdict, overlay and glossary, the
+                  links of the parts, the awards page with the findings, the highlights page,
+                  the review page and the card of predictions, the gate, the recap caption
+    style.css     all styling, with the layout for phones at the end
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <title>AI 拍卖之夜</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <header id="topbar" class="topbar">
+      <h1 class="brand">AI 拍卖之夜</h1>
+      <p id="night-label" class="night-label"></p>
+      <nav id="views" class="views" hidden></nav>
+      <div id="controls" class="controls" role="toolbar" hidden>
+        <div id="transport" class="transport">
+          <button type="button" id="btn-prev" class="btn btn-prev"></button>
+          <button type="button" id="btn-play" class="btn btn-primary btn-play" aria-pressed="true"></button>
+          <button type="button" id="btn-next" class="btn btn-next"></button>
+          <div id="speeds" class="speeds" role="group"></div>
+          <input id="scrub" class="scrub" type="range" min="0" max="1000" step="1" value="0">
+          <span id="time" class="time"></span>
+        </div>
+        <button type="button" id="lens" class="btn btn-lens" role="switch" aria-checked="true"></button>
+      </div>
+      <label class="btn file-btn" for="file">
+        <span id="file-label"></span>
+        <input id="file" class="visually-hidden" type="file" accept=".json,application/json">
+      </label>
+    </header>
+    <div id="panel" class="panel"></div>
+    <div id="app" class="layout" hidden>
+      <nav class="lots" aria-labelledby="lots-title">
+        <h2 id="lots-title" class="lots-title"></h2>
+        <ol id="lot-list" class="lot-list"></ol>
+      </nav>
+      <main id="stage" class="stage">
+        <div id="recap-bar" class="recap-bar" hidden></div>
+        <div id="lot-stage" class="lot-stage"></div>
+        <div id="page" class="page-view" tabindex="-1" hidden></div>
+      </main>
+    </div>
+    <noscript><p class="panel">这个页面需要 JavaScript 才能播放回放。</p></noscript>
+  </body>
+</html>

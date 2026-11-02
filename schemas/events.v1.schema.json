@@ -1,0 +1,2997 @@
+{
+  "$defs": {
+    "ActionData": {
+      "additionalProperties": false,
+      "description": "What one seat did in one phase, after clamping and abstention rules.\n\n``value`` is the effective number (exit price, grab price or bid). ``raw_value`` is only\nset when the effective value was clamped to the remaining budget.",
+      "properties": {
+        "attempts": {
+          "default": 1,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "call_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Call Id"
+        },
+        "phase": {
+          "enum": [
+            "plan",
+            "talk",
+            "english_init",
+            "english_revise",
+            "dutch",
+            "sealed"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "raw_value": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Value"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "missing",
+                "parse_failed",
+                "timeout",
+                "refusal",
+                "budget_aborted",
+                "not_asked"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "sanitized_chars": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sanitized Chars",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "clamped",
+            "abstain",
+            "kept_previous"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "thought": {
+          "default": "",
+          "maxLength": 2000,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Thought",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "seat",
+        "phase",
+        "status"
+      ],
+      "title": "ActionData",
+      "type": "object"
+    },
+    "ActionEvent": {
+      "additionalProperties": false,
+      "description": "The decision of one seat in one phase, with its inner monologue.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/ActionData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "action",
+          "default": "action",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "ActionEvent",
+      "type": "object"
+    },
+    "AwardData": {
+      "additionalProperties": false,
+      "description": "One award. A vacant award has no winners. Ties list every winner.\n\n``basis`` says whether the award rests on public facts or on private values, which a viewer\nshows only with the god view.",
+      "properties": {
+        "award": {
+          "enum": [
+            "most_textbook",
+            "winners_curse",
+            "tilt",
+            "bargain",
+            "backstabber",
+            "best_actor",
+            "keeper",
+            "mission_master",
+            "mind_reader",
+            "consistent"
+          ],
+          "title": "Award",
+          "type": "string"
+        },
+        "basis": {
+          "anyOf": [
+            {
+              "enum": [
+                "public",
+                "private"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Basis"
+        },
+        "metric": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": -9007199254740991,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metric"
+        },
+        "metric_unit": {
+          "default": "none",
+          "enum": [
+            "coins",
+            "count",
+            "milli",
+            "none"
+          ],
+          "title": "Metric Unit",
+          "type": "string"
+        },
+        "vacant": {
+          "default": false,
+          "title": "Vacant",
+          "type": "boolean"
+        },
+        "winners": {
+          "items": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Winners",
+          "type": "array"
+        }
+      },
+      "required": [
+        "award"
+      ],
+      "title": "AwardData",
+      "type": "object"
+    },
+    "AwardEvent": {
+      "additionalProperties": false,
+      "description": "An award or a vacant award. Audience only.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/AwardData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "award",
+          "default": "award",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "AwardEvent",
+      "type": "object"
+    },
+    "CollectorMission": {
+      "additionalProperties": false,
+      "description": "Win ``need`` lots that carry ``tag``.",
+      "properties": {
+        "bonus": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Bonus",
+          "type": "integer"
+        },
+        "canary": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Canary",
+          "type": "string"
+        },
+        "kind": {
+          "const": "collector",
+          "title": "Kind",
+          "type": "string"
+        },
+        "need": {
+          "maximum": 36,
+          "minimum": 1,
+          "title": "Need",
+          "type": "integer"
+        },
+        "tag": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Tag",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "tag",
+        "need",
+        "bonus",
+        "canary"
+      ],
+      "title": "CollectorMission",
+      "type": "object"
+    },
+    "CostEvent": {
+      "additionalProperties": false,
+      "description": "Cost bookkeeping. System only.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/CostEventData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "cost_event",
+          "default": "cost_event",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "CostEvent",
+      "type": "object"
+    },
+    "CostEventData": {
+      "additionalProperties": false,
+      "description": "Cost bookkeeping. ``cap_reached`` is the moment the cost gate fired.",
+      "properties": {
+        "calls": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Calls",
+          "type": "integer"
+        },
+        "cap_microusd": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cap Microusd"
+        },
+        "kind": {
+          "enum": [
+            "tally",
+            "cap_reached"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "role": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Role"
+        },
+        "spent_microusd": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Spent Microusd",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "spent_microusd"
+      ],
+      "title": "CostEventData",
+      "type": "object"
+    },
+    "DealPrivateData": {
+      "additionalProperties": false,
+      "description": "Private cards of one seat: budget, valuations, blind-box signals and mission.",
+      "properties": {
+        "budget": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Budget",
+          "type": "integer"
+        },
+        "mission": {
+          "anyOf": [
+            {
+              "discriminator": {
+                "mapping": {
+                  "collector": "#/$defs/CollectorMission",
+                  "shill": "#/$defs/ShillMission"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/CollectorMission"
+                },
+                {
+                  "$ref": "#/$defs/ShillMission"
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mission"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "signals": {
+          "additionalProperties": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Signals",
+          "type": "object"
+        },
+        "values": {
+          "additionalProperties": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Values",
+          "type": "object"
+        }
+      },
+      "required": [
+        "seat",
+        "budget"
+      ],
+      "title": "DealPrivateData",
+      "type": "object"
+    },
+    "DealPrivateEvent": {
+      "additionalProperties": false,
+      "description": "Private cards of one seat.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/DealPrivateData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "deal_private",
+          "default": "deal_private",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "DealPrivateEvent",
+      "type": "object"
+    },
+    "DutchResultData": {
+      "additionalProperties": false,
+      "description": "Outcome of the descending clock.\n\n``ladder`` holds the prices of the levels in play, highest first (levels below the\nreserve are skipped). ``level`` is the 1-based position of the level that fired.",
+      "properties": {
+        "buyer": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Buyer"
+        },
+        "ladder": {
+          "items": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Ladder",
+          "type": "array"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Level"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Price"
+        },
+        "unsold": {
+          "default": false,
+          "title": "Unsold",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ladder"
+      ],
+      "title": "DutchResultData",
+      "type": "object"
+    },
+    "DutchResultEvent": {
+      "additionalProperties": false,
+      "description": "Outcome of the descending clock. Public.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/DutchResultData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "dutch_result",
+          "default": "dutch_result",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "DutchResultEvent",
+      "type": "object"
+    },
+    "EnglishDropoutData": {
+      "additionalProperties": false,
+      "description": "A seat leaves the ascending clock. Non-participants are announced at price 0.",
+      "properties": {
+        "participated": {
+          "default": true,
+          "title": "Participated",
+          "type": "boolean"
+        },
+        "price": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Price",
+          "type": "integer"
+        },
+        "remaining": {
+          "items": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Remaining",
+          "type": "array"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seat",
+        "price",
+        "remaining"
+      ],
+      "title": "EnglishDropoutData",
+      "type": "object"
+    },
+    "EnglishDropoutEvent": {
+      "additionalProperties": false,
+      "description": "A seat leaves the ascending clock. Public.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/EnglishDropoutData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "english_dropout",
+          "default": "english_dropout",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "EnglishDropoutEvent",
+      "type": "object"
+    },
+    "Extraction": {
+      "additionalProperties": false,
+      "description": "A promise or a claim about the speaker's own hand, quoted by a judge.\n\n``promise_class`` says what a promise is about (``collusion`` for an agreement to keep a\nprice down or to take turns) and ``partner`` the seat that such a promise names.",
+      "properties": {
+        "ambiguous": {
+          "default": false,
+          "title": "Ambiguous",
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "promise",
+            "claim"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "number": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Number"
+        },
+        "partner": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Partner"
+        },
+        "promise_class": {
+          "anyOf": [
+            {
+              "enum": [
+                "collusion",
+                "bid",
+                "other"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Promise Class"
+        },
+        "quote": {
+          "maxLength": 2000,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Quote",
+          "type": "string"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "text_value": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text Value"
+        },
+        "topic": {
+          "anyOf": [
+            {
+              "enum": [
+                "budget",
+                "valuation",
+                "mission_kind",
+                "mission_tag",
+                "plan"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Topic"
+        }
+      },
+      "required": [
+        "seat",
+        "kind",
+        "quote"
+      ],
+      "title": "Extraction",
+      "type": "object"
+    },
+    "GuessData": {
+      "additionalProperties": false,
+      "description": "A mind-reading guess of another seat's remaining budget.\n\nThe truth is deliberately not stored: an event the guesser may see must not reveal the\ntarget's budget. The replay export adds the truth afterwards.",
+      "properties": {
+        "guess": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Guess",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "target": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Target",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seat",
+        "target",
+        "guess"
+      ],
+      "title": "GuessData",
+      "type": "object"
+    },
+    "GuessEvent": {
+      "additionalProperties": false,
+      "description": "A mind-reading guess, visible to its author only until the night ends.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/GuessData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "guess",
+          "default": "guess",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "GuessEvent",
+      "type": "object"
+    },
+    "HammerData": {
+      "additionalProperties": false,
+      "description": "The lot is decided. Sealed formats also reveal every effective bid (0 if none).",
+      "properties": {
+        "bids": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Bids"
+        },
+        "format": {
+          "enum": [
+            "english",
+            "dutch",
+            "sealed_first",
+            "sealed_second",
+            "all_pay",
+            "blind_box"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "newly_out": {
+          "items": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Newly Out",
+          "type": "array"
+        },
+        "payments": {
+          "additionalProperties": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Payments",
+          "type": "object"
+        },
+        "price": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Price",
+          "type": "integer"
+        },
+        "tie_broken": {
+          "default": false,
+          "title": "Tie Broken",
+          "type": "boolean"
+        },
+        "tied": {
+          "items": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Tied",
+          "type": "array"
+        },
+        "true_value": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "True Value"
+        },
+        "unsold": {
+          "default": false,
+          "title": "Unsold",
+          "type": "boolean"
+        },
+        "winner": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Winner"
+        }
+      },
+      "required": [
+        "format"
+      ],
+      "title": "HammerData",
+      "type": "object"
+    },
+    "HammerEvent": {
+      "additionalProperties": false,
+      "description": "The lot is decided. Public.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/HammerData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "hammer",
+          "default": "hammer",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "HammerEvent",
+      "type": "object"
+    },
+    "HostLineData": {
+      "additionalProperties": false,
+      "description": "Offline commentary written after the night from the fact cards.",
+      "properties": {
+        "fallback": {
+          "default": false,
+          "title": "Fallback",
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "lot",
+            "recap",
+            "prediction",
+            "prediction_result"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "numbers_checked": {
+          "default": false,
+          "title": "Numbers Checked",
+          "type": "boolean"
+        },
+        "text": {
+          "maxLength": 20000,
+          "pattern": "^[^\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "text"
+      ],
+      "title": "HostLineData",
+      "type": "object"
+    },
+    "HostLineEvent": {
+      "additionalProperties": false,
+      "description": "Offline commentary. Audience only.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/HostLineData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "host_line",
+          "default": "host_line",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "HostLineEvent",
+      "type": "object"
+    },
+    "InjectionFlag": {
+      "additionalProperties": false,
+      "description": "Speech that tried to impersonate the system or change the rules.",
+      "properties": {
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "quote": {
+          "maxLength": 2000,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Quote",
+          "type": "string"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seat",
+        "quote"
+      ],
+      "title": "InjectionFlag",
+      "type": "object"
+    },
+    "JudgeExtractData": {
+      "additionalProperties": false,
+      "description": "Raw extraction of one judge. Seat numbers come from events, never from the text.",
+      "properties": {
+        "extractions": {
+          "items": {
+            "$ref": "#/$defs/Extraction"
+          },
+          "title": "Extractions",
+          "type": "array"
+        },
+        "injection_flags": {
+          "items": {
+            "$ref": "#/$defs/InjectionFlag"
+          },
+          "title": "Injection Flags",
+          "type": "array"
+        },
+        "judge": {
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Judge",
+          "type": "integer"
+        },
+        "mission_guesses": {
+          "items": {
+            "$ref": "#/$defs/MissionGuess"
+          },
+          "title": "Mission Guesses",
+          "type": "array"
+        },
+        "model_returned": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Returned"
+        },
+        "vendor": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Vendor",
+          "type": "string"
+        }
+      },
+      "required": [
+        "judge",
+        "vendor"
+      ],
+      "title": "JudgeExtractData",
+      "type": "object"
+    },
+    "JudgeExtractEvent": {
+      "additionalProperties": false,
+      "description": "Raw output of one judge. Audience only.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/JudgeExtractData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "judge_extract",
+          "default": "judge_extract",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "JudgeExtractEvent",
+      "type": "object"
+    },
+    "JudgeVerdictData": {
+      "additionalProperties": false,
+      "description": "A finding that survived the rules: program-decided or confirmed by both judges.\n\nFor a false claim, ``topic`` is what the claim was about and ``gap_milli`` how far it was\nfrom the truth, in thousandths of the tier for a value and of the budget for a budget. For a\ncollusion finding, ``statistic_milli`` holds the bid statistic of each screened lot in\nthousandths of the tier and ``threshold_milli`` the threshold it was compared with.",
+      "properties": {
+        "detail": {
+          "default": "",
+          "maxLength": 2000,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Detail",
+          "type": "string"
+        },
+        "evidence_seqs": {
+          "items": {
+            "maximum": 9007199254740991,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Evidence Seqs",
+          "type": "array"
+        },
+        "gap_milli": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gap Milli"
+        },
+        "intent": {
+          "anyOf": [
+            {
+              "enum": [
+                "deliberate",
+                "unintentional",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intent"
+        },
+        "lots": {
+          "items": {
+            "maximum": 36,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Lots",
+          "type": "array"
+        },
+        "quotes": {
+          "items": {
+            "maxLength": 2000,
+            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+            "type": "string"
+          },
+          "title": "Quotes",
+          "type": "array"
+        },
+        "seats": {
+          "items": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Seats",
+          "type": "array"
+        },
+        "statistic_milli": {
+          "additionalProperties": {
+            "maximum": 9007199254740991,
+            "minimum": -9007199254740991,
+            "type": "integer"
+          },
+          "title": "Statistic Milli",
+          "type": "object"
+        },
+        "threshold_milli": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Threshold Milli"
+        },
+        "topic": {
+          "anyOf": [
+            {
+              "enum": [
+                "budget",
+                "valuation",
+                "mission_kind",
+                "mission_tag",
+                "plan"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Topic"
+        },
+        "verdict": {
+          "enum": [
+            "pledge_violation",
+            "false_claim",
+            "collusion_red",
+            "collusion_suspect"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "verdict",
+        "seats"
+      ],
+      "title": "JudgeVerdictData",
+      "type": "object"
+    },
+    "JudgeVerdictEvent": {
+      "additionalProperties": false,
+      "description": "A finding. Audience only.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/JudgeVerdictData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "judge_verdict",
+          "default": "judge_verdict",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "JudgeVerdictEvent",
+      "type": "object"
+    },
+    "LotOpenData": {
+      "additionalProperties": false,
+      "description": "A lot opens. ``active`` seats will be asked to act, ``sitting_out`` seats will not.",
+      "properties": {
+        "active": {
+          "items": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Active",
+          "type": "array"
+        },
+        "format": {
+          "enum": [
+            "english",
+            "dutch",
+            "sealed_first",
+            "sealed_second",
+            "all_pay",
+            "blind_box"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "item": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Item",
+          "type": "string"
+        },
+        "mechanism": {
+          "pattern": "^[a-z_]+@v[0-9]+$",
+          "title": "Mechanism",
+          "type": "string"
+        },
+        "reserve": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Reserve",
+          "type": "integer"
+        },
+        "sitting_out": {
+          "items": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Sitting Out",
+          "type": "array"
+        },
+        "talk_order": {
+          "items": {
+            "maximum": 8,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Talk Order",
+          "type": "array"
+        },
+        "tier": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Tier",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "format",
+        "item",
+        "mechanism",
+        "tier",
+        "active",
+        "talk_order"
+      ],
+      "title": "LotOpenData",
+      "type": "object"
+    },
+    "LotOpenEvent": {
+      "additionalProperties": false,
+      "description": "A lot opens. Public.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/LotOpenData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "lot_open",
+          "default": "lot_open",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "LotOpenEvent",
+      "type": "object"
+    },
+    "LotPlan": {
+      "additionalProperties": false,
+      "description": "Public pre-show entry for one lot. The blind-box value is not part of it.",
+      "properties": {
+        "blurb": {
+          "default": "",
+          "maxLength": 2000,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Blurb",
+          "type": "string"
+        },
+        "emoji": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Emoji",
+          "type": "string"
+        },
+        "format": {
+          "enum": [
+            "english",
+            "dutch",
+            "sealed_first",
+            "sealed_second",
+            "all_pay",
+            "blind_box"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "item": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Item",
+          "type": "string"
+        },
+        "lot": {
+          "maximum": 36,
+          "minimum": 1,
+          "title": "Lot",
+          "type": "integer"
+        },
+        "mechanism": {
+          "pattern": "^[a-z_]+@v[0-9]+$",
+          "title": "Mechanism",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Name",
+          "type": "string"
+        },
+        "reserve": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Reserve",
+          "type": "integer"
+        },
+        "tag": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Tag",
+          "type": "string"
+        },
+        "tier": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Tier",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "lot",
+        "item",
+        "name",
+        "emoji",
+        "tag",
+        "tier",
+        "format",
+        "mechanism"
+      ],
+      "title": "LotPlan",
+      "type": "object"
+    },
+    "MissionGuess": {
+      "additionalProperties": false,
+      "description": "A judge's guess of one seat's secret mission, from public behaviour only.",
+      "properties": {
+        "kind": {
+          "enum": [
+            "collector",
+            "shill"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "tag": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tag"
+        }
+      },
+      "required": [
+        "seat",
+        "kind"
+      ],
+      "title": "MissionGuess",
+      "type": "object"
+    },
+    "MissionResultData": {
+      "additionalProperties": false,
+      "description": "Mission outcome, published after the last lot.",
+      "properties": {
+        "bonus": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Bonus",
+          "type": "integer"
+        },
+        "buyer": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Buyer"
+        },
+        "completed": {
+          "title": "Completed",
+          "type": "boolean"
+        },
+        "final_price": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Final Price"
+        },
+        "kind": {
+          "enum": [
+            "collector",
+            "shill"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "need": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Need"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "tag": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tag"
+        },
+        "target_lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Lot"
+        },
+        "threshold_price": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Threshold Price"
+        },
+        "won_lots": {
+          "items": {
+            "maximum": 36,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Won Lots",
+          "type": "array"
+        }
+      },
+      "required": [
+        "seat",
+        "kind",
+        "completed",
+        "bonus"
+      ],
+      "title": "MissionResultData",
+      "type": "object"
+    },
+    "MissionResultEvent": {
+      "additionalProperties": false,
+      "description": "Mission outcome after the last lot. Public.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/MissionResultData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "mission_result",
+          "default": "mission_result",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "MissionResultEvent",
+      "type": "object"
+    },
+    "NightEndData": {
+      "additionalProperties": false,
+      "description": "Final scores of every seat. Bots have no ``rank_tonight``.",
+      "properties": {
+        "scores": {
+          "items": {
+            "$ref": "#/$defs/SeatScore"
+          },
+          "title": "Scores",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "budget_aborted"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "scores"
+      ],
+      "title": "NightEndData",
+      "type": "object"
+    },
+    "NightEndEvent": {
+      "additionalProperties": false,
+      "description": "Closes the night with the final scores. Public.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/NightEndData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "night_end",
+          "default": "night_end",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "NightEndEvent",
+      "type": "object"
+    },
+    "NightStartData": {
+      "additionalProperties": false,
+      "description": "Public pre-show: the whole lot sequence and the seat list.",
+      "properties": {
+        "budget_hi": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Budget Hi",
+          "type": "integer"
+        },
+        "budget_lo": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Budget Lo",
+          "type": "integer"
+        },
+        "collectors": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Collectors",
+          "type": "integer"
+        },
+        "lang": {
+          "const": "zh",
+          "title": "Lang",
+          "type": "string"
+        },
+        "lots": {
+          "items": {
+            "$ref": "#/$defs/LotPlan"
+          },
+          "title": "Lots",
+          "type": "array"
+        },
+        "mission_bonus": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Mission Bonus",
+          "type": "integer"
+        },
+        "mode": {
+          "enum": [
+            "plain",
+            "variety"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "n_lots": {
+          "maximum": 36,
+          "minimum": 1,
+          "title": "N Lots",
+          "type": "integer"
+        },
+        "night_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Night Id",
+          "type": "string"
+        },
+        "seats": {
+          "items": {
+            "$ref": "#/$defs/SeatPublic"
+          },
+          "title": "Seats",
+          "type": "array"
+        },
+        "shills": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Shills",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "night_id",
+        "lang",
+        "mode",
+        "n_lots",
+        "seats",
+        "lots",
+        "budget_lo",
+        "budget_hi",
+        "collectors",
+        "shills",
+        "mission_bonus"
+      ],
+      "title": "NightStartData",
+      "type": "object"
+    },
+    "NightStartEvent": {
+      "additionalProperties": false,
+      "description": "Opens the log. Public.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/NightStartData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "night_start",
+          "default": "night_start",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "NightStartEvent",
+      "type": "object"
+    },
+    "ParseRepairData": {
+      "additionalProperties": false,
+      "description": "Repairs applied while turning a model reply into an action (one attempt).\n\n``status`` says how the attempt ended: ``ok`` (an action was read), ``retry`` (another\nattempt follows) or ``abstain`` (the seat abstains).",
+      "properties": {
+        "attempt": {
+          "default": 1,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Attempt",
+          "type": "integer"
+        },
+        "call_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Call Id"
+        },
+        "codes": {
+          "items": {
+            "enum": [
+              "syntax",
+              "coerce",
+              "clamp",
+              "invalid_input",
+              "retry",
+              "fallback",
+              "refusal",
+              "timeout",
+              "sanitize"
+            ],
+            "type": "string"
+          },
+          "title": "Codes",
+          "type": "array"
+        },
+        "detail": {
+          "default": "",
+          "maxLength": 2000,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Detail",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "maxLength": 64,
+            "minLength": 1,
+            "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+            "type": "string"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Phase"
+        },
+        "role": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Role",
+          "type": "string"
+        },
+        "sanitized_chars": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sanitized Chars",
+          "type": "integer"
+        },
+        "seat": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seat"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "enum": [
+                "ok",
+                "retry",
+                "abstain"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status"
+        }
+      },
+      "required": [
+        "role",
+        "codes"
+      ],
+      "title": "ParseRepairData",
+      "type": "object"
+    },
+    "ParseRepairEvent": {
+      "additionalProperties": false,
+      "description": "Repairs on one attempt. System only.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/ParseRepairData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "parse_repair",
+          "default": "parse_repair",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "ParseRepairEvent",
+      "type": "object"
+    },
+    "PlanData": {
+      "additionalProperties": false,
+      "description": "The opening plan of one seat (sanitised).",
+      "properties": {
+        "budget_plan": {
+          "items": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Budget Plan",
+          "type": "array"
+        },
+        "persona": {
+          "maxLength": 2000,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Persona",
+          "type": "string"
+        },
+        "priorities": {
+          "items": {
+            "maximum": 3,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Priorities",
+          "type": "array"
+        },
+        "sanitized_chars": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sanitized Chars",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seat",
+        "priorities",
+        "budget_plan",
+        "persona"
+      ],
+      "title": "PlanData",
+      "type": "object"
+    },
+    "PlanEvent": {
+      "additionalProperties": false,
+      "description": "Opening plan of one seat.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/PlanData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "plan",
+          "default": "plan",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "PlanEvent",
+      "type": "object"
+    },
+    "Pledge": {
+      "additionalProperties": false,
+      "description": "A structured, public pledge. Breaking it is decided by program, not by a judge.",
+      "properties": {
+        "amount": {
+          "anyOf": [
+            {
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "kind": {
+          "enum": [
+            "no_bid",
+            "max_bid",
+            "let_win"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "lot": {
+          "maximum": 36,
+          "minimum": 1,
+          "title": "Lot",
+          "type": "integer"
+        },
+        "to": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "To"
+        }
+      },
+      "required": [
+        "kind",
+        "lot"
+      ],
+      "title": "Pledge",
+      "type": "object"
+    },
+    "SeatPublic": {
+      "additionalProperties": false,
+      "description": "What every seat may know about a seat: its code name and whether it is a bot.",
+      "properties": {
+        "codename": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Codename",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "player",
+            "bot"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seat",
+        "codename",
+        "role"
+      ],
+      "title": "SeatPublic",
+      "type": "object"
+    },
+    "SeatScore": {
+      "additionalProperties": false,
+      "description": "Final tally of one seat. Surplus and mission bonus are kept apart.",
+      "properties": {
+        "lots_won": {
+          "items": {
+            "maximum": 36,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "title": "Lots Won",
+          "type": "array"
+        },
+        "mission_bonus": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Mission Bonus",
+          "type": "integer"
+        },
+        "rank_tonight": {
+          "anyOf": [
+            {
+              "maximum": 8,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rank Tonight"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "spent": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Spent",
+          "type": "integer"
+        },
+        "surplus": {
+          "maximum": 9007199254740991,
+          "minimum": -9007199254740991,
+          "title": "Surplus",
+          "type": "integer"
+        },
+        "total": {
+          "maximum": 9007199254740991,
+          "minimum": -9007199254740991,
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "seat",
+        "surplus",
+        "mission_bonus",
+        "total"
+      ],
+      "title": "SeatScore",
+      "type": "object"
+    },
+    "SeedCommitData": {
+      "additionalProperties": false,
+      "description": "Commitment to the deal seed before the night, and its reveal after.",
+      "properties": {
+        "algorithm": {
+          "const": "sha256",
+          "default": "sha256",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "commitment": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Commitment",
+          "type": "string"
+        },
+        "deck_id": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deck Id"
+        },
+        "phase": {
+          "enum": [
+            "commit",
+            "reveal"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[0-9A-Za-z_.:-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        }
+      },
+      "required": [
+        "phase",
+        "commitment"
+      ],
+      "title": "SeedCommitData",
+      "type": "object"
+    },
+    "SeedCommitEvent": {
+      "additionalProperties": false,
+      "description": "Seed commitment before the night and reveal after it. Public.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/SeedCommitData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "seed_commit",
+          "default": "seed_commit",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "SeedCommitEvent",
+      "type": "object"
+    },
+    "ShillMission": {
+      "additionalProperties": false,
+      "description": "Push lot ``lot`` to at least ``threshold_price`` without buying it.",
+      "properties": {
+        "bonus": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Bonus",
+          "type": "integer"
+        },
+        "canary": {
+          "maxLength": 64,
+          "minLength": 1,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Canary",
+          "type": "string"
+        },
+        "kind": {
+          "const": "shill",
+          "title": "Kind",
+          "type": "string"
+        },
+        "lot": {
+          "maximum": 36,
+          "minimum": 1,
+          "title": "Lot",
+          "type": "integer"
+        },
+        "threshold_price": {
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Threshold Price",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "lot",
+        "threshold_price",
+        "bonus",
+        "canary"
+      ],
+      "title": "ShillMission",
+      "type": "object"
+    },
+    "TalkData": {
+      "additionalProperties": false,
+      "description": "One line in the public channel, already sanitised, with an optional pledge.",
+      "properties": {
+        "pledge": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Pledge"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "sanitized_chars": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Sanitized Chars",
+          "type": "integer"
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "text": {
+          "maxLength": 2000,
+          "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+          "title": "Text",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seat",
+        "text"
+      ],
+      "title": "TalkData",
+      "type": "object"
+    },
+    "TalkEvent": {
+      "additionalProperties": false,
+      "description": "A line in the public channel.",
+      "properties": {
+        "data": {
+          "$ref": "#/$defs/TalkData"
+        },
+        "lot": {
+          "anyOf": [
+            {
+              "maximum": 36,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot"
+        },
+        "seq": {
+          "maximum": 9007199254740991,
+          "minimum": 1,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "type": {
+          "const": "talk",
+          "default": "talk",
+          "title": "Type",
+          "type": "string"
+        },
+        "vis": {
+          "pattern": "^(public|audience|system|seat:[1-8])$",
+          "title": "Vis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "vis",
+        "data",
+        "type"
+      ],
+      "title": "TalkEvent",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "discriminator": {
+    "mapping": {
+      "action": "#/$defs/ActionEvent",
+      "award": "#/$defs/AwardEvent",
+      "cost_event": "#/$defs/CostEvent",
+      "deal_private": "#/$defs/DealPrivateEvent",
+      "dutch_result": "#/$defs/DutchResultEvent",
+      "english_dropout": "#/$defs/EnglishDropoutEvent",
+      "guess": "#/$defs/GuessEvent",
+      "hammer": "#/$defs/HammerEvent",
+      "host_line": "#/$defs/HostLineEvent",
+      "judge_extract": "#/$defs/JudgeExtractEvent",
+      "judge_verdict": "#/$defs/JudgeVerdictEvent",
+      "lot_open": "#/$defs/LotOpenEvent",
+      "mission_result": "#/$defs/MissionResultEvent",
+      "night_end": "#/$defs/NightEndEvent",
+      "night_start": "#/$defs/NightStartEvent",
+      "parse_repair": "#/$defs/ParseRepairEvent",
+      "plan": "#/$defs/PlanEvent",
+      "seed_commit": "#/$defs/SeedCommitEvent",
+      "talk": "#/$defs/TalkEvent"
+    },
+    "propertyName": "type"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/NightStartEvent"
+    },
+    {
+      "$ref": "#/$defs/SeedCommitEvent"
+    },
+    {
+      "$ref": "#/$defs/DealPrivateEvent"
+    },
+    {
+      "$ref": "#/$defs/PlanEvent"
+    },
+    {
+      "$ref": "#/$defs/LotOpenEvent"
+    },
+    {
+      "$ref": "#/$defs/TalkEvent"
+    },
+    {
+      "$ref": "#/$defs/GuessEvent"
+    },
+    {
+      "$ref": "#/$defs/ActionEvent"
+    },
+    {
+      "$ref": "#/$defs/EnglishDropoutEvent"
+    },
+    {
+      "$ref": "#/$defs/DutchResultEvent"
+    },
+    {
+      "$ref": "#/$defs/HammerEvent"
+    },
+    {
+      "$ref": "#/$defs/MissionResultEvent"
+    },
+    {
+      "$ref": "#/$defs/NightEndEvent"
+    },
+    {
+      "$ref": "#/$defs/HostLineEvent"
+    },
+    {
+      "$ref": "#/$defs/JudgeExtractEvent"
+    },
+    {
+      "$ref": "#/$defs/JudgeVerdictEvent"
+    },
+    {
+      "$ref": "#/$defs/AwardEvent"
+    },
+    {
+      "$ref": "#/$defs/CostEvent"
+    },
+    {
+      "$ref": "#/$defs/ParseRepairEvent"
+    }
+  ]
+}

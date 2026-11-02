@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+dist/
+build/
+*.egg-info/
+.env
+.env.*
+node_modules/
+runs/
+.DS_Store
+# The private deal seeds of a season. `auction-night seeds new` writes them outside every git
+# work tree, and tools/check_seeds.py fails when a file like this is tracked.
+*seeds-private*

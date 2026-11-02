@@ -1,0 +1,488 @@
+{
+  "schema": "auction-night/replay@1",
+  "night": {
+    "id": "fixture-english-dutch-0001",
+    "lang": "zh",
+    "mode": "plain",
+    "status": "completed",
+    "ranked": false,
+    "n_lots": 2,
+    "mechanisms": {"english": "v1", "dutch": "v1"},
+    "budget_lo": 150,
+    "budget_hi": 450,
+    "collectors": 2,
+    "shills": 1,
+    "mission_bonus": 150
+  },
+  "seats": [
+    {
+      "seat": 1,
+      "codename": "青柠",
+      "kind": "llm",
+      "vendor": "vendor-a",
+      "endpoint": "vendor_a",
+      "model": "sample-large-1",
+      "model_returned": "sample-large-1-0926",
+      "thinking": "adaptive",
+      "effort": "high"
+    },
+    {
+      "seat": 2,
+      "codename": "麦芽",
+      "kind": "llm",
+      "vendor": "vendor-b",
+      "endpoint": "vendor_b",
+      "model": "sample-small-2",
+      "model_returned": "sample-small-2",
+      "thinking": "adaptive",
+      "effort": "medium"
+    },
+    {
+      "seat": 3,
+      "codename": "小满",
+      "kind": "llm",
+      "vendor": "vendor-c",
+      "endpoint": "vendor_c",
+      "model": "sample-mid-3",
+      "model_returned": "sample-mid-3-1003",
+      "thinking": "disabled",
+      "effort": "low"
+    },
+    {"seat": 4, "codename": "老实人", "kind": "bot", "policy": "truthful"},
+    {"seat": 5, "codename": "经济学家", "kind": "bot", "policy": "economist"}
+  ],
+  "catalog": [
+    {
+      "lot": 1,
+      "item": "yesterday-radio",
+      "name": "只收得到昨天节目的收音机",
+      "emoji": "📻",
+      "tag": "机械",
+      "tier": 200,
+      "format": "english",
+      "mechanism": "english@v1",
+      "reserve": 20,
+      "blurb": "今天的新闻永远要等到明天才播。"
+    },
+    {
+      "lot": 2,
+      "item": "neighbour-shell",
+      "name": "能听见隔壁海的贝壳",
+      "emoji": "🐚",
+      "tag": "海洋",
+      "tier": 400,
+      "format": "dutch",
+      "mechanism": "dutch@v1",
+      "reserve": 0,
+      "blurb": "贴着耳朵，能听见隔壁那片海的天气预报。"
+    }
+  ],
+  "timeline": [
+    {
+      "lot": 1,
+      "format": "english",
+      "mechanism": "english@v1",
+      "first_seq": 14,
+      "last_seq": 36,
+      "active": [1, 2, 3, 4, 5],
+      "talk_order": [1, 2, 3, 4, 5],
+      "talk": [
+        {
+          "seat": 1,
+          "text": "收音机我随便看看，价格太高就放手。",
+          "pledge": {"kind": "max_bid", "lot": 1, "amount": 90},
+          "sanitized_chars": 0
+        },
+        {
+          "seat": 2,
+          "text": "英式加价，我愿意出到估值就停。",
+          "pledge": {"kind": "max_bid", "lot": 1, "amount": 150},
+          "sanitized_chars": 0
+        },
+        {
+          "seat": 3,
+          "text": "昨天的节目我最爱了，这台我要定了！",
+          "pledge": {"kind": "max_bid", "lot": 1, "amount": 120},
+          "sanitized_chars": 0
+        },
+        {"seat": 4, "text": "我就是来买东西的。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 5, "text": "数字会说话。", "pledge": null, "sanitized_chars": 0}
+      ],
+      "actions": [
+        {"seq": 26, "seat": 1, "phase": "english_init", "status": "ok", "value": 95},
+        {"seq": 27, "seat": 2, "phase": "english_init", "status": "ok", "value": 140},
+        {"seq": 28, "seat": 3, "phase": "english_init", "status": "clamped", "value": 190, "raw_value": 300},
+        {"seq": 31, "seat": 2, "phase": "english_revise", "status": "kept_previous", "value": 140},
+        {"seq": 32, "seat": 3, "phase": "english_revise", "status": "ok", "value": 190},
+        {"seq": 34, "seat": 3, "phase": "english_revise", "status": "ok", "value": 180}
+      ],
+      "dropouts": [
+        {
+          "seat": 4,
+          "price": 0,
+          "remaining": [1, 2, 3, 5],
+          "participated": false
+        },
+        {"seat": 1, "price": 95, "remaining": [2, 3, 5]},
+        {"seat": 2, "price": 140, "remaining": [3, 5]},
+        {"seat": 5, "price": 165, "remaining": [3]}
+      ],
+      "hammer": {
+        "format": "english",
+        "winner": 3,
+        "price": 165,
+        "payments": {"3": 165}
+      },
+      "overlay": {
+        "ref_bids": {"1": 95, "2": 140, "3": 110, "4": 12, "5": 165},
+        "alpha_milli": {"5": 1000},
+        "regret": {"1": 0, "2": 0, "3": 55, "4": 0, "5": 0},
+        "to_highest_value": false,
+        "excess": {"1": 0, "2": 0, "3": -55, "4": 0, "5": 0}
+      },
+      "host": "小满把退出价顶到预算上限，最后以 165 赢下收音机，门槛 190 没到，反倒亏了 55。"
+    },
+    {
+      "lot": 2,
+      "format": "dutch",
+      "mechanism": "dutch@v1",
+      "first_seq": 37,
+      "last_seq": 52,
+      "active": [1, 2, 4, 5],
+      "sitting_out": [3],
+      "talk_order": [2, 3, 4, 5, 1],
+      "talk": [
+        {
+          "seat": 2,
+          "text": "荷式降价，我等价格落到心里的那一格。",
+          "pledge": {"kind": "max_bid", "lot": 2, "amount": 300},
+          "sanitized_chars": 0
+        },
+        {"seat": 3, "text": "我手里只剩 25，这回只能看热闹了。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 4, "text": "看着办。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 5, "text": "按我的公式来。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 1, "text": "贝壳归我，各位不用费心了。", "pledge": null, "sanitized_chars": 0}
+      ],
+      "actions": [
+        {"seq": 49, "seat": 1, "phase": "dutch", "status": "ok", "value": 150},
+        {"seq": 50, "seat": 2, "phase": "dutch", "status": "ok", "value": 280}
+      ],
+      "dutch": {
+        "ladder": [400, 360, 320, 280, 240, 200, 160, 120, 80, 40],
+        "level": 4,
+        "price": 280,
+        "buyer": 2
+      },
+      "hammer": {
+        "format": "dutch",
+        "winner": 2,
+        "price": 280,
+        "payments": {"2": 280}
+      },
+      "overlay": {
+        "ref_bids": {"1": 150, "2": 247, "4": 112, "5": 195},
+        "alpha_milli": {"5": 1000},
+        "regret": {"1": 0, "2": 80, "4": 0, "5": 0},
+        "to_highest_value": true,
+        "excess": {"1": 0, "2": -40, "4": 0, "5": 0},
+        "expected_revenue_milli": 221175
+      },
+      "host": "麦芽在 280 这一格出手，付 280 买下贝壳，青柠预算只有 150，眼睁睁看着它被买走。"
+    }
+  ],
+  "reveal": {
+    "budgets": {"1": 150, "2": 330, "3": 190, "4": 200, "5": 380},
+    "values": {
+      "1": {"1": 95, "2": 210},
+      "2": {"1": 140, "2": 330},
+      "3": {"1": 110, "2": 120},
+      "4": {"1": 12, "2": 150},
+      "5": {"1": 165, "2": 260}
+    },
+    "missions": [
+      {
+        "seat": 1,
+        "kind": "collector",
+        "completed": false,
+        "bonus": 0,
+        "tag": "海洋",
+        "need": 1,
+        "won_lots": []
+      },
+      {
+        "seat": 2,
+        "kind": "collector",
+        "completed": false,
+        "bonus": 0,
+        "tag": "机械",
+        "need": 1,
+        "won_lots": []
+      },
+      {
+        "seat": 3,
+        "kind": "shill",
+        "completed": false,
+        "bonus": 0,
+        "target_lot": 1,
+        "threshold_price": 190,
+        "final_price": 165,
+        "buyer": 3
+      }
+    ],
+    "plans": [
+      {
+        "seat": 1,
+        "priorities": [1, 3],
+        "budget_plan": [60, 180],
+        "persona": "只关心海洋的安静买家"
+      },
+      {
+        "seat": 2,
+        "priorities": [3, 1],
+        "budget_plan": [150, 100],
+        "persona": "喜欢热闹的机械迷"
+      },
+      {
+        "seat": 3,
+        "priorities": [1, 1],
+        "budget_plan": [100, 60],
+        "persona": "话很多的搅局者"
+      }
+    ],
+    "guesses": [
+      {"lot": 1, "seat": 1, "target": 5, "guess": 300, "truth": 380, "abs_error": 80},
+      {"lot": 1, "seat": 2, "target": 3, "guess": 200, "truth": 190, "abs_error": 10},
+      {"lot": 1, "seat": 3, "target": 2, "guess": 330, "truth": 330, "abs_error": 0},
+      {"lot": 2, "seat": 2, "target": 1, "guess": 150, "truth": 150, "abs_error": 0},
+      {"lot": 2, "seat": 3, "target": 5, "guess": 380, "truth": 380, "abs_error": 0},
+      {"lot": 2, "seat": 1, "target": 5, "guess": 350, "truth": 380, "abs_error": 30}
+    ],
+    "thoughts": [
+      {"seq": 11, "seat": 1, "phase": "plan", "text": "我的任务是海洋，贝壳在第二件。收音机不重要，预算要留给贝壳。"},
+      {"seq": 12, "seat": 2, "phase": "plan", "text": "机械标签只有收音机，这件要认真拿。"},
+      {"seq": 13, "seat": 3, "phase": "plan", "text": "我是托儿，目标是第一件，门槛 190，要把价格抬上去。"},
+      {"seq": 17, "lot": 1, "seat": 1, "phase": "talk", "text": "估值 95，到了就退，不浪费预算。"},
+      {"seq": 20, "lot": 1, "seat": 2, "phase": "talk", "text": "估值 140，退出价就写 140。"},
+      {"seq": 23, "lot": 1, "seat": 3, "phase": "talk", "text": "估值只有 110，但任务要我把价格抬到 190，先报个高的。"},
+      {"seq": 26, "lot": 1, "seat": 1, "phase": "english_init", "text": "估值 95，退出价就写 95。"},
+      {"seq": 27, "lot": 1, "seat": 2, "phase": "english_init", "text": "估值 140，退出价 140，不多不少。"},
+      {"seq": 28, "lot": 1, "seat": 3, "phase": "english_init", "text": "先报 300 把价格撑起来，预算只有 190，被夹到 190。"},
+      {"seq": 32, "lot": 1, "seat": 3, "phase": "english_revise", "text": "价格才 95，继续撑着，不改。"},
+      {
+        "seq": 34,
+        "lot": 1,
+        "seat": 3,
+        "phase": "english_revise",
+        "text": "只剩我和经济学家，估值 110，退出价降到 180 也还够用。"
+      },
+      {"seq": 40, "lot": 2, "seat": 2, "phase": "talk", "text": "估值 330，打算在 280 这一格出手。"},
+      {"seq": 43, "lot": 2, "seat": 3, "phase": "talk", "text": "预算只剩 25，连最低一格都买不起，被动等待。"},
+      {"seq": 48, "lot": 2, "seat": 1, "phase": "talk", "text": "估值 210，想在 180 左右出手，但预算只有 150，只能抢最低几格。"},
+      {"seq": 49, "lot": 2, "seat": 1, "phase": "dutch", "text": "预算只有 150，出手价写 150，等价格落到 150 以下。"},
+      {"seq": 50, "lot": 2, "seat": 2, "phase": "dutch", "text": "估值 330，出手价写 280，留 50 的余量。"}
+    ]
+  },
+  "scores": [
+    {
+      "seat": 1,
+      "surplus": 0,
+      "mission_bonus": 0,
+      "total": 0,
+      "rank_tonight": 2,
+      "spent": 0,
+      "lots_won": []
+    },
+    {
+      "seat": 2,
+      "surplus": 50,
+      "mission_bonus": 0,
+      "total": 50,
+      "rank_tonight": 1,
+      "spent": 280,
+      "lots_won": [2]
+    },
+    {
+      "seat": 3,
+      "surplus": -55,
+      "mission_bonus": 0,
+      "total": -55,
+      "rank_tonight": 3,
+      "spent": 165,
+      "lots_won": [1]
+    },
+    {
+      "seat": 4,
+      "surplus": 0,
+      "mission_bonus": 0,
+      "total": 0,
+      "spent": 0,
+      "lots_won": []
+    },
+    {
+      "seat": 5,
+      "surplus": 0,
+      "mission_bonus": 0,
+      "total": 0,
+      "spent": 0,
+      "lots_won": []
+    }
+  ],
+  "manifest": {
+    "config_hash": "sha256:27e22b331c502dc77d64eaf6b6c6c10a292997616bdf623763e44b3123d19a95",
+    "prompt_template_version": "zh-v1",
+    "engine_version": "0.0.1",
+    "mechanism_versions": {"english": "v1", "dutch": "v1"},
+    "seed_commitment": "sha256:f87e715607eb3022d38b723e74d49e78a16ce6bd29666e6b3692c5a5bbb058aa",
+    "revealed_seed": "fixture-seed-english-dutch-0001",
+    "models_returned": {"seat:1": "sample-large-1-0926", "seat:2": "sample-small-2", "seat:3": "sample-mid-3-1003"}
+  },
+  "pledges": [
+    {
+      "seq": 15,
+      "lot": 1,
+      "seat": 1,
+      "pledge": {"kind": "max_bid", "lot": 1, "amount": 90},
+      "outcome": "violated",
+      "intent": "unintentional",
+      "detail": "承诺最多出 90，实际退出价 95"
+    },
+    {
+      "seq": 18,
+      "lot": 1,
+      "seat": 2,
+      "pledge": {"kind": "max_bid", "lot": 1, "amount": 150},
+      "outcome": "kept",
+      "intent": "unknown",
+      "detail": "退出价没有超过 150"
+    },
+    {
+      "seq": 21,
+      "lot": 1,
+      "seat": 3,
+      "pledge": {"kind": "max_bid", "lot": 1, "amount": 120},
+      "outcome": "violated",
+      "intent": "deliberate",
+      "detail": "承诺最多出 120，实际退出价 180"
+    },
+    {
+      "seq": 38,
+      "lot": 2,
+      "seat": 2,
+      "pledge": {"kind": "max_bid", "lot": 2, "amount": 300},
+      "outcome": "kept",
+      "intent": "unknown",
+      "detail": "出手价没有超过 300"
+    }
+  ],
+  "verdicts": [
+    {
+      "verdict": "pledge_violation",
+      "seats": [1],
+      "lots": [1],
+      "evidence_seqs": [15, 26],
+      "quotes": ["价格太高就放手"],
+      "intent": "unintentional",
+      "detail": "承诺最多出 90，实际退出价 95"
+    },
+    {
+      "verdict": "pledge_violation",
+      "seats": [3],
+      "lots": [1],
+      "evidence_seqs": [21, 34],
+      "quotes": ["这台我要定了"],
+      "intent": "deliberate",
+      "detail": "承诺最多出 120，实际退出价 180"
+    }
+  ],
+  "judges_absent": [
+    {"judge": 0, "vendor": "vendor-e", "reason": "timeout"},
+    {"judge": 1, "vendor": "vendor-f", "reason": "unreadable"}
+  ],
+  "awards": [
+    {"award": "most_textbook", "vacant": true},
+    {"award": "winners_curse", "vacant": true},
+    {"award": "tilt", "vacant": true},
+    {"award": "bargain", "vacant": true},
+    {
+      "award": "backstabber",
+      "winners": [1, 3],
+      "metric": 1,
+      "metric_unit": "count"
+    },
+    {"award": "best_actor", "vacant": true},
+    {
+      "award": "keeper",
+      "winners": [2],
+      "metric": 2,
+      "metric_unit": "count"
+    },
+    {"award": "mission_master", "vacant": true},
+    {"award": "mind_reader", "vacant": true},
+    {"award": "consistent", "vacant": true}
+  ],
+  "bots_reference": [
+    {"award": "most_textbook", "vacant": true},
+    {"award": "winners_curse", "vacant": true},
+    {"award": "tilt", "vacant": true},
+    {"award": "bargain", "vacant": true}
+  ],
+  "highlights": [
+    {
+      "id": 1,
+      "category": "shill_stuck",
+      "score": 9,
+      "lot": 1,
+      "seats": [3],
+      "first_seq": 14,
+      "last_seq": 36,
+      "text": "托儿抬价过了头，付 165 赢下收音机，门槛 190 没碰到。"
+    },
+    {
+      "id": 2,
+      "category": "backstab",
+      "score": 5,
+      "lot": 1,
+      "seats": [1],
+      "first_seq": 15,
+      "last_seq": 26,
+      "text": "答应最多出 90，退出价写成了 95。"
+    },
+    {
+      "id": 3,
+      "category": "mindread_miss",
+      "score": 4,
+      "lot": 1,
+      "seats": [1],
+      "first_seq": 16,
+      "last_seq": 16,
+      "text": "青柠猜 5 号还剩 300，其实还有 380。"
+    },
+    {
+      "id": 4,
+      "category": "backstab",
+      "score": 7,
+      "lot": 1,
+      "seats": [3],
+      "first_seq": 21,
+      "last_seq": 34,
+      "text": "答应最多出 120，退出价顶到了 180。"
+    },
+    {
+      "id": 5,
+      "category": "plan_contradiction",
+      "score": 5,
+      "lot": 2,
+      "seats": [2],
+      "first_seq": 38,
+      "last_seq": 52,
+      "text": "计划里贝壳只有一星、最多花 100，最后却付 280 买下。"
+    }
+  ],
+  "host": {
+    "per_lot": [
+      {"lot": 1, "text": "小满把退出价顶到预算上限，最后以 165 赢下收音机，门槛 190 没到，反倒亏了 55。"},
+      {"lot": 2, "text": "麦芽在 280 这一格出手，付 280 买下贝壳，青柠预算只有 150，眼睁睁看着它被买走。"}
+    ],
+    "recap": "两件拍品，一件英式一件荷式。\n小满想靠高退出价抬价，结果自己把收音机买下，亏了 55。"
+  }
+}

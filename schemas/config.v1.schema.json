@@ -1,0 +1,1291 @@
+{
+  "$defs": {
+    "BlindConfig": {
+      "additionalProperties": false,
+      "description": "Common value prior and signal noise of the blind-box lots, as fractions of the tier.",
+      "properties": {
+        "noise": {
+          "default": 0.2,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Noise",
+          "type": "number"
+        },
+        "value_range": {
+          "default": [
+            0.5,
+            1.5
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Value Range",
+          "type": "array"
+        }
+      },
+      "title": "BlindConfig",
+      "type": "object"
+    },
+    "BudgetConfig": {
+      "additionalProperties": false,
+      "description": "Budget of a seat: ``floor(c * u)`` with ``u`` uniform on ``spread``.",
+      "properties": {
+        "c": {
+          "default": 300,
+          "exclusiveMinimum": 0,
+          "maximum": 100000,
+          "title": "C",
+          "type": "integer"
+        },
+        "rounding": {
+          "const": "floor",
+          "default": "floor",
+          "title": "Rounding",
+          "type": "string"
+        },
+        "spread": {
+          "default": [
+            0.5,
+            1.5
+          ],
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Spread",
+          "type": "array"
+        }
+      },
+      "title": "BudgetConfig",
+      "type": "object"
+    },
+    "Capabilities": {
+      "additionalProperties": false,
+      "description": "What an endpoint (or one model on it) accepts. Unknown means unsupported.",
+      "properties": {
+        "efforts": {
+          "default": [],
+          "items": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "xhigh",
+              "max"
+            ],
+            "type": "string"
+          },
+          "title": "Efforts",
+          "type": "array"
+        },
+        "explicit_thinking_max_effort": {
+          "anyOf": [
+            {
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Explicit Thinking Max Effort"
+        },
+        "supports_forced_tool_choice": {
+          "default": false,
+          "title": "Supports Forced Tool Choice",
+          "type": "boolean"
+        },
+        "supports_sampling_params": {
+          "default": false,
+          "title": "Supports Sampling Params",
+          "type": "boolean"
+        },
+        "supports_strict_tools": {
+          "default": false,
+          "title": "Supports Strict Tools",
+          "type": "boolean"
+        },
+        "thinking_modes": {
+          "default": [],
+          "items": {
+            "enum": [
+              "adaptive",
+              "disabled",
+              "between_tools"
+            ],
+            "type": "string"
+          },
+          "title": "Thinking Modes",
+          "type": "array"
+        }
+      },
+      "title": "Capabilities",
+      "type": "object"
+    },
+    "ChatConfig": {
+      "additionalProperties": false,
+      "description": "Public channel limits.",
+      "properties": {
+        "max_chars": {
+          "default": 60,
+          "maximum": 500,
+          "minimum": 1,
+          "title": "Max Chars",
+          "type": "integer"
+        },
+        "order": {
+          "const": "rotate",
+          "default": "rotate",
+          "title": "Order",
+          "type": "string"
+        },
+        "persona_max_chars": {
+          "default": 60,
+          "maximum": 500,
+          "minimum": 1,
+          "title": "Persona Max Chars",
+          "type": "integer"
+        },
+        "window_lots": {
+          "default": 2,
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Window Lots",
+          "type": "integer"
+        }
+      },
+      "title": "ChatConfig",
+      "type": "object"
+    },
+    "ContentScanConfig": {
+      "additionalProperties": false,
+      "description": "Scan of every public text before a replay is published.",
+      "properties": {
+        "classifier": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RoleConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "wordlist": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wordlist"
+        }
+      },
+      "title": "ContentScanConfig",
+      "type": "object"
+    },
+    "DeckRef": {
+      "additionalProperties": false,
+      "description": "A planned deck of a season, with the seed commitment published before the season.",
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "seed_commitment": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed Commitment"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "DeckRef",
+      "type": "object"
+    },
+    "DutchConfig": {
+      "additionalProperties": false,
+      "description": "Descending clock: ``levels`` price levels, one grab price per seat.",
+      "properties": {
+        "levels": {
+          "default": 10,
+          "maximum": 100,
+          "minimum": 2,
+          "title": "Levels",
+          "type": "integer"
+        },
+        "mode": {
+          "const": "one_shot",
+          "default": "one_shot",
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "title": "DutchConfig",
+      "type": "object"
+    },
+    "EndpointConfig": {
+      "additionalProperties": false,
+      "description": "API access for one provider, plus what its models accept.\n\n``model_capabilities`` maps a model id to a complete capability record that replaces\n``capabilities`` for that model.",
+      "properties": {
+        "api_key_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Api Key Env"
+        },
+        "api_version": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Api Version"
+        },
+        "base_url": {
+          "anyOf": [
+            {
+              "pattern": "^https?://[^\\s@?#]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Url"
+        },
+        "base_url_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Url Env"
+        },
+        "capabilities": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Capabilities"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "kind": {
+          "enum": [
+            "anthropic",
+            "openai_compatible"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "max_concurrency": {
+          "default": 4,
+          "maximum": 64,
+          "minimum": 1,
+          "title": "Max Concurrency",
+          "type": "integer"
+        },
+        "model_capabilities": {
+          "patternProperties": {
+            "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$": {
+              "$ref": "#/$defs/Capabilities"
+            }
+          },
+          "propertyNames": {
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "title": "Model Capabilities",
+          "type": "object"
+        },
+        "requests_per_minute": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requests Per Minute"
+        },
+        "sampling": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SamplingParams"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "strict_tools": {
+          "default": false,
+          "title": "Strict Tools",
+          "type": "boolean"
+        },
+        "structured_output": {
+          "default": "tools",
+          "enum": [
+            "tools",
+            "json_schema",
+            "text"
+          ],
+          "title": "Structured Output",
+          "type": "string"
+        },
+        "tool_choice": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "any",
+            "tool"
+          ],
+          "title": "Tool Choice",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "EndpointConfig",
+      "type": "object"
+    },
+    "EnglishConfig": {
+      "additionalProperties": false,
+      "description": "Ascending button clock. Revisions open when at most ``theta`` seats remain.",
+      "properties": {
+        "revise_timeout": {
+          "const": "keep_previous",
+          "default": "keep_previous",
+          "title": "Revise Timeout",
+          "type": "string"
+        },
+        "revise_when_remaining_le": {
+          "default": 4,
+          "maximum": 8,
+          "minimum": 2,
+          "title": "Revise When Remaining Le",
+          "type": "integer"
+        }
+      },
+      "title": "EnglishConfig",
+      "type": "object"
+    },
+    "LimitsConfig": {
+      "additionalProperties": false,
+      "description": "Timeouts, retries and the cost cap.",
+      "properties": {
+        "call_timeout_s": {
+          "default": 90,
+          "maximum": 3600,
+          "minimum": 1,
+          "title": "Call Timeout S",
+          "type": "integer"
+        },
+        "human_timeout_s": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Human Timeout S"
+        },
+        "max_cost_per_night_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Cost Per Night Usd"
+        },
+        "prices_file": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prices File"
+        },
+        "syntax_retries": {
+          "default": 1,
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Syntax Retries",
+          "type": "integer"
+        },
+        "transient_retries": {
+          "default": 2,
+          "maximum": 5,
+          "minimum": 0,
+          "title": "Transient Retries",
+          "type": "integer"
+        }
+      },
+      "title": "LimitsConfig",
+      "type": "object"
+    },
+    "MissionConfig": {
+      "additionalProperties": false,
+      "description": "Secret missions. The shill threshold is a fraction of the tier, rounded up.",
+      "properties": {
+        "bonus": {
+          "default": 150,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Bonus",
+          "type": "integer"
+        },
+        "collector_need": {
+          "default": 2,
+          "maximum": 12,
+          "minimum": 1,
+          "title": "Collector Need",
+          "type": "integer"
+        },
+        "collectors": {
+          "default": 3,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Collectors",
+          "type": "integer"
+        },
+        "shill_formats": {
+          "default": [
+            "english",
+            "sealed_second"
+          ],
+          "items": {
+            "enum": [
+              "english",
+              "sealed_second"
+            ],
+            "type": "string"
+          },
+          "title": "Shill Formats",
+          "type": "array"
+        },
+        "shill_threshold": {
+          "default": 0.95,
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Shill Threshold",
+          "type": "number"
+        },
+        "shills": {
+          "default": 3,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Shills",
+          "type": "integer"
+        }
+      },
+      "title": "MissionConfig",
+      "type": "object"
+    },
+    "NightSettings": {
+      "additionalProperties": false,
+      "description": "The ``night`` section: rules and economy of one night.\n\nThe deal seed is the root of every random draw of the environment (lots, private cards,\nbudgets, missions, tie-break keys). Give it in exactly one of two ways:\n\n* ``seed_env`` names the environment variable that holds the seed. This is the form of\n  every committed season configuration, because the seed must stay private until the\n  night is published.\n* ``seed`` holds the seed inline. Only mock and test configurations do this.\n\n``deal_seed_commitment`` is the commitment published before the season\n(``seed_commitment(seed)``). Code that needs the seed calls ``resolve_seed``, which also\nchecks the commitment. A value written as ``<like-this>`` stands in for a commitment that\nhas not been published yet.",
+      "oneOf": [
+        {
+          "required": [
+            "seed"
+          ]
+        },
+        {
+          "required": [
+            "seed_env"
+          ]
+        }
+      ],
+      "properties": {
+        "blind": {
+          "$ref": "#/$defs/BlindConfig"
+        },
+        "budget": {
+          "$ref": "#/$defs/BudgetConfig"
+        },
+        "chat": {
+          "$ref": "#/$defs/ChatConfig"
+        },
+        "deal_seed_commitment": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "pattern": "^<[^<>\\x00-\\x1f]{1,80}>$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deal Seed Commitment"
+        },
+        "dutch": {
+          "$ref": "#/$defs/DutchConfig"
+        },
+        "english": {
+          "$ref": "#/$defs/EnglishConfig"
+        },
+        "formats": {
+          "default": [
+            "english",
+            "dutch",
+            "sealed_first",
+            "sealed_second",
+            "all_pay",
+            "blind_box"
+          ],
+          "items": {
+            "enum": [
+              "english",
+              "dutch",
+              "sealed_first",
+              "sealed_second",
+              "all_pay",
+              "blind_box"
+            ],
+            "type": "string"
+          },
+          "title": "Formats",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "lang": {
+          "const": "zh",
+          "default": "zh",
+          "title": "Lang",
+          "type": "string"
+        },
+        "lots_per_format": {
+          "default": 2,
+          "maximum": 6,
+          "minimum": 1,
+          "title": "Lots Per Format",
+          "type": "integer"
+        },
+        "missions": {
+          "$ref": "#/$defs/MissionConfig"
+        },
+        "mode": {
+          "default": "plain",
+          "enum": [
+            "plain",
+            "variety"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "plan_and_mindreading": {
+          "default": true,
+          "title": "Plan And Mindreading",
+          "type": "boolean"
+        },
+        "reserve": {
+          "default": 0,
+          "maximum": 9007199254740991,
+          "minimum": 0,
+          "title": "Reserve",
+          "type": "integer"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "seed_env": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Z][A-Z0-9_]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed Env"
+        },
+        "tags": {
+          "default": [
+            "海洋",
+            "机械",
+            "甜品",
+            "怪谈"
+          ],
+          "items": {
+            "maxLength": 16,
+            "minLength": 1,
+            "pattern": "^[^\\s\\x00-\\x1f\\x7f-\\x9f【】「」\\[\\]〔〕\\\"“”<>{}]+$",
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "thought": {
+          "$ref": "#/$defs/ThoughtConfig"
+        },
+        "tiers": {
+          "additionalProperties": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "title": "Tiers",
+          "type": "object"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "NightSettings",
+      "type": "object"
+    },
+    "RoleConfig": {
+      "additionalProperties": false,
+      "description": "A model used outside the seats: host, judge or classifier.",
+      "properties": {
+        "effort": {
+          "anyOf": [
+            {
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effort"
+        },
+        "endpoint": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint"
+        },
+        "kind": {
+          "default": "llm",
+          "enum": [
+            "llm",
+            "mock"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "max_tokens": {
+          "anyOf": [
+            {
+              "maximum": 131072,
+              "minimum": 64,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Tokens"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "sampling": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SamplingParams"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "thinking": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ThinkingConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "vendor": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vendor"
+        }
+      },
+      "title": "RoleConfig",
+      "type": "object"
+    },
+    "SamplingParams": {
+      "additionalProperties": false,
+      "description": "Sampling parameters. Unsupported endpoints must carry none of them.",
+      "properties": {
+        "seed": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "temperature": {
+          "anyOf": [
+            {
+              "maximum": 2,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Temperature"
+        },
+        "top_k": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Top K"
+        },
+        "top_p": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Top P"
+        }
+      },
+      "title": "SamplingParams",
+      "type": "object"
+    },
+    "SeasonConfig": {
+      "additionalProperties": false,
+      "description": "Season context of this night.",
+      "properties": {
+        "deck": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deck"
+        },
+        "decks": {
+          "items": {
+            "$ref": "#/$defs/DeckRef"
+          },
+          "title": "Decks",
+          "type": "array"
+        },
+        "format": {
+          "default": "single",
+          "enum": [
+            "single",
+            "rotation"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "max_seats_per_vendor": {
+          "default": 2,
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Max Seats Per Vendor",
+          "type": "integer"
+        },
+        "rotation": {
+          "anyOf": [
+            {
+              "maximum": 7,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rotation"
+        }
+      },
+      "title": "SeasonConfig",
+      "type": "object"
+    },
+    "SeatConfig": {
+      "additionalProperties": false,
+      "description": "One seat. ``llm`` seats call a model, ``mock`` seats run a scripted policy.",
+      "properties": {
+        "codename": {
+          "maxLength": 16,
+          "minLength": 1,
+          "pattern": "^[^\\s\\x00-\\x1f\\x7f-\\x9f【】「」\\[\\]〔〕\\\"“”<>{}]+$",
+          "title": "Codename",
+          "type": "string"
+        },
+        "effort": {
+          "anyOf": [
+            {
+              "enum": [
+                "low",
+                "medium",
+                "high",
+                "xhigh",
+                "max"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effort"
+        },
+        "endpoint": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint"
+        },
+        "kind": {
+          "enum": [
+            "llm",
+            "mock",
+            "bot",
+            "human"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "max_tokens": {
+          "anyOf": [
+            {
+              "maximum": 131072,
+              "minimum": 64,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Max Tokens"
+        },
+        "mock_policy": {
+          "anyOf": [
+            {
+              "enum": [
+                "honest",
+                "collude",
+                "backstab",
+                "random",
+                "abstain"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mock Policy"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model"
+        },
+        "pacing": {
+          "default": false,
+          "title": "Pacing",
+          "type": "boolean"
+        },
+        "persona": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Persona"
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "enum": [
+                "truthful",
+                "economist"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy"
+        },
+        "sampling": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SamplingParams"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "seat": {
+          "maximum": 8,
+          "minimum": 1,
+          "title": "Seat",
+          "type": "integer"
+        },
+        "thinking": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ThinkingConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "vendor": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "minLength": 1,
+              "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Vendor"
+        }
+      },
+      "required": [
+        "seat",
+        "codename",
+        "kind"
+      ],
+      "title": "SeatConfig",
+      "type": "object"
+    },
+    "ShowConfig": {
+      "additionalProperties": false,
+      "description": "Offline host, two judges and the content scan.",
+      "properties": {
+        "allow_judge_vendor_overlap": {
+          "default": false,
+          "title": "Allow Judge Vendor Overlap",
+          "type": "boolean"
+        },
+        "content_scan": {
+          "$ref": "#/$defs/ContentScanConfig"
+        },
+        "host_offline": {
+          "$ref": "#/$defs/RoleConfig"
+        },
+        "judges": {
+          "items": {
+            "$ref": "#/$defs/RoleConfig"
+          },
+          "title": "Judges",
+          "type": "array"
+        }
+      },
+      "required": [
+        "host_offline",
+        "judges"
+      ],
+      "title": "ShowConfig",
+      "type": "object"
+    },
+    "ThinkingConfig": {
+      "additionalProperties": false,
+      "description": "Thinking control sent with a request. ``adaptive`` means the field is left out.",
+      "properties": {
+        "type": {
+          "enum": [
+            "adaptive",
+            "disabled",
+            "between_tools"
+          ],
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "ThinkingConfig",
+      "type": "object"
+    },
+    "ThoughtConfig": {
+      "additionalProperties": false,
+      "description": "Inner monologue limits.",
+      "properties": {
+        "keep_last": {
+          "default": 2,
+          "maximum": 12,
+          "minimum": 0,
+          "title": "Keep Last",
+          "type": "integer"
+        },
+        "max_chars": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max Chars",
+          "type": "integer"
+        }
+      },
+      "title": "ThoughtConfig",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A complete night configuration.",
+  "properties": {
+    "endpoints": {
+      "patternProperties": {
+        "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$": {
+          "$ref": "#/$defs/EndpointConfig"
+        }
+      },
+      "title": "Endpoints",
+      "type": "object"
+    },
+    "limits": {
+      "$ref": "#/$defs/LimitsConfig"
+    },
+    "night": {
+      "$ref": "#/$defs/NightSettings"
+    },
+    "season": {
+      "$ref": "#/$defs/SeasonConfig"
+    },
+    "seats": {
+      "items": {
+        "$ref": "#/$defs/SeatConfig"
+      },
+      "title": "Seats",
+      "type": "array"
+    },
+    "show": {
+      "$ref": "#/$defs/ShowConfig"
+    }
+  },
+  "required": [
+    "night",
+    "seats",
+    "show"
+  ],
+  "title": "NightConfig",
+  "type": "object"
+}

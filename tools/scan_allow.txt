@@ -1,0 +1,10 @@
+# Justified exceptions for tools/scan_text.py.
+#
+# One entry per line: <path>:<line-substring>
+#   <path>            repo-relative path, fnmatch syntax ("docs/*.md" is allowed)
+#   <line-substring>  text that must occur in the flagged line
+# An entry waives only findings in matching files on lines containing the substring.
+# Blank lines and lines starting with '#' are ignored. This file itself is not scanned.
+# Unused entries are reported as warnings, so delete an entry when its line goes away.
+#
+# Add an entry only with a reason in the commit message.

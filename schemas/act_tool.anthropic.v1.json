@@ -1,0 +1,172 @@
+{
+  "name": "act",
+  "description": "提交本次行动。phase 必须等于消息里【现在要做】给出的阶段；用不到的字段填 null。",
+  "strict": true,
+  "input_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "phase",
+      "say",
+      "pledge_kind",
+      "pledge_lot",
+      "pledge_to",
+      "pledge_amount",
+      "guess_budget",
+      "exit_price",
+      "grab_price",
+      "bid",
+      "plan_priorities",
+      "plan_budget",
+      "plan_persona",
+      "thought"
+    ],
+    "properties": {
+      "phase": {
+        "type": "string",
+        "enum": [
+          "plan",
+          "talk",
+          "english_init",
+          "english_revise",
+          "dutch",
+          "sealed"
+        ]
+      },
+      "say": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "pledge_kind": {
+        "anyOf": [
+          {
+            "type": "string",
+            "enum": [
+              "no_bid",
+              "max_bid",
+              "let_win"
+            ]
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "pledge_lot": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "pledge_to": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "pledge_amount": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "guess_budget": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "exit_price": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "grab_price": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "bid": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "plan_priorities": {
+        "anyOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "plan_budget": {
+        "anyOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "plan_persona": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "thought": {
+        "type": "string"
+      }
+    }
+  }
+}

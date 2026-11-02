@@ -1,0 +1,58 @@
+# Observation: the user message of every call. Only public events and the seat's own events
+# feed it. Text that models wrote is always shown as a quoted JSON string literal.
+
+plan_intro = '''【开场】拍卖还没有开始。请先私下交一份作战计划。'''
+
+lot_header = '''【第 {lot}/{n_lots} 件】{emoji}{name}｜{tag}｜档位 {tier}｜{rule}｜保留价 {reserve}'''
+
+status_value = '''你的估值：{value}　剩余预算：{left}　在场：{present} 位（已出局：{out}）'''
+
+status_signal = '''你的鉴定价：{value}　剩余预算：{left}　在场：{present} 位（已出局：{out}）'''
+
+out_none = '''无人出局'''
+
+won_line = '''你已拍到：{won}'''
+
+won_none = '''无'''
+
+won_item = '''第 {lot} 件{emoji}{name}（付 {price}）'''
+
+progress = '''任务进度：{text}'''
+
+progress_collector = '''收藏家：{tag} {done}/{need}'''
+
+progress_shill = '''托儿：第 {lot} 件，门槛 {threshold}'''
+
+results_head = '''【往期结果】'''
+
+none = '''（暂无）'''
+
+chat_head = '''【公开频道（最近{window}件，引号内是选手原话）】'''
+
+chat_line = '''[第 {lot} 件] {seat} 号「{codename}」：{said}{pledge}'''
+
+chat_silent = '''（未发言）'''
+
+pledge_suffix = '''（誓约：{text}）'''
+
+pledge_no_bid = '''对第 {lot} 件不出价'''
+
+pledge_max_bid = '''对第 {lot} 件出价不超过 {amount}'''
+
+pledge_let_win = '''让 {to} 号拿下第 {lot} 件'''
+
+pledge_other = '''{kind}'''
+
+thoughts_head = '''【你最近{count}次的内心独白】'''
+
+inprogress_head = '''【本件进行中】'''
+
+inprogress_english = '''已退出：{dropped}；当前价 {price}；在场：{present}；你的退出价 {mine}'''
+
+dropped_item = '''{seat} 号@{price}'''
+
+dropped_none = '''无'''
+
+mindread = '''【读心】请猜 {seat} 号「{codename}」现在还剩多少预算。'''
+
+todo = '''【现在要做】阶段 {phase}：{instruction}'''

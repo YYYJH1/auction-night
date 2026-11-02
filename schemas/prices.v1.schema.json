@@ -1,0 +1,167 @@
+{
+  "$defs": {
+    "ExchangeRate": {
+      "additionalProperties": false,
+      "description": "What one US dollar buys of a currency on a date: ``units_per_usd`` units of it.\n\nThe rate is written the way a rate source quotes it (``1 USD = 6.6529 CNY``), so it is the\nnumber of the source and not its inverse.",
+      "properties": {
+        "as_of": {
+          "format": "date",
+          "title": "As Of",
+          "type": "string"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "source": {
+          "pattern": "^https?://\\S+$",
+          "title": "Source",
+          "type": "string"
+        },
+        "units_per_usd": {
+          "exclusiveMinimum": 0,
+          "title": "Units Per Usd",
+          "type": "number"
+        }
+      },
+      "required": [
+        "units_per_usd",
+        "as_of",
+        "source"
+      ],
+      "title": "ExchangeRate",
+      "type": "object"
+    },
+    "ModelPrice": {
+      "additionalProperties": false,
+      "description": "Price of one model per million tokens, in ``currency`` (USD unless stated), with date and\nsource. A price in another currency is counted in dollars with the rate of the price list.",
+      "properties": {
+        "as_of": {
+          "format": "date",
+          "title": "As Of",
+          "type": "string"
+        },
+        "cache_read_per_mtok": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cache Read Per Mtok"
+        },
+        "cache_write_per_mtok": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cache Write Per Mtok"
+        },
+        "currency": {
+          "default": "USD",
+          "enum": [
+            "USD",
+            "CNY"
+          ],
+          "title": "Currency",
+          "type": "string"
+        },
+        "input_per_mtok": {
+          "minimum": 0,
+          "title": "Input Per Mtok",
+          "type": "number"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "output_per_mtok": {
+          "minimum": 0,
+          "title": "Output Per Mtok",
+          "type": "number"
+        },
+        "source": {
+          "pattern": "^https?://\\S+$",
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "input_per_mtok",
+        "output_per_mtok",
+        "as_of",
+        "source"
+      ],
+      "title": "ModelPrice",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Price list read by the cost gate. A missing cache price means the input price.\n\n``exchange_rates`` holds the rate of each currency other than USD. A price in such a currency\nis divided by its rate when the cost of a call is worked out, so ledgers and the cost cap stay\nin dollars. A price list that uses a currency without giving its rate is refused: no rate is\nassumed. A rate may also be listed for a list in dollars, to show amounts in that currency.",
+  "properties": {
+    "exchange_rates": {
+      "additionalProperties": {
+        "$ref": "#/$defs/ExchangeRate"
+      },
+      "propertyNames": {
+        "enum": [
+          "USD",
+          "CNY"
+        ]
+      },
+      "title": "Exchange Rates",
+      "type": "object"
+    },
+    "prices": {
+      "patternProperties": {
+        "^[^\\x00-\\x1f\\x7f-\\x9f  ]*$": {
+          "$ref": "#/$defs/ModelPrice"
+        }
+      },
+      "propertyNames": {
+        "maxLength": 64,
+        "minLength": 1
+      },
+      "title": "Prices",
+      "type": "object"
+    },
+    "version": {
+      "const": 1,
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "prices"
+  ],
+  "title": "PricesFile",
+  "type": "object"
+}

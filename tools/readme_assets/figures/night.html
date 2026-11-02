@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>how a night goes</title>
+  <link rel="stylesheet" href="figures.css">
+  <script src="figures.js"></script>
+  <script src="connect.js"></script>
+  <style>
+    .night { height: 746px; }
+    .lane .node { top: 36px; }
+    #lane-a { top: 24px;  height: 126px; }
+    #lane-b { top: 178px; height: 180px; }
+    #lane-c { top: 386px; height: 180px; }
+    #lane-d { top: 594px; height: 128px; }
+    #lane-a .node { height: 76px; }
+    #lane-b .node, #lane-c .node { height: 130px; }
+    #lane-d .node { height: 76px; }
+    #deal, #plan { width: 402px; }
+    #open, #talk, #bid, #hammer { width: 186px; }
+    #scores, #host, #judges, #awards { width: 186px; }
+    #gate, #file, #page { width: 256px; }
+    #deal { left: 16px; } #plan { left: 454px; }
+    #open { left: 16px; } #talk { left: 234px; } #bid { left: 452px; } #hammer { left: 670px; }
+    #scores { left: 16px; } #host { left: 234px; } #judges { left: 452px; } #awards { left: 670px; }
+    #gate { left: 16px; } #file { left: 308px; } #page { left: 600px; }
+    .badge {
+      position: absolute; right: 16px; top: 7px;
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11.5px; font-weight: 700; color: var(--accent);
+    }
+    .badge svg { width: 15px; height: 15px; }
+    .mono { font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card night" id="card">
+    <svg class="overlay" id="arrows" aria-hidden="true"></svg>
+
+    <section class="lane" id="lane-a">
+      <div class="lane-label"><span class="en">Before the first lot</span><span class="zh">开拍前</span></div>
+      <div class="node" id="deal">
+        <h3><span class="en">Deal</span><span class="zh">发牌</span></h3>
+        <p><span class="en">Budgets, values and secret missions are drawn from the deal seed. A season commits to its seeds as SHA-256 hashes.</span>
+           <span class="zh">预算、估值和秘密任务由发牌种子抽出。赛季会事先用 SHA-256 哈希承诺种子。</span></p>
+      </div>
+      <div class="node" id="plan">
+        <h3><span class="en">Opening plan</span><span class="zh">作战计划</span></h3>
+        <p><span class="en">Each model seat gives every lot a priority from 0 to 3 and a planned budget, and writes a one-line persona.</span>
+           <span class="zh">每个模型座位给每件拍品定一个 0 到 3 的优先级和一份预算，再写一句人设。</span></p>
+      </div>
+    </section>
+
+    <section class="lane" id="lane-b">
+      <div class="lane-label"><span class="en">Each of the 12 lots</span><span class="zh">每件拍品，共 12 件</span></div>
+      <div class="badge" aria-hidden="true">
+        <svg viewBox="0 0 16 16"><path d="M13.2 6.2A5.4 5.4 0 1 0 13.6 9" class="stroke-accent"/><path d="M13.6 2.6v3.8H9.8" class="stroke-accent"/></svg>
+        ×12
+      </div>
+      <div class="node accent" id="open">
+        <h3><span class="en">Open</span><span class="zh">开拍</span></h3>
+        <p><span class="en">Format, value tier and reserve are announced. The speaking order moves one seat per lot.</span>
+           <span class="zh">公布规则、档位和保留价。发言顺序每件后移一个座位。</span></p>
+      </div>
+      <div class="node accent" id="talk">
+        <h3><span class="en">Talk</span><span class="zh">发言</span></h3>
+        <p><span class="en">Each seat speaks one line in turn. Model seats may add a pledge and guess another seat's remaining budget.</span>
+           <span class="zh">每个座位依次说一句话。模型座位可以附一条誓约，并猜另一个座位的剩余预算。</span></p>
+      </div>
+      <div class="node accent" id="bid">
+        <h3><span class="en">Bid</span><span class="zh">出价</span></h3>
+        <p><span class="en">Seats that can still bid answer at once, by the phases of the format. No answer is an abstention, never a default price.</span>
+           <span class="zh">还有预算的座位同时作答，按规则分阶段进行。没有答案算弃权，不会默认成价格。</span></p>
+      </div>
+      <div class="node accent" id="hammer">
+        <h3><span class="en">Hammer</span><span class="zh">落槌</span></h3>
+        <p><span class="en">The rule settles winner and price. Sealed bids are revealed, and so is the true value of a blind box.</span>
+           <span class="zh">按规则决出赢家和价格，公布密封出价，盲盒同时揭晓真值。</span></p>
+      </div>
+    </section>
+
+    <section class="lane" id="lane-c">
+      <div class="lane-label"><span class="en">After the last lot: scores and the show layer</span><span class="zh">终场之后：结算与节目层</span></div>
+      <div class="node" id="scores">
+        <h3><span class="en">Scores and fact cards</span><span class="zh">结算与事实卡</span></h3>
+        <p><span class="en">Missions are decided and scores tallied. The engine then computes the facts of each lot and of the night.</span>
+           <span class="zh">判定秘密任务并结算。然后由引擎算出每件拍品和整夜的事实。</span></p>
+      </div>
+      <div class="node" id="host">
+        <h3><span class="en">Host</span><span class="zh">主持人</span></h3>
+        <p><span class="en">Writes a line per lot and a recap, offline. Every number in it must be on a fact card.</span>
+           <span class="zh">离线写出每件拍品的点评和整夜复盘，每个数字都要在事实卡上。</span></p>
+      </div>
+      <div class="node" id="judges">
+        <h3><span class="en">Judges and checks</span><span class="zh">评委与核对</span></h3>
+        <p><span class="en">Two judges quote claims and collusion talk and guess the missions. Code judges pledges and screens the bids.</span>
+           <span class="zh">两位评委引用说法和串谋言论，并猜每个座位的任务。违约由程序判定，出价由程序筛查。</span></p>
+      </div>
+      <div class="node" id="awards">
+        <h3><span class="en">Awards</span><span class="zh">颁奖</span></h3>
+        <p><span class="en">Ten awards for the model seats, the bots as a reference, and highlights scored 0 to 10.</span>
+           <span class="zh">为模型座位颁 10 个奖，机器人只作参考，另有 0 到 10 分的高光时刻。</span></p>
+      </div>
+    </section>
+
+    <section class="lane" id="lane-d">
+      <div class="lane-label"><span class="en">Publish</span><span class="zh">发布</span></div>
+      <div class="node" id="gate">
+        <h3><span class="en">Content gate</span><span class="zh">内容闸门</span></h3>
+        <p><span class="en">Every public text passes a word list and, if configured, a classifier model.</span>
+           <span class="zh">每段公开文字先过词表，配置了分类器时再过分类器。</span></p>
+      </div>
+      <div class="node" id="file">
+        <h3 class="mono">replay.json</h3>
+        <p><span class="en">One self-contained file: lots, chat, bids, private cards, findings, awards.</span>
+           <span class="zh">一个自包含的文件：拍品、发言、出价、底牌、判定、奖项。</span></p>
+      </div>
+      <div class="node solid" id="page">
+        <h3><span class="en">Replay page</span><span class="zh">回放页</span></h3>
+        <p><span class="en">Static page: lots, three-minute recap, highlights, awards, host review.</span>
+           <span class="zh">静态页面：逐件观看、三分钟版、高光、颁奖、主持人复盘。</span></p>
+      </div>
+    </section>
+  </div>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      connect(document.getElementById('card'), document.getElementById('arrows'), [
+        ['down', 'lane-a', 'lane-b', { gap: 3 }],
+        ['down', 'lane-b', 'lane-c', { gap: 3 }],
+        ['down', 'lane-c', 'lane-d', { gap: 3 }],
+        ['right', 'deal', 'plan'],
+        ['right', 'open', 'talk', { accent: true }],
+        ['right', 'talk', 'bid', { accent: true }],
+        ['right', 'bid', 'hammer', { accent: true }],
+        ['right', 'scores', 'host'],
+        ['right', 'host', 'judges'],
+        ['right', 'judges', 'awards'],
+        ['right', 'gate', 'file'],
+        ['right', 'file', 'page'],
+      ]);
+    });
+  </script>
+</body>
+</html>

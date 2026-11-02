@@ -1,0 +1,30 @@
+# One line per finished lot in the 【往期结果】 section. The line is built from public events
+# only. An English lot never lists the winner's exit price.
+
+line = '''第 {lot} 件 {emoji}{name}｜{rule}｜{parts}'''
+
+separator = '''｜'''
+
+english_dropouts = '''退出：{items}'''
+
+english_absent = '''未参加：{seats}'''
+
+dutch_level = '''在第 {level} 档出手'''
+
+bids = '''出价：{items}'''
+
+true_value = '''真值 {value}'''
+
+sold = '''{winner} 号拍得，成交价 {price}'''
+
+unsold = '''流拍'''
+
+tie = '''（{tied}同价，抽签决定）'''
+
+all_pay = '''所有人按各自出价付费'''
+
+newly_out = '''{seats}预算用尽出局'''
+
+dropout_item = '''{seat} 号@{price}'''
+
+bid_item = '''{seat} 号 {amount}'''

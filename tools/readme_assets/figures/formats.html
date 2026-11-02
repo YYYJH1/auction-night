@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>the six auction formats</title>
+  <link rel="stylesheet" href="figures.css">
+  <script src="figures.js"></script>
+  <style>
+    .formats { height: 610px; }
+    .grid {
+      position: absolute; left: 24px; right: 24px; top: 24px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    }
+    .fmt {
+      position: relative;
+      height: 248px;
+      padding: 14px 16px 14px;
+      background: var(--node);
+      border: 1px solid var(--node-edge);
+      border-radius: 14px;
+      box-shadow: 0 1px 2px var(--shadow);
+    }
+    .head { display: flex; align-items: center; gap: 12px; min-height: 46px; margin-bottom: 8px; }
+    .head svg { flex: none; width: 64px; height: 44px; }
+    .head h3 { margin: 0; font-size: 15.5px; line-height: 1.2; color: var(--primary); }
+    .head small { display: block; margin-top: 2px; font-size: 11.5px; font-weight: 500; color: var(--faint); }
+    .rule { margin: 0; font-size: 12.8px; line-height: 1.4; color: var(--ink); min-height: 72px; }
+    .book {
+      position: absolute; left: 16px; right: 16px; top: 152px;
+      padding-top: 8px; border-top: 1px dashed var(--node-edge);
+    }
+    .book b {
+      display: block; margin-bottom: 2px;
+      font-size: 10.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent);
+    }
+    :root[data-lang='zh'] .book b { font-size: 11.5px; letter-spacing: 0.1em; text-transform: none; }
+    .book p { margin: 0; font-size: 12.8px; line-height: 1.38; color: var(--muted); }
+    .foot {
+      position: absolute; left: 24px; right: 24px; bottom: 18px;
+      font-size: 12px; line-height: 1.42; color: var(--faint);
+    }
+    sup { font-size: 0.72em; line-height: 0; }
+    .i-line { fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .i-soft { fill: var(--primary-soft); stroke: var(--primary); stroke-width: 2; stroke-linejoin: round; }
+    .i-acc { fill: var(--accent-fill); }
+    .i-acc-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; }
+    .i-text { font: 700 11px system-ui, 'Noto Sans', sans-serif; fill: var(--accent-ink); text-anchor: middle; }
+  </style>
+</head>
+<body>
+  <div class="card formats" id="card">
+    <div class="grid">
+
+      <article class="fmt">
+        <div class="head">
+          <svg viewBox="0 0 64 44" aria-hidden="true">
+            <rect x="2" y="29" width="60" height="10" rx="5" class="i-soft"/>
+            <rect x="2" y="29" width="42" height="10" rx="5" class="i-acc"/>
+            <path d="M 14 27 V 15 M 28 27 V 9 M 44 27 V 17" class="i-line"/>
+            <circle cx="14" cy="12" r="4" class="i-soft"/><circle cx="28" cy="6" r="4" class="i-soft"/><circle cx="44" cy="14" r="4" class="i-acc"/>
+          </svg>
+          <h3><span class="en">English button</span><span class="zh">英式加价（按钮式）</span></h3>
+        </div>
+        <p class="rule"><span class="en">The price rises. Each seat names an exit price. The last seat in wins and pays the price at which the runner-up dropped out.</span>
+          <span class="zh">价格上涨，每个座位事先报一个退出价。最后留下的座位胜出，付次一名退出时的价格。</span></p>
+        <div class="book"><b><span class="en">Textbook</span><span class="zh">教科书结论</span></b>
+          <p><span class="en">Exiting at your own value is a dominant strategy.</span><span class="zh">按自己的估值退出是占优策略。</span></p></div>
+      </article>
+
+      <article class="fmt">
+        <div class="head">
+          <svg viewBox="0 0 64 44" aria-hidden="true">
+            <g class="i-soft">
+              <rect x="3" y="5" width="8" height="36" rx="2"/><rect x="14" y="11" width="8" height="30" rx="2"/>
+              <rect x="25" y="17" width="8" height="24" rx="2"/><rect x="36" y="23" width="8" height="18" rx="2" class="i-acc" style="stroke: var(--accent)"/>
+              <rect x="47" y="29" width="8" height="12" rx="2"/>
+            </g>
+          </svg>
+          <h3><span class="en">Dutch, one shot</span><span class="zh">荷式降价（一次报价）</span></h3>
+        </div>
+        <p class="rule"><span class="en">The price falls over 10 levels. Each seat names its grab price in advance, and the first level someone reaches sells the lot.</span>
+          <span class="zh">价格分 10 档下降。每个座位事先报好出手价，第一个有人到达的档位成交。</span></p>
+        <div class="book"><b><span class="en">Textbook</span><span class="zh">教科书结论</span></b>
+          <p><span class="en">Equivalent to the first-price sealed bid: grab at (n−1)/n of your value, rounded down to a level.</span>
+             <span class="zh">与密封一价等价：出手价取估值的 (n−1)/n，再向下取到最近一档。</span></p></div>
+      </article>
+
+      <article class="fmt">
+        <div class="head">
+          <svg viewBox="0 0 64 44" aria-hidden="true">
+            <rect x="4" y="10" width="46" height="30" rx="5" class="i-soft"/>
+            <path d="M 4 12 L 27 29 L 50 12" class="i-line"/>
+            <circle cx="52" cy="11" r="9" class="i-acc"/><text x="52" y="15" class="i-text">1</text>
+          </svg>
+          <h3><span class="en">First-price sealed bid</span><span class="zh">密封一价</span></h3>
+        </div>
+        <p class="rule"><span class="en">Everyone bids once, in secret. The highest bid wins and pays its own amount.</span>
+          <span class="zh">每人秘密出价一次。最高者得标，付自己的出价。</span></p>
+        <div class="book"><b><span class="en">Textbook</span><span class="zh">教科书结论</span></b>
+          <p><span class="en">Values uniform on 0 to T: the equilibrium bid is (n−1)/n of your value.</span>
+             <span class="zh">估值在 0 到 T 间均匀分布时，均衡出价是估值的 (n−1)/n。</span></p></div>
+      </article>
+
+      <article class="fmt">
+        <div class="head">
+          <svg viewBox="0 0 64 44" aria-hidden="true">
+            <rect x="4" y="10" width="46" height="30" rx="5" class="i-soft"/>
+            <path d="M 4 12 L 27 29 L 50 12" class="i-line"/>
+            <circle cx="52" cy="11" r="9" class="i-acc"/><text x="52" y="15" class="i-text">2</text>
+          </svg>
+          <h3><span class="en">Second-price sealed bid</span><span class="zh">密封二价</span></h3>
+        </div>
+        <p class="rule"><span class="en">Everyone bids once, in secret. The highest bid wins and pays the second-highest bid.</span>
+          <span class="zh">每人秘密出价一次。最高者得标，付第二高的出价。</span></p>
+        <div class="book"><b><span class="en">Textbook</span><span class="zh">教科书结论</span></b>
+          <p><span class="en">Bidding your value is a dominant strategy.</span><span class="zh">如实报出自己的估值是占优策略。</span></p></div>
+      </article>
+
+      <article class="fmt">
+        <div class="head">
+          <svg viewBox="0 0 64 44" aria-hidden="true">
+            <rect x="3" y="9" width="38" height="30" rx="5" class="i-soft"/>
+            <path d="M 3 11 L 22 27 L 41 11" class="i-line"/>
+            <path d="M 44 36 v 4 a 9 3.8 0 0 0 18 0 v -4 z" class="i-acc" style="stroke: var(--accent); stroke-width: 1.4"/>
+            <ellipse cx="53" cy="36" rx="9" ry="3.8" class="i-acc" style="stroke: var(--accent); stroke-width: 1.4"/>
+            <path d="M 44 30 v 4 a 9 3.8 0 0 0 18 0 v -4 z" class="i-acc" style="stroke: var(--accent); stroke-width: 1.4"/>
+            <ellipse cx="53" cy="30" rx="9" ry="3.8" class="i-acc" style="stroke: var(--accent); stroke-width: 1.4"/>
+            <path d="M 44 24 v 4 a 9 3.8 0 0 0 18 0 v -4 z" class="i-acc" style="stroke: var(--accent); stroke-width: 1.4"/>
+            <ellipse cx="53" cy="24" rx="9" ry="3.8" class="i-acc" style="stroke: var(--accent); stroke-width: 1.4"/>
+          </svg>
+          <h3><span class="en">All-pay</span><span class="zh">全员付费</span></h3>
+        </div>
+        <p class="rule"><span class="en">Everyone bids once, in secret. The highest bid wins the lot, and every bidder pays their own bid.</span>
+          <span class="zh">每人秘密出价一次。最高者得到拍品，所有人都付自己的出价。</span></p>
+        <div class="book"><b><span class="en">Textbook</span><span class="zh">教科书结论</span></b>
+          <p><span class="en">Values uniform on 0 to T: the equilibrium bid is (n−1)/n · v<sup>n</sup>/T<sup>n−1</sup>.</span>
+             <span class="zh">估值均匀分布时，均衡出价是 (n−1)/n · v<sup>n</sup>/T<sup>n−1</sup>。</span></p></div>
+      </article>
+
+      <article class="fmt">
+        <div class="head">
+          <svg viewBox="0 0 64 44" aria-hidden="true">
+            <rect x="9" y="5" width="46" height="12" rx="3.5" class="i-soft"/>
+            <rect x="13" y="17" width="38" height="25" rx="3.5" class="i-soft"/>
+            <text x="32" y="38" class="i-text" style="fill: var(--accent); font-size: 21px">?</text>
+          </svg>
+          <h3><span class="en">Blind box</span><span class="zh">盲盒</span></h3>
+        </div>
+        <p class="rule"><span class="en">A second-price auction for a lot of unknown common value. Seats see noisy appraisals, and the true value is revealed after the hammer.</span>
+          <span class="zh">共同价值未知的密封二价拍卖。每个座位拿到带噪声的鉴定价，落槌后公布真值。</span></p>
+        <div class="book"><b><span class="en">Textbook</span><span class="zh">教科书结论</span></b>
+          <p><span class="en">Winner's curse: the highest appraisal overshoots the true value by ε(n−1)/(n+1) on average.</span>
+             <span class="zh">赢家诅咒：鉴定价最高者平均高估真值 ε(n−1)/(n+1)。</span></p></div>
+      </article>
+
+    </div>
+    <p class="foot">
+      <span class="en">Textbook model: n bidders, independent private values uniform on 0 to T (the lot's value tier), risk-neutral, no budget limit. The formulas hold away from the edges of the value range. Blind box: one common value, and each appraisal is the true value plus noise of at most ε.</span>
+      <span class="zh">教科书模型：n 个竞拍者，独立私有估值在 0 到 T 之间均匀分布（T 是拍品的档位），风险中性，不计预算约束，公式在估值区间内部成立。盲盒是同一个共同价值，每个鉴定价是真值加上不超过 ε 的噪声。</span>
+    </p>
+  </div>
+</body>
+</html>

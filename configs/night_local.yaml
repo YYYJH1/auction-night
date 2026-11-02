@@ -1,0 +1,84 @@
+# A night with an open model on your own machine, through any server that speaks the
+# OpenAI-compatible API, such as vLLM, Ollama or LM Studio. No API is paid.
+#
+# One model takes all six model seats. The host and the judges are the scripted roles and the
+# content gate reads its word list only, so a single model server is enough. Point the show roles
+# at a model as in configs/night_api.example.yaml to have a model host and model judges.
+#
+# Serve a model with tool calling, and give its address in LOCAL_LLM_BASE_URL:
+#   vllm serve Qwen/Qwen3-4B --served-model-name qwen3-4b \
+#     --enable-auto-tool-choice --tool-call-parser hermes --reasoning-parser qwen3
+#   export LOCAL_LLM_BASE_URL=http://127.0.0.1:8000/v1
+# With Ollama, pull the model and write `model: qwen3:4b` in the seats below:
+#   ollama pull qwen3:4b
+#   export LOCAL_LLM_BASE_URL=http://127.0.0.1:11434/v1
+#
+# On 2026-11-02 (UTC) Qwen3-4B on vLLM played this night in 142 s on one GPU. All 139 model calls gave
+# a valid action at the first attempt, 21 of them with a value clamped into range, and the median
+# call took 1.2 s. A model of 0.8B parameters filled the fields of the wrong phase in most
+# requests, so use 4B parameters or more.
+# Offline night for tests and CI. Every model seat is a scripted mock and both bots are
+# rule bots, so no endpoint, key or network is involved. The night is a full one: 12 lots,
+# all six formats, all phases, missions and plans.
+night:
+  id: local-0001
+  seed_env: AUCTION_NIGHT_SEED_LOCAL   # the deal seed, for example a random hex string
+  lang: zh
+  mode: plain
+  lots_per_format: 2              # 6 formats x 2 lots = 12 lots
+  tags: [海洋, 机械, 甜品, 怪谈]
+  tiers: {100: 5, 200: 4, 400: 3}
+  budget: {c: 300, spread: [0.5, 1.5], rounding: floor}
+  dutch: {levels: 10, mode: one_shot}
+  english: {revise_when_remaining_le: 4, revise_timeout: keep_previous}
+  blind: {value_range: [0.5, 1.5], noise: 0.2}
+  missions:
+    bonus: 150
+    collectors: 3
+    shills: 3
+    shill_threshold: 0.95
+    shill_formats: [english, sealed_second]
+  plan_and_mindreading: true
+  chat: {max_chars: 60, window_lots: 2, order: rotate, persona_max_chars: 60}
+  thought: {max_chars: 100, keep_last: 2}
+
+season:
+  format: single
+  max_seats_per_vendor: 6
+
+seats:
+  - {seat: 1, codename: 鲸落, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 2, codename: 阿铁, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 3, codename: 小满, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 4, codename: 拾光, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 5, codename: 青柠, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 6, codename: 麦芽, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 7, codename: 老实人, kind: bot, policy: truthful}
+  - {seat: 8, codename: 经济学家, kind: bot, policy: economist, pacing: true}
+
+endpoints:
+  local:
+    kind: openai_compatible
+    base_url_env: LOCAL_LLM_BASE_URL
+    tool_choice: auto
+    strict_tools: false
+    capabilities:
+      supports_sampling_params: true
+      supports_forced_tool_choice: false   # forced, the model filled the fields of other phases
+      supports_strict_tools: false
+      thinking_modes: [disabled]           # sent as chat_template_kwargs.enable_thinking, which vLLM reads
+
+show:
+  host_offline: {kind: mock}
+  judges:
+    - {kind: mock}
+    - {kind: mock}
+  content_scan: {wordlist: null, classifier: null}
+
+limits:
+  call_timeout_s: 120
+  human_timeout_s: null
+  syntax_retries: 1
+  transient_retries: 1
+  max_cost_per_night_usd: null
+  prices_file: null

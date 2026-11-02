@@ -1,0 +1,127 @@
+{
+  "type": "function",
+  "function": {
+    "name": "act",
+    "description": "提交本次行动。phase 必须等于消息里【现在要做】给出的阶段；用不到的字段填 null。",
+    "parameters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase",
+        "say",
+        "pledge_kind",
+        "pledge_lot",
+        "pledge_to",
+        "pledge_amount",
+        "guess_budget",
+        "exit_price",
+        "grab_price",
+        "bid",
+        "plan_priorities",
+        "plan_budget",
+        "plan_persona",
+        "thought"
+      ],
+      "properties": {
+        "phase": {
+          "type": "string",
+          "enum": [
+            "plan",
+            "talk",
+            "english_init",
+            "english_revise",
+            "dutch",
+            "sealed"
+          ]
+        },
+        "say": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pledge_kind": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "no_bid",
+            "max_bid",
+            "let_win",
+            null
+          ]
+        },
+        "pledge_lot": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "pledge_to": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "pledge_amount": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "guess_budget": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "exit_price": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "grab_price": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "bid": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "plan_priorities": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer"
+          }
+        },
+        "plan_budget": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "integer"
+          }
+        },
+        "plan_persona": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "thought": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

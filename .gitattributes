@@ -1,0 +1,7 @@
+# Files that a tool writes. GitHub folds them in diffs and leaves them out of the language statistics.
+tests/fixtures/replays/*.json linguist-generated
+schemas/*.json linguist-generated
+docs/demo/*.json linguist-generated
+
+# The pictures are binary files.
+docs/assets/* binary

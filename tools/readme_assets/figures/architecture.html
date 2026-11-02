@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>architecture</title>
+  <link rel="stylesheet" href="figures.css">
+  <script src="figures.js"></script>
+  <script src="connect.js"></script>
+  <style>
+    .arch { height: 618px; }
+    /* row A */
+    #config { left: 28px;  top: 28px; width: 200px; height: 130px; }
+    #engine { left: 284px; top: 28px; width: 352px; height: 130px; }
+    #seats  { left: 692px; top: 28px; width: 200px; height: 130px; }
+    /* row B */
+    #events { left: 284px; top: 204px; width: 168px; height: 58px; }
+    #calls  { left: 468px; top: 204px; width: 168px; height: 58px; }
+    /* row C: the show layer */
+    #show { left: 28px; top: 312px; width: 864px; height: 188px; padding: 0; }
+    #show .title { position: absolute; left: 16px; top: 11px; margin: 0; font-size: 14.5px; color: var(--primary); }
+    #show .title small { margin-left: 8px; font-size: 12px; font-weight: 500; color: var(--faint); }
+    .chip {
+      position: absolute; top: 44px; width: 197px; height: 82px; padding: 8px 11px;
+      background: var(--primary-soft); border: 1px solid var(--primary-edge); border-radius: 10px;
+    }
+    .chip h4 { margin: 0 0 2px; font-size: 13.5px; color: var(--primary); }
+    .chip p { margin: 0; font-size: 12.2px; line-height: 1.36; color: var(--muted); }
+    #c1 { left: 16px; } #c2 { left: 227px; } #c3 { left: 438px; } #c4 { left: 649px; }
+    #show .note { position: absolute; left: 16px; right: 16px; bottom: 11px; margin: 0; font-size: 12px; line-height: 1.4; color: var(--faint); }
+    /* row D */
+    #replay { left: 284px; top: 534px; width: 352px; height: 62px; }
+    #page   { left: 692px; top: 534px; width: 200px; height: 62px; }
+    .legend { position: absolute; left: 28px; top: 542px; font-size: 12px; color: var(--faint); line-height: 1.5; }
+    .legend span { display: flex; align-items: center; gap: 8px; }
+    .legend svg { width: 34px; height: 8px; }
+    .node h3.mono { font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="card arch" id="card">
+    <svg class="overlay" id="arrows" aria-hidden="true"></svg>
+
+    <div class="node" id="config">
+      <h3><span class="en">Configuration</span><span class="zh">配置</span></h3>
+      <p><span class="en">One YAML file per night: seats, endpoints, show roles, limits, and the deal seed or its commitment.</span>
+         <span class="zh">每夜一份 YAML：座位、端点、节目角色、限额，以及发牌种子或它的承诺。</span></p>
+    </div>
+    <div class="node accent" id="engine">
+      <h3><span class="en">Engine</span><span class="zh">引擎</span></h3>
+      <p><span class="en">A deterministic state machine. The same cards and the same answers give the same log. It draws the cards, runs the six formats and tallies the scores. It never calls a model.</span>
+         <span class="zh">确定性的状态机：同样的牌和同样的回答，得出同样的日志。它发牌、执行六种规则并结算，自己从不调用模型。</span></p>
+    </div>
+    <div class="node" id="seats">
+      <h3><span class="en">Seats</span><span class="zh">座位</span></h3>
+      <p><span class="en">Models through OpenAI-compatible or Anthropic endpoints, rule bots, mocks for tests, or a person at the terminal.</span>
+         <span class="zh">经兼容 OpenAI 或 Anthropic 的端点调用的模型、规则机器人、测试用的模拟座位，或终端前的真人。</span></p>
+    </div>
+
+    <div class="node" id="events">
+      <h3 class="mono">events.jsonl</h3>
+      <p><span class="en">the log of the night</span><span class="zh">整夜的日志</span></p>
+    </div>
+    <div class="node" id="calls">
+      <h3 class="mono">calls.jsonl</h3>
+      <p><span class="en">recorded model calls</span><span class="zh">录下的模型调用</span></p>
+    </div>
+
+    <div class="node" id="show">
+      <h3 class="title"><span class="en">Show layer<small>after the night; the seats call nothing</small></span>
+                        <span class="zh">节目层<small>夜后运行，座位不再调用任何模型</small></span></h3>
+      <div class="chip" id="c1"><h4><span class="en">Fact cards</span><span class="zh">事实卡</span></h4>
+        <p><span class="en">Facts of each lot and of the night, computed from the log.</span><span class="zh">由日志算出每件拍品和整夜的事实。</span></p></div>
+      <div class="chip" id="c2"><h4><span class="en">Host</span><span class="zh">主持人</span></h4>
+        <p><span class="en">Offline commentary, checked against the fact cards.</span><span class="zh">离线解说，要和事实卡核对。</span></p></div>
+      <div class="chip" id="c3"><h4><span class="en">Judges and checks</span><span class="zh">评委与核对</span></h4>
+        <p><span class="en">Two judge models, and program checks of pledges and bids.</span><span class="zh">两位评委模型，以及程序对誓约和出价的核对。</span></p></div>
+      <div class="chip" id="c4"><h4><span class="en">Content gate</span><span class="zh">内容闸门</span></h4>
+        <p><span class="en">A word list, and a classifier model if configured, on every public text.</span><span class="zh">每段公开文字过词表，配置了分类器时再过分类器。</span></p></div>
+      <p class="note"><span class="en">A host, judge or classifier that is a model is called once by <span class="mono">auction-night show</span> and recorded. <span class="mono">export</span> reads the recording and calls nothing.</span>
+        <span class="zh">主持人、评委或分类器是模型时，由 <span class="mono">auction-night show</span> 调用一次并录下。<span class="mono">export</span> 读录像，不调用任何模型。</span></p>
+    </div>
+
+    <div class="node" id="replay">
+      <h3 class="mono">replay.json</h3>
+      <p><span class="en">one self-contained file per night</span><span class="zh">每夜一个自包含的文件</span></p>
+    </div>
+    <div class="node solid" id="page">
+      <h3><span class="en">Replay page</span><span class="zh">回放页</span></h3>
+      <p><span class="en">static HTML, no server code</span><span class="zh">静态页面，没有服务端代码</span></p>
+    </div>
+
+    <div class="legend" aria-hidden="true">
+      <span><svg viewBox="0 0 34 8"><path d="M 1 4 H 25" class="stroke-line"/><polygon points="33,4 25,0.5 25,7.5" class="fill-line"/></svg><span class="en">data flow</span><span class="zh">数据流向</span></span>
+      <span><svg viewBox="0 0 34 8"><path d="M 1 4 H 25" class="stroke-accent" stroke-dasharray="4 4"/><polygon points="33,4 25,0.5 25,7.5" class="fill-accent"/></svg><span class="en">replay without a network</span><span class="zh">不联网重放</span></span>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      connect(document.getElementById('card'), document.getElementById('arrows'), [
+        ['right', 'config', 'engine'],
+        ['right', 'engine', 'seats', { dy: -10 }],
+        ['left', 'seats', 'engine', { dy: 10 }],
+        ['down', 'engine', 'events', { fromX: 0.2386 }],
+        ['up', 'calls', 'engine', {
+          toX: 0.7614, accent: true, dash: true,
+          label: '<span class="arrow-label accent"><span class="en">replay: no network,<br>same log, byte for byte</span><span class="zh">重放：不联网，<br>日志逐字节一致</span></span>',
+          labelX: 460, labelY: 181, labelWidth: 150,
+        }],
+        ['poly', null, null, {
+          points: [[792, 162], [792, 233], [632, 233]],
+          label: '<span class="arrow-label"><span class="en">each model call<br>is recorded</span><span class="zh">每次模型调用<br>都被录下</span></span>',
+          labelX: 712, labelY: 212, labelWidth: 130,
+        }],
+        ['down', 'events', 'show', { toX: 0.3935 }],
+        ['down', 'calls', 'show', { toX: 0.6065 }],
+        ['down', 'show', 'replay', { fromX: 0.5, toX: 0.5, gap: 4 }],
+        ['right', 'replay', 'page'],
+      ]);
+    });
+  </script>
+</body>
+</html>

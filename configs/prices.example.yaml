@@ -1,0 +1,29 @@
+# Example price list for the cost gate and the `estimate` command.
+# Prices are USD per million tokens. Check every number against the provider's current price
+# page before you rely on an estimate, and update as_of when you do.
+# An empty cache_write_per_mtok means cache writes are billed at the input price.
+# A list may use another currency: write `currency: CNY` on an entry and give the rate of that
+# currency in an exchange_rates section (see configs/prices.bailian.yaml). A currency without a
+# rate is refused, because no rate is ever assumed.
+version: 1
+prices:
+  claude-haiku-5-5:
+    input_per_mtok: 0.10
+    output_per_mtok: 0.50
+    cache_read_per_mtok: 0.01
+    as_of: 2026-10-06
+    source: https://docs.anthropic.com/en/docs/about-claude/pricing
+    note: Prompts up to 100k tokens. Reasoning tokens are billed as output.
+  claude-sonnet-5-5:
+    input_per_mtok: 2
+    output_per_mtok: 10
+    cache_read_per_mtok: 0.20
+    as_of: 2026-10-06
+    source: https://docs.anthropic.com/en/docs/about-claude/pricing
+    note: Prompts up to 100k tokens. Reasoning tokens are billed as output.
+  # One entry per model of the line-up, keyed by the model id the API returns:
+  # "<model-a1>":
+  #   input_per_mtok: 0
+  #   output_per_mtok: 0
+  #   as_of: 2026-11-01
+  #   source: https://example.com/pricing

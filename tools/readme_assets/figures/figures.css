@@ -1,0 +1,229 @@
+/* Shared look of the README figures.
+
+   One source serves four pictures per figure: light and dark, English and Chinese.
+   figures.js sets  data-theme="light|dark"  and  data-lang="en|zh"  on <html> from the query
+   string (?theme=dark&lang=zh), and everything below follows those two attributes:
+   colours are tokens on :root, and text comes in pairs, <span class="en"> and <span class="zh">.
+
+   The palette is small: one primary (indigo), one accent (amber) and neutral greys. Each picture
+   carries its own rounded card, so it stands out on GitHub's white and on its near-black page. */
+
+:root,
+:root[data-theme='light'] {
+  --card: #fbf8f1;
+  --card-edge: #d6ccb4;
+  --ink: #1b2033;
+  --muted: #565d73;
+  --faint: #7b8196;
+  --primary: #2a3770;
+  --primary-ink: #ffffff;
+  --primary-soft: #ebeef9;
+  --primary-edge: #b6bfdf;
+  --accent: #a96806;
+  --accent-fill: #f0b44c;
+  --accent-ink: #281a02;
+  --accent-soft: #fcf0d6;
+  --accent-edge: #e5c27e;
+  --node: #ffffff;
+  --node-edge: #d9d0ba;
+  --lane: #f3eee1;
+  --line: #8a91a8;
+  --shadow: rgba(40, 32, 12, 0.08);
+}
+
+:root[data-theme='dark'] {
+  --card: #151a29;
+  --card-edge: #343c5c;
+  --ink: #ece8dc;
+  --muted: #a3a9bd;
+  --faint: #7f869c;
+  --primary: #93a7f5;
+  --primary-ink: #0f1424;
+  --primary-soft: #1f2744;
+  --primary-edge: #3a4678;
+  --accent: #f0b44c;
+  --accent-fill: #f0b44c;
+  --accent-ink: #1b1405;
+  --accent-soft: #2b2415;
+  --accent-edge: #6b5424;
+  --node: #1d2336;
+  --node-edge: #353d5c;
+  --lane: #181e30;
+  --line: #6f7899;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: transparent;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: system-ui, 'Noto Sans', 'DejaVu Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+}
+
+:root[data-lang='zh'] body {
+  font-family: 'Noto Sans CJK SC', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  line-height: 1.45;
+}
+
+/* Text in two languages: the page shows the one that data-lang names. */
+:root[data-lang='en'] .zh,
+:root[data-lang='zh'] .en {
+  display: none !important;
+}
+
+.mono {
+  font-family: 'DejaVu Sans Mono', ui-monospace, 'Noto Sans Mono', monospace;
+  font-size: 0.92em;
+}
+
+/* The card is the picture: its rounded corners are transparent in the PNG. */
+.card {
+  position: relative;
+  width: 920px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--card-edge);
+  border-radius: 20px;
+}
+
+.node {
+  position: absolute;
+  z-index: 2;
+  padding: 10px 12px 10px;
+  background: var(--node);
+  border: 1px solid var(--node-edge);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px var(--shadow);
+}
+
+.node h3 {
+  margin: 0 0 3px;
+  font-size: 14.5px;
+  line-height: 1.25;
+  color: var(--primary);
+}
+
+.node p {
+  margin: 0;
+  text-wrap: pretty;
+  font-size: 12.8px;
+  line-height: 1.38;
+  color: var(--muted);
+}
+
+.node.accent {
+  background: var(--accent-soft);
+  border-color: var(--accent-edge);
+}
+
+.node.accent h3 {
+  color: var(--accent);
+}
+
+.node.solid {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.node.solid h3 {
+  color: var(--primary-ink);
+}
+
+.node.solid p {
+  color: var(--primary-ink);
+  opacity: 0.86;
+}
+
+.lane {
+  position: absolute;
+  z-index: 1;
+  left: 24px;
+  right: 24px;
+  background: var(--lane);
+  border: 1px solid var(--node-edge);
+  border-radius: 16px;
+}
+
+.lane-label {
+  position: absolute;
+  left: 16px;
+  top: 9px;
+  font-size: 10.8px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+:root[data-lang='zh'] .lane-label {
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: none;
+}
+
+svg.overlay {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.stroke-line {
+  stroke: var(--line);
+  stroke-width: 1.6;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stroke-accent {
+  stroke: var(--accent);
+  stroke-width: 1.8;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fill-line {
+  fill: var(--line);
+}
+
+.fill-accent {
+  fill: var(--accent);
+}
+
+.arrow-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  font-size: 11.5px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--faint);
+}
+
+.arrow-label.accent {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.badge {
+  font-variant-numeric: tabular-nums;
+}

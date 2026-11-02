@@ -1,0 +1,79 @@
+<p align="center"><b>English</b> · <a href="TRANSPARENCY_zh.md">简体中文</a></p>
+
+# Transparency
+
+This page says what AI Auction Night is for, how a night is run, and what gets published.
+
+## Purpose
+
+AI Auction Night is entertainment and education: a show that makes auction theory visible, with language models in the seats.
+
+- A leaderboard row, an award or a finding describes how one model behaved in one seat, under one prompt, on the nights listed. It says nothing general about a model family or a vendor, and nothing about real markets.
+- Ranks are shown as bootstrap intervals (for example "rank 2 to 5"). Entries with the same score share a rank, intervals that overlap mean that two entries cannot be told apart, and the footer states the smallest per-night gap that the current number of nights can resolve.
+
+## How the show works
+
+- Eight seats: six language models and two rule-based bots. Models see only code names. The audience sees the model IDs.
+- In plain mode every model seat gets a word-for-word identical system prompt, apart from its code name and its private cards. Variety mode adds a persona to the prompt of a seat, which changes the tone only, and a night in variety mode does not count for the leaderboard.
+- Rule texts and worked payment examples are generated from the same definition that settles each auction. Tests check that the text says what the code does.
+- A model's prompt is built only from public events and its own private events, so private information stays hidden by construction.
+- A missing, malformed, late or refused action counts as an abstention and never as a default price. A bid above the remaining budget is clamped to the budget, and the rules say so.
+- Chat is treated as data. Messages are cleaned before they are stored (line breaks, control characters and structural symbols removed, length capped), and other players see them as quoted text.
+- Pledges are structured, and code decides whether one was broken. Spoken claims are read by two judge models from different vendors, and by default neither of them shares a vendor with a seat. A claim about a seat's own cards is called false only if both judges extracted it and the deal contradicts it beyond a tolerance. Collusion has rules of its own, set out in the next section.
+- Judges are scored against the secret missions, and their accuracy is written into the replay file (`judge_accuracy`).
+- Host commentary is written offline from fact cards computed by the engine. Every number in it must appear on the card. When the host is a model, `auction-night show` calls it for each lot and for the recap (and once more for a text whose numbers are not on the card), and records the answers, so the commentary can be read back and the export needs no network.
+- Seeds are committed before a season by publishing their SHA-256 hashes, and revealed afterwards, so anyone can regenerate the lots and private cards (see Seed commitments below). Every API call is recorded, those of the host, the judges and the content classifier included (`auction-night show` records them after the night), so a night can be replayed byte for byte without a network.
+
+## Collusion findings
+
+The show looks for collusion in two places, the chat and the bids. `src/auction_night/show/verdicts.py` puts the two together.
+
+- **Chat side.** A lot has the chat side when both judges quote the same arrangement between seats (holding prices down, taking lots in turn, stepping aside) from the same seat, with overlapping quotes and neither judge unsure. The arrangement must have been spoken in that lot or in the lot before it. The seats that spoke such an arrangement anywhere in the night are the ring.
+- **Bid side.** A lot has the bid side when a statistic computed from the bids is strictly above a threshold (`src/auction_night/show/screening.py`). The statistic has two parts, both in thousandths of the lot's tier. The first is how far the seller's takings fell short of what they would have been if every seat that was asked had bid its textbook bid. The second is how far the ring members who did not win stayed below their textbook bids, on average, and it is 0 when there is no ring.
+- **Threshold.** The threshold is the 95th percentile of that statistic when nobody colludes. Rule-based bots, which never agree on anything, play 600 nights, and the statistic is taken for every lot and for every pair of model seats as if that pair were a ring. The value is now 265, stored as `NULL_THRESHOLD_MILLI`, so at most 5 in 100 of those no-collusion values are above it. It was calibrated for the economy with budget scale 300, and another economy needs its own calibration. To recompute it, run `uv run python -m auction_night.show.screening`. With `--check` the command exits with status 1 when the result differs from the constant.
+- **Red card or suspicion.** A lot with both sides is red, and a lot with only one side is suspect. The night gets a collusion red card only if at least two lots are red (`MIN_RED_LOTS`), because a single lot can cross the threshold by chance. Otherwise the finding is labelled a suspicion, and it lists every lot that has at least one side and says which side each has. The finding carries the statistic of every screened lot and the threshold it was compared with (`statistic_milli` and `threshold_milli` in the replay), so a reader can check the numbers. A night gets at most one collusion finding, so two separate arrangements are reported as one group.
+- **When a judge is absent.** A judge that gives no usable answer (nothing comes back, or two replies in a row cannot be read) is absent for that night, and the replay lists it in `judges_absent` with the reason. Without two judges nothing is agreed, so no claim is checked and the chat side cannot hold. Only what the program decides remains: broken pledges, and a suspicion from the bids alone. A night with an absent judge never gets a red card.
+
+## Seed commitments
+
+A season is played on a few decks, and one secret deal seed fixes each deck: the lots, the private cards, the budgets, the missions and the tie-break keys (`src/auction_night/engine/deal.py`). The seeds are committed before the season and revealed after it, so that anyone can check that the cards were fixed in advance. The commands are in `src/auction_night/seeds.py`, behind `auction-night seeds`.
+
+1. **Draw.** `seeds new` draws one seed per deck with Python's `secrets` module (256 bits, written as 64 hex characters). The seeds go to a private file that only its owner can read (mode 600). The command refuses to write that file inside any git work tree, never replaces an existing one, and prints no seed. The public file `seasons/<season>/commitments.json` holds the season id, the time, the version of the generator and, for each deck, its commitment: the SHA-256 digest of the seed text, written `sha256:<hex>`.
+2. **Publish.** The commitments file is committed and pushed before the first night. It does not date itself: when it was published is what the place that holds it says, for example the push time in the public repository.
+3. **Play.** `seeds plan` writes the configuration of every night from a template, one for each deck and rotation, named `<season>-<deck>-r<rotation>`. In every rotation the players of the model seats shift by one seat (the one at the first model seat goes round to the last), so that over a deck every player sits at every seat once while the cards stay the same. A configuration names the environment variable that holds its seed (`night.seed_env`) and carries the commitment of its deck. It never holds the seed, because `plan` reads the public commitments only. `seeds env` prints the line that sets the variable, and `run` refuses a night whose seed does not open the commitment in its configuration. The seed is not written to the log, to the recording of the model calls or to the saved configuration, and a test searches a played season for it. The log carries a `seed_commit` event with the commitment and the deck.
+4. **Reveal.** After the last night, `seeds reveal` opens every commitment with the seeds in the private file and writes `seasons/<season>/seeds.json`. If one seed fails, nothing is written. `export --reveal-seed` puts the seed of a night into the manifest of its replay.
+5. **Check.** Anyone can run `uv run auction-night seeds verify --commitments seasons/<season>/commitments.json --seeds seasons/<season>/seeds.json seasons/<season>`. It checks that:
+   - every revealed seed opens the commitment published for its deck, every committed deck is revealed, and no seed is shorter than 32 characters, because a short seed could have been guessed from its commitment;
+   - every night carries the commitment published for its deck, in the `seed_commit` event of its log, in `night.deal_seed_commitment` of its saved configuration and in `manifest.seed_commitment` of its replay, and no saved configuration holds a seed of its own before the reveal;
+   - the cards of every night come out of the seed. The open dealer (`deal` in `src/auction_night/engine/deal.py`) draws them again from the configuration and the revealed seed, and they must equal the `deal_private` events of the log, its lot schedule and the true values at its hammers, and `reveal` and `catalog` of the replay.
+
+   Without `--seeds` only the commitments are checked, and the cards are listed as not checked. `--strict` counts a check that cannot be made for lack of a file as a failure. By hand, `printf %s "$SEED" | sha256sum` gives the digits of the commitment.
+
+CI runs the same checks on every directory `seasons/<name>/` with `tools/check_seeds.py`. While `seeds.json` is missing it checks the commitments file and the commitment of every night, because the season is not over. In every state it fails if git tracks, or would add, a private seed file, which it finds by its name or by the schema it declares, whatever the file is called. Before the reveal, `uv run python tools/check_seeds.py --private FILE` also looks for the seeds themselves in those files, and names the file and the deck without showing the seed.
+
+What the commitment does not show:
+
+- It covers the random draws of the environment and nothing else. What the models answered is not covered, and the recording of the calls and `auction-night replay` are what cover that.
+- It shows that the seeds were fixed before the season. It does not show that they were drawn without choosing among several tries, and it does not stop the person who holds them from looking at the cards before the nights.
+- It does not show that every night was published. The night ids follow from the decks and the rotations, so a missing night can be seen, and `seeds verify` lists how many nights it was given for each deck.
+
+## What is published
+
+- Replays: events, public chat and bids, and after the night the private cards, battle plans and inner monologues.
+- Model outputs. The replay file records the model ID that the API returned for each seat (`seats[].model_returned`) and the date of the run (`manifest.created_utc`). The text is the text after the cleaning described above, and each chat line and each opening plan carries the number of characters that the cleaning changed (`sanitized_chars`).
+- Run manifests: configuration, prompt hashes, code version, seed commitments, token counts and costs. The counts and costs are those of every recorded call, so the host, the judges and the content classifier are in them when they are models. Costs are counted in US dollars. A price list in another currency carries the exchange rate with its date and source, and each price is converted at that rate. The cost cap `limits.max_cost_per_night_usd` holds for the seats during `run` and for the show layer during `show`, each on its own. A night that reaches it is played on with the models silent and flagged, and `show` stops and records nothing. What a silenced seat did not choose is left out of what the show says about the seats: the fact cards and the page name the lots, the collusion screen skips them, and pledges, awards, highlights and predictions do not count them.
+- Only fictional coins appear.
+- API keys are never stored in the repository or in recordings, and request headers are not recorded.
+
+## Content scanning before publication
+
+- `auction-night export` turns a night into the replay file, and every public text in that file goes through the content gate first (`src/auction_night/show/content_scan.py`). The texts are the spoken lines, inner monologues, opening plans and personas, host commentary, judge quotes and verdict details, pledge details, highlight texts, the lot catalog and the seat code names. Numbers, enumerations, hashes and model IDs are not text for readers and are not scanned. A test fails when a text field is added to the replay without being put on one of the two lists, so a new field cannot slip through unscanned.
+- The first check is a word list. The project's list of banned vocabulary (the words for ratio-style scores) is always on, and the configuration or the command line can add a list of its own, with one term or regular expression per line. Texts are compared after Unicode normalisation and case folding, with invisible characters removed.
+- The second check is a classifier model, when the configuration names one. It must come from a vendor that has no seat in the lineup, and it flags real people, real brands and existing works, hatred, sexual content, violence, personal data and credentials. It is told the code names of the seats, which are invented, and does not flag a text for being the same as one of them. The texts are given to it as data, never as instructions. A reply that cannot be read is asked for once more, and a batch that stays unreadable counts as a failure of the gate and never as a pass. Its calls are recorded like every other model call (`auction-night show` makes the recording), so a recorded scan can be repeated without a network.
+- A night that fails either check is refused with the places listed. `auction-night export` then exits with status 1 and writes no file. The classifier can be wrong in both directions, and a person reads a replay before it is added to `docs/demo`, the folder of the replays in this repository. A person who has read a finding and decided to publish the text lists it in a TOML file for `auction-night export --clear`, as a `[[clear]]` table with the `path` and the `category` of the finding and one sentence of `reason`, and the export goes on only when every finding is listed. The replay records each released finding in `manifest.cleared_findings`, with the reason of the person and what the gate had said.
+- Player prompts forbid real people, brands and existing works.
+- The repository itself is scanned by `tools/scan_text.py` for credentials and local file paths.
+
+## Personal data
+
+Seats use invented code names, and the lots are invented. A human player in the terminal mode is not recorded in the model leaderboard. The replay page is static, with no accounts and no server code. It stores nothing: its state lives in memory and in the address.

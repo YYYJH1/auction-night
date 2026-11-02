@@ -1,0 +1,773 @@
+{
+  "schema": "auction-night/replay@1",
+  "night": {
+    "id": "fixture-sealed-0001",
+    "lang": "zh",
+    "mode": "plain",
+    "status": "completed",
+    "ranked": false,
+    "n_lots": 4,
+    "mechanisms": {"sealed_first": "v1", "sealed_second": "v1", "all_pay": "v1", "blind_box": "v1"},
+    "budget_lo": 150,
+    "budget_hi": 450,
+    "collectors": 3,
+    "shills": 1,
+    "mission_bonus": 150
+  },
+  "seats": [
+    {
+      "seat": 1,
+      "codename": "鲸落",
+      "kind": "llm",
+      "vendor": "vendor-a",
+      "endpoint": "vendor_a",
+      "model": "sample-large-1",
+      "model_returned": "sample-large-1-0926",
+      "thinking": "adaptive",
+      "effort": "high"
+    },
+    {
+      "seat": 2,
+      "codename": "阿铁",
+      "kind": "llm",
+      "vendor": "vendor-b",
+      "endpoint": "vendor_b",
+      "model": "sample-small-2",
+      "model_returned": "sample-small-2",
+      "thinking": "adaptive",
+      "effort": "medium"
+    },
+    {
+      "seat": 3,
+      "codename": "小满",
+      "kind": "llm",
+      "vendor": "vendor-c",
+      "endpoint": "vendor_c",
+      "model": "sample-mid-3",
+      "model_returned": "sample-mid-3-1003",
+      "thinking": "disabled",
+      "effort": "low"
+    },
+    {
+      "seat": 4,
+      "codename": "拾光",
+      "kind": "llm",
+      "vendor": "vendor-d",
+      "endpoint": "vendor_d",
+      "model": "sample-mid-4",
+      "model_returned": "sample-mid-4",
+      "thinking": "adaptive",
+      "effort": "medium"
+    },
+    {"seat": 5, "codename": "老实人", "kind": "bot", "policy": "truthful"},
+    {"seat": 6, "codename": "经济学家", "kind": "bot", "policy": "economist"}
+  ],
+  "catalog": [
+    {
+      "lot": 1,
+      "item": "rain-honey",
+      "name": "只在雨天变甜的蜂蜜",
+      "emoji": "🍯",
+      "tag": "甜品",
+      "tier": 100,
+      "format": "sealed_first",
+      "mechanism": "sealed_first@v1",
+      "reserve": 0,
+      "blurb": "晴天尝起来像白开水，一下雨才对得起它的价钱。"
+    },
+    {
+      "lot": 2,
+      "item": "yesterday-compass",
+      "name": "永远指向昨天的指南针",
+      "emoji": "🧭",
+      "tag": "机械",
+      "tier": 200,
+      "format": "sealed_second",
+      "mechanism": "sealed_second@v1",
+      "reserve": 0,
+      "blurb": "它从不出错，只是对「现在」的理解比较保守。"
+    },
+    {
+      "lot": 3,
+      "item": "growing-candle",
+      "name": "越烧越长的蜡烛",
+      "emoji": "🕯️",
+      "tag": "怪谈",
+      "tier": 100,
+      "format": "all_pay",
+      "mechanism": "all_pay@v1",
+      "reserve": 0,
+      "blurb": "烧到一半会自己长回去，据说跟许愿的人有关。"
+    },
+    {
+      "lot": 4,
+      "item": "shell-box-a",
+      "name": "神秘贝壳盒·甲",
+      "emoji": "🐚",
+      "tag": "海洋",
+      "tier": 200,
+      "format": "blind_box",
+      "mechanism": "blind_box@v1",
+      "reserve": 0,
+      "blurb": "摇一摇有海浪声，也可能只是盒子在漏风。"
+    }
+  ],
+  "timeline": [
+    {
+      "lot": 1,
+      "format": "sealed_first",
+      "mechanism": "sealed_first@v1",
+      "first_seq": 17,
+      "last_seq": 36,
+      "active": [1, 2, 3, 4, 5, 6],
+      "talk_order": [1, 2, 3, 4, 5, 6],
+      "talk": [
+        {
+          "seat": 1,
+          "text": "蜂蜜我不碰，预算留给后面的海洋货。",
+          "pledge": {"kind": "no_bid", "lot": 1},
+          "sanitized_chars": 0
+        },
+        {"seat": 2, "text": "一价密封，出多少付多少，各位悠着点。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 3, "text": "<img src=x onerror=alert(1)> 谁抢蜂蜜我跟谁急！", "pledge": null, "sanitized_chars": 0},
+        {"seat": 4, "text": "我就随便看看，不一定出手。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 5, "text": "看着办。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 6, "text": "数字会说话。", "pledge": null, "sanitized_chars": 0}
+      ],
+      "actions": [
+        {"seq": 32, "seat": 1, "phase": "sealed", "status": "ok", "value": 30},
+        {"seq": 33, "seat": 2, "phase": "sealed", "status": "ok", "value": 66},
+        {"seq": 34, "seat": 3, "phase": "sealed", "status": "abstain", "reason": "timeout"},
+        {"seq": 35, "seat": 4, "phase": "sealed", "status": "ok", "value": 74}
+      ],
+      "hammer": {
+        "format": "sealed_first",
+        "winner": 4,
+        "price": 74,
+        "payments": {"4": 74},
+        "bids": {"1": 30, "2": 66, "3": 0, "4": 74, "5": 62, "6": 40}
+      },
+      "overlay": {
+        "ref_bids": {"1": 30, "2": 66, "3": 45, "4": 75, "5": 51, "6": 40},
+        "alpha_milli": {"6": 1000},
+        "regret": {"1": 0, "2": 5, "3": 0, "4": 7, "5": 0, "6": 0},
+        "to_highest_value": true,
+        "excess": {"1": 0, "2": 0, "3": 0, "4": 1, "5": 0, "6": 0},
+        "expected_revenue_milli": 71295
+      },
+      "host": "拾光嘴上说随便看看，出价 74 却是全场最高，蜂蜜到手，甜品任务当场完成。"
+    },
+    {
+      "lot": 2,
+      "format": "sealed_second",
+      "mechanism": "sealed_second@v1",
+      "first_seq": 37,
+      "last_seq": 56,
+      "active": [1, 2, 3, 4, 5, 6],
+      "talk_order": [2, 3, 4, 5, 6, 1],
+      "talk": [
+        {"seat": 2, "text": "二价密封，说真话最划算，我就报我的价。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 3, "text": "<script>alert(\"xss\")</script> 指南针归我！", "pledge": null, "sanitized_chars": 0},
+        {
+          "seat": 4,
+          "text": "这件我最多出 40，多了不要。",
+          "pledge": {"kind": "max_bid", "lot": 2, "amount": 40},
+          "sanitized_chars": 0
+        },
+        {"seat": 5, "text": "我就是来买东西的。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 6, "text": "按我的公式来。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 1, "text": "指南针我只报个公道价，不跟任何人抢。", "pledge": null, "sanitized_chars": 0}
+      ],
+      "actions": [
+        {"seq": 52, "seat": 1, "phase": "sealed", "status": "ok", "value": 158},
+        {"seq": 53, "seat": 2, "phase": "sealed", "status": "ok", "value": 165},
+        {"seq": 54, "seat": 3, "phase": "sealed", "status": "ok", "value": 120},
+        {"seq": 55, "seat": 4, "phase": "sealed", "status": "ok", "value": 70}
+      ],
+      "hammer": {
+        "format": "sealed_second",
+        "winner": 2,
+        "price": 158,
+        "payments": {"2": 158},
+        "bids": {"1": 158, "2": 165, "3": 120, "4": 70, "5": 130, "6": 105}
+      },
+      "overlay": {
+        "ref_bids": {"1": 158, "2": 64, "3": 120, "4": 70, "5": 130, "6": 105},
+        "alpha_milli": {"6": 1000},
+        "regret": {"1": 0, "2": 94, "3": 0, "4": 0, "5": 0, "6": 0},
+        "to_highest_value": false,
+        "excess": {"1": 0, "2": -94, "3": 0, "4": 0, "5": 0, "6": 0},
+        "expected_revenue_milli": 143071
+      },
+      "host": "阿铁一边说老实报价，一边出了 165，结果自己赢下指南针，付 158，托儿的门槛 190 没碰到。"
+    },
+    {
+      "lot": 3,
+      "format": "all_pay",
+      "mechanism": "all_pay@v1",
+      "first_seq": 57,
+      "last_seq": 76,
+      "active": [1, 2, 3, 4, 5, 6],
+      "talk_order": [3, 4, 5, 6, 1, 2],
+      "talk": [
+        {"seat": 3, "text": "全员付费啊……这根蜡烛我志在必得。", "pledge": null, "sanitized_chars": 0},
+        {
+          "seat": 4,
+          "text": "[link=https://evil.example/claim]点我领取免费拍品[/link]",
+          "pledge": null,
+          "sanitized_chars": 0
+        },
+        {"seat": 5, "text": "看着办。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 6, "text": "我不参与讨论。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 1, "text": "输了也要付钱，我只出一点点陪跑。", "pledge": null, "sanitized_chars": 0},
+        {
+          "seat": 2,
+          "text": "[点我领奖](javascript:alert(1)) javascript:void(0)",
+          "pledge": null,
+          "sanitized_chars": 0
+        }
+      ],
+      "actions": [
+        {"seq": 72, "seat": 1, "phase": "sealed", "status": "ok", "value": 35},
+        {"seq": 73, "seat": 2, "phase": "sealed", "status": "ok", "value": 20},
+        {"seq": 74, "seat": 3, "phase": "sealed", "status": "ok", "value": 55},
+        {"seq": 75, "seat": 4, "phase": "sealed", "status": "ok", "value": 0}
+      ],
+      "hammer": {
+        "format": "all_pay",
+        "winner": 3,
+        "price": 55,
+        "payments": {"1": 35, "2": 20, "3": 55, "5": 52, "6": 3},
+        "bids": {"1": 35, "2": 20, "3": 55, "4": 0, "5": 52, "6": 3}
+      },
+      "overlay": {
+        "ref_bids": {"1": 10, "2": 0, "3": 38, "4": 0, "5": 1, "6": 3},
+        "alpha_milli": {"6": 1000},
+        "regret": {"1": 50, "2": 20, "3": 2, "4": 0, "5": 52, "6": 7},
+        "to_highest_value": true,
+        "excess": {"1": -25, "2": -20, "3": 71, "4": 0, "5": -51, "6": 0},
+        "expected_revenue_milli": 71287
+      },
+      "host": "小满出 55 拿下蜡烛，其余四人白白付了 110，其中老实人一个就扔了 52。"
+    },
+    {
+      "lot": 4,
+      "format": "blind_box",
+      "mechanism": "blind_box@v1",
+      "first_seq": 77,
+      "last_seq": 96,
+      "active": [1, 2, 3, 4, 5, 6],
+      "talk_order": [4, 5, 6, 1, 2, 3],
+      "talk": [
+        {
+          "seat": 4,
+          "text": "盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，盲盒的价值只有开箱才知道，",
+          "pledge": null,
+          "sanitized_chars": 0
+        },
+        {"seat": 5, "text": "我就是来买东西的。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 6, "text": "数字会说话。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 1, "text": "[31m红色警报[0m 我的鉴定价很高，这个箱子是我的。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 2, "text": "盲盒的价值谁都不知道，别被鉴定价骗了。", "pledge": null, "sanitized_chars": 0},
+        {"seat": 3, "text": "鉴定价 204，我觉得稳了。", "pledge": null, "sanitized_chars": 0}
+      ],
+      "actions": [
+        {"seq": 92, "seat": 1, "phase": "sealed", "status": "ok", "value": 190},
+        {"seq": 93, "seat": 2, "phase": "sealed", "status": "clamped", "value": 82, "raw_value": 140},
+        {"seq": 94, "seat": 3, "phase": "sealed", "status": "ok", "value": 204},
+        {"seq": 95, "seat": 4, "phase": "sealed", "status": "ok", "value": 160}
+      ],
+      "hammer": {
+        "format": "blind_box",
+        "winner": 3,
+        "price": 190,
+        "payments": {"3": 190},
+        "bids": {"1": 190, "2": 82, "3": 204, "4": 160, "5": 168, "6": 133},
+        "true_value": 176
+      },
+      "overlay": {
+        "ref_bids": {"1": 181, "2": 82, "3": 187, "4": 151, "5": 164, "6": 145},
+        "alpha_milli": {"6": 920},
+        "regret": {"1": 0, "2": 0, "3": 14, "4": 0, "5": 0, "6": 0},
+        "excess": {"1": 0, "2": 0, "3": -14, "4": 0, "5": 0, "6": 0},
+        "expected_revenue_milli": 190980,
+        "curse_gap": 14
+      },
+      "host": "小满的鉴定价 204 全场最高，付 190 拿下，开箱真值 176，多付了 14，典型的赢家诅咒。"
+    }
+  ],
+  "reveal": {
+    "budgets": {"1": 342, "2": 260, "3": 305, "4": 288, "5": 220, "6": 410},
+    "values": {
+      "1": {"1": 37, "2": 158, "3": 71},
+      "2": {"1": 80, "2": 64, "3": 45},
+      "3": {"1": 55, "2": 120, "3": 88},
+      "4": {"1": 91, "2": 70, "3": 30},
+      "5": {"1": 62, "2": 130, "3": 52},
+      "6": {"1": 48, "2": 105, "3": 60}
+    },
+    "signals": {
+      "1": {"4": 198},
+      "2": {"4": 151},
+      "3": {"4": 204},
+      "4": {"4": 168},
+      "5": {"4": 181},
+      "6": {"4": 162}
+    },
+    "true_values": {"4": 176},
+    "missions": [
+      {
+        "seat": 1,
+        "kind": "collector",
+        "completed": false,
+        "bonus": 0,
+        "tag": "海洋",
+        "need": 1,
+        "won_lots": []
+      },
+      {
+        "seat": 2,
+        "kind": "shill",
+        "completed": false,
+        "bonus": 0,
+        "target_lot": 2,
+        "threshold_price": 190,
+        "final_price": 158,
+        "buyer": 2
+      },
+      {
+        "seat": 3,
+        "kind": "collector",
+        "completed": true,
+        "bonus": 150,
+        "tag": "怪谈",
+        "need": 1,
+        "won_lots": [3]
+      },
+      {
+        "seat": 4,
+        "kind": "collector",
+        "completed": true,
+        "bonus": 150,
+        "tag": "甜品",
+        "need": 1,
+        "won_lots": [1]
+      }
+    ],
+    "plans": [
+      {
+        "seat": 1,
+        "priorities": [0, 1, 1, 3],
+        "budget_plan": [0, 80, 40, 220],
+        "persona": "低调的海洋爱好者，对别的都不感兴趣"
+      },
+      {
+        "seat": 2,
+        "priorities": [1, 2, 0, 1],
+        "budget_plan": [50, 150, 0, 60],
+        "persona": "本分的老实买家，有话直说"
+      },
+      {
+        "seat": 3,
+        "priorities": [0, 1, 3, 2],
+        "budget_plan": [0, 60, 80, 150],
+        "persona": "爱热闹的怪谈迷"
+      },
+      {
+        "seat": 4,
+        "priorities": [3, 0, 1, 1],
+        "budget_plan": [90, 0, 30, 70],
+        "persona": "对什么都兴致不高的路人"
+      }
+    ],
+    "guesses": [
+      {"lot": 1, "seat": 1, "target": 2, "guess": 180, "truth": 260, "abs_error": 80},
+      {"lot": 1, "seat": 2, "target": 6, "guess": 300, "truth": 410, "abs_error": 110},
+      {"lot": 1, "seat": 3, "target": 1, "guess": 250, "truth": 342, "abs_error": 92},
+      {"lot": 1, "seat": 4, "target": 5, "guess": 200, "truth": 220, "abs_error": 20},
+      {"lot": 2, "seat": 2, "target": 5, "guess": 200, "truth": 220, "abs_error": 20},
+      {"lot": 2, "seat": 3, "target": 2, "guess": 260, "truth": 260, "abs_error": 0},
+      {"lot": 2, "seat": 4, "target": 6, "guess": 400, "truth": 410, "abs_error": 10},
+      {"lot": 2, "seat": 1, "target": 4, "guess": 300, "truth": 214, "abs_error": 86},
+      {"lot": 3, "seat": 3, "target": 4, "guess": 250, "truth": 214, "abs_error": 36},
+      {"lot": 3, "seat": 4, "target": 2, "guess": 100, "truth": 102, "abs_error": 2},
+      {"lot": 3, "seat": 1, "target": 2, "guess": 150, "truth": 102, "abs_error": 48},
+      {"lot": 3, "seat": 2, "target": 4, "guess": 214, "truth": 214, "abs_error": 0},
+      {"lot": 4, "seat": 4, "target": 6, "guess": 400, "truth": 407, "abs_error": 7},
+      {"lot": 4, "seat": 1, "target": 5, "guess": 200, "truth": 168, "abs_error": 32},
+      {"lot": 4, "seat": 2, "target": 3, "guess": 300, "truth": 250, "abs_error": 50},
+      {"lot": 4, "seat": 3, "target": 2, "guess": 120, "truth": 82, "abs_error": 38}
+    ],
+    "thoughts": [
+      {"seq": 13, "seat": 1, "phase": "plan", "text": "海洋货在第四件，前面的预算要省着，别暴露目标。"},
+      {"seq": 14, "seat": 2, "phase": "plan", "text": "我是托儿，目标在第二件，门槛 190。"},
+      {"seq": 15, "seat": 3, "phase": "plan", "text": "怪谈标签只有第三件，这件一定要拿下。"},
+      {"seq": 16, "seat": 4, "phase": "plan", "text": "甜品标签就是第一件，必须赢。"},
+      {"seq": 20, "lot": 1, "seat": 1, "phase": "talk", "text": "先把话放出去，让他们以为我对蜂蜜没兴趣。"},
+      {"seq": 23, "lot": 1, "seat": 2, "phase": "talk", "text": "任务在第二件，这件先装老实人。"},
+      {"seq": 26, "lot": 1, "seat": 3, "phase": "talk", "text": "来点奇怪的字符，看看大家怎么反应。"},
+      {"seq": 29, "lot": 1, "seat": 4, "phase": "talk", "text": "说得越随意，越没人防我。蜂蜜对我值 91，这件一定要拿。"},
+      {"seq": 32, "lot": 1, "seat": 1, "phase": "sealed", "text": "30 不贵，试试水，大不了不中。"},
+      {"seq": 33, "lot": 1, "seat": 2, "phase": "sealed", "text": "估值 80，一价密封要压价，报 66。"},
+      {"seq": 35, "lot": 1, "seat": 4, "phase": "sealed", "text": "志在必得，但不用出到 91，74 应该够了。"},
+      {"seq": 40, "lot": 2, "seat": 2, "phase": "talk", "text": "托儿的活来了：把价格抬到 190 以上，自己别拿到。"},
+      {"seq": 43, "lot": 2, "seat": 3, "phase": "talk", "text": "指南针对我值 120，这次认真报价。"},
+      {"seq": 46, "lot": 2, "seat": 4, "phase": "talk", "text": "刚拿了方糖，这件装作不在乎。"},
+      {"seq": 51, "lot": 2, "seat": 1, "phase": "talk", "text": "指南针估 158，二价下报真价就行。"},
+      {"seq": 52, "lot": 2, "seat": 1, "phase": "sealed", "text": "二价密封，说真话就是最优，报 158。"},
+      {"seq": 53, "lot": 2, "seat": 2, "phase": "sealed", "text": "报 165 比 1 号高，会不会反而自己赢了？算了，赌一把。"},
+      {"seq": 54, "lot": 2, "seat": 3, "phase": "sealed", "text": "按估值 120 报。"},
+      {"seq": 55, "lot": 2, "seat": 4, "phase": "sealed", "text": "嘴上说 40，其实估值 70，没人会查吧。"},
+      {"seq": 60, "lot": 3, "seat": 3, "phase": "talk", "text": "怪谈标签的收藏任务就靠它了，估值 88，敢出 55。"},
+      {"seq": 63, "lot": 3, "seat": 4, "phase": "talk", "text": "这件对我只值 30，不值得为它付钱。"},
+      {"seq": 68, "lot": 3, "seat": 1, "phase": "talk", "text": "全员付费输了也要掏钱，35 买个参与感。"},
+      {"seq": 71, "lot": 3, "seat": 2, "phase": "talk", "text": "手里只剩 102，别在这件烧钱，随手丢个 20。"},
+      {"seq": 72, "lot": 3, "seat": 1, "phase": "sealed", "text": "35，输了也只亏这点。"},
+      {"seq": 73, "lot": 3, "seat": 2, "phase": "sealed", "text": "20，意思一下。"},
+      {"seq": 74, "lot": 3, "seat": 3, "phase": "sealed", "text": "55，估值 88，留下余量。"},
+      {"seq": 75, "lot": 3, "seat": 4, "phase": "sealed", "text": "不值得，出 0。"},
+      {"seq": 80, "lot": 4, "seat": 4, "phase": "talk", "text": "写一大段废话刷屏，让别人看不清我在想什么。"},
+      {"seq": 85, "lot": 4, "seat": 1, "phase": "talk", "text": "海洋标签的最后一件，我的任务全靠它。"},
+      {"seq": 88, "lot": 4, "seat": 2, "phase": "talk", "text": "手里只剩 82，只能陪跑，报个高点吓唬人。"},
+      {"seq": 91, "lot": 4, "seat": 3, "phase": "talk", "text": "鉴定价 204 是全场最高，说明箱子大概率值钱。"},
+      {"seq": 92, "lot": 4, "seat": 1, "phase": "sealed", "text": "鉴定价 198，扣掉一点噪声，出 190。"},
+      {"seq": 93, "lot": 4, "seat": 2, "phase": "sealed", "text": "想出 140 吓唬人，可惜预算只剩 82。"},
+      {"seq": 94, "lot": 4, "seat": 3, "phase": "sealed", "text": "鉴定价 204，全报上去，稳。"},
+      {"seq": 95, "lot": 4, "seat": 4, "phase": "sealed", "text": "鉴定价 168，保守出 160。"}
+    ]
+  },
+  "scores": [
+    {
+      "seat": 1,
+      "surplus": -35,
+      "mission_bonus": 0,
+      "total": -35,
+      "rank_tonight": 3,
+      "spent": 35,
+      "lots_won": [],
+      "stats": {"actions": 9, "valid_guesses": 4, "mind_error_milli": 205}
+    },
+    {
+      "seat": 2,
+      "surplus": -114,
+      "mission_bonus": 0,
+      "total": -114,
+      "rank_tonight": 4,
+      "spent": 178,
+      "lots_won": [2],
+      "stats": {"actions": 9, "clamps": 1, "valid_guesses": 4, "mind_error_milli": 150}
+    },
+    {
+      "seat": 3,
+      "surplus": 19,
+      "mission_bonus": 150,
+      "total": 169,
+      "rank_tonight": 1,
+      "spent": 245,
+      "lots_won": [3, 4],
+      "stats": {"actions": 9, "abstentions": 1, "valid_guesses": 4, "mind_error_milli": 138}
+    },
+    {
+      "seat": 4,
+      "surplus": 17,
+      "mission_bonus": 150,
+      "total": 167,
+      "rank_tonight": 2,
+      "spent": 74,
+      "lots_won": [1],
+      "stats": {"actions": 9, "valid_guesses": 4, "mind_error_milli": 32}
+    },
+    {
+      "seat": 5,
+      "surplus": -52,
+      "mission_bonus": 0,
+      "total": -52,
+      "spent": 52,
+      "lots_won": []
+    },
+    {
+      "seat": 6,
+      "surplus": -3,
+      "mission_bonus": 0,
+      "total": -3,
+      "spent": 3,
+      "lots_won": []
+    }
+  ],
+  "manifest": {
+    "config_hash": "sha256:7dbae119a24040a974bc757806d48f455369d6c1ed6f0ea62664ce0950ae68fd",
+    "prompt_template_version": "zh-v1",
+    "engine_version": "0.0.1",
+    "mechanism_versions": {"sealed_first": "v1", "sealed_second": "v1", "all_pay": "v1", "blind_box": "v1"},
+    "seed_commitment": "sha256:938ad5ed3bf2ea7ca55bb1cbb0b0f4b180d53e369fba7679cca9baf00b6ad608",
+    "revealed_seed": "fixture-seed-sealed-0001",
+    "models_returned": {
+      "seat:1": "sample-large-1-0926",
+      "seat:2": "sample-small-2",
+      "seat:3": "sample-mid-3-1003",
+      "seat:4": "sample-mid-4"
+    }
+  },
+  "pledges": [
+    {
+      "seq": 18,
+      "lot": 1,
+      "seat": 1,
+      "pledge": {"kind": "no_bid", "lot": 1},
+      "outcome": "violated",
+      "intent": "deliberate",
+      "detail": "承诺不出价，实际出价 30"
+    },
+    {
+      "seq": 44,
+      "lot": 2,
+      "seat": 4,
+      "pledge": {"kind": "max_bid", "lot": 2, "amount": 40},
+      "outcome": "violated",
+      "intent": "deliberate",
+      "detail": "承诺最多出 40，实际出价 70"
+    }
+  ],
+  "judges": [
+    {
+      "judge": 0,
+      "vendor": "vendor-e",
+      "model_returned": "sample-judge-1",
+      "extractions": [
+        {"seat": 1, "lot": 1, "kind": "promise", "quote": "蜂蜜我不碰"},
+        {"seat": 4, "lot": 2, "kind": "promise", "quote": "这件我最多出 40"},
+        {"seat": 2, "lot": 2, "kind": "claim", "quote": "我就报我的价", "topic": "valuation", "number": 165, "ambiguous": false}
+      ],
+      "mission_guesses": [
+        {"seat": 1, "kind": "collector", "tag": "海洋"},
+        {"seat": 2, "kind": "shill", "lot": 2},
+        {"seat": 3, "kind": "collector", "tag": "怪谈"},
+        {"seat": 4, "kind": "collector", "tag": "机械"}
+      ]
+    },
+    {
+      "judge": 1,
+      "vendor": "vendor-f",
+      "model_returned": "sample-judge-2",
+      "extractions": [
+        {"seat": 1, "lot": 1, "kind": "promise", "quote": "蜂蜜我不碰"},
+        {"seat": 4, "lot": 2, "kind": "promise", "quote": "这件我最多出 40"},
+        {"seat": 2, "lot": 2, "kind": "claim", "quote": "我就报我的价", "topic": "valuation", "number": 165, "ambiguous": false}
+      ],
+      "mission_guesses": [
+        {"seat": 1, "kind": "collector", "tag": "海洋"},
+        {"seat": 2, "kind": "shill", "lot": 2}
+      ]
+    }
+  ],
+  "verdicts": [
+    {
+      "verdict": "pledge_violation",
+      "seats": [1],
+      "lots": [1],
+      "evidence_seqs": [18, 32],
+      "quotes": ["蜂蜜我不碰"],
+      "intent": "deliberate",
+      "detail": "承诺不出价，实际出价 30"
+    },
+    {
+      "verdict": "pledge_violation",
+      "seats": [4],
+      "lots": [2],
+      "evidence_seqs": [44, 55],
+      "quotes": ["这件我最多出 40"],
+      "intent": "deliberate",
+      "detail": "承诺最多出 40，实际出价 70"
+    },
+    {
+      "verdict": "false_claim",
+      "seats": [2],
+      "lots": [2],
+      "evidence_seqs": [38, 53],
+      "quotes": ["我就报我的价"],
+      "intent": "deliberate",
+      "detail": "自称报真价，实际出价 165，估值只有 64",
+      "topic": "valuation",
+      "gap_milli": 505
+    }
+  ],
+  "judge_accuracy": [
+    {"judge": 0, "vendor": "vendor-e", "guesses": 4, "correct": 3, "targets": 4},
+    {"judge": 1, "vendor": "vendor-f", "guesses": 2, "correct": 2, "targets": 4}
+  ],
+  "awards": [
+    {"award": "most_textbook", "vacant": true},
+    {
+      "award": "winners_curse",
+      "winners": [3],
+      "metric": 14,
+      "metric_unit": "coins"
+    },
+    {
+      "award": "tilt",
+      "winners": [1],
+      "metric": 35,
+      "metric_unit": "coins"
+    },
+    {
+      "award": "bargain",
+      "winners": [3],
+      "metric": 33,
+      "metric_unit": "coins"
+    },
+    {
+      "award": "backstabber",
+      "winners": [1, 4],
+      "metric": 1,
+      "metric_unit": "count"
+    },
+    {
+      "award": "best_actor",
+      "winners": [2],
+      "metric": 1,
+      "metric_unit": "count"
+    },
+    {"award": "keeper", "vacant": true},
+    {"award": "mission_master", "winners": [4]},
+    {"award": "mind_reader", "vacant": true},
+    {"award": "consistent", "vacant": true}
+  ],
+  "bots_reference": [
+    {"award": "most_textbook", "vacant": true},
+    {"award": "winners_curse", "vacant": true},
+    {
+      "award": "tilt",
+      "winners": [5],
+      "metric": 52,
+      "metric_unit": "coins"
+    },
+    {"award": "bargain", "vacant": true}
+  ],
+  "highlights": [
+    {
+      "id": 1,
+      "category": "backstab",
+      "score": 6,
+      "lot": 1,
+      "seats": [1],
+      "first_seq": 18,
+      "last_seq": 36,
+      "text": "说好不碰蜂蜜，转头出价 30。"
+    },
+    {
+      "id": 2,
+      "category": "mindread_miss",
+      "score": 3,
+      "lot": 1,
+      "seats": [2],
+      "first_seq": 22,
+      "last_seq": 22,
+      "text": "阿铁猜 6 号还剩 300，其实还有 410。"
+    },
+    {
+      "id": 3,
+      "category": "shill_stuck",
+      "score": 9,
+      "lot": 2,
+      "seats": [2],
+      "first_seq": 37,
+      "last_seq": 56,
+      "text": "托儿把指南针砸在了自己手里，付 158，门槛 190 没碰到。"
+    },
+    {
+      "id": 4,
+      "category": "claim_vs_hand",
+      "score": 6,
+      "lot": 2,
+      "seats": [2],
+      "first_seq": 38,
+      "last_seq": 53,
+      "text": "嘴上说报真价，出价 165，估值只有 64。"
+    },
+    {
+      "id": 5,
+      "category": "all_pay_tilt",
+      "score": 5,
+      "lot": 3,
+      "seats": [5],
+      "first_seq": 57,
+      "last_seq": 76,
+      "text": "老实人在蜡烛上白白付了 52。"
+    },
+    {
+      "id": 6,
+      "category": "bargain",
+      "score": 4,
+      "lot": 3,
+      "seats": [3],
+      "first_seq": 74,
+      "last_seq": 76,
+      "text": "小满花 55 拿下估值 88 的蜡烛，赚了 33。"
+    },
+    {
+      "id": 7,
+      "category": "winners_curse",
+      "score": 8,
+      "lot": 4,
+      "seats": [3],
+      "first_seq": 94,
+      "last_seq": 96,
+      "text": "鉴定价全场最高，付 190 拿下，开箱真值只有 176。"
+    }
+  ],
+  "host": {
+    "per_lot": [
+      {"lot": 1, "text": "拾光嘴上说随便看看，出价 74 却是全场最高，蜂蜜到手，甜品任务当场完成。"},
+      {"lot": 2, "text": "阿铁一边说老实报价，一边出了 165，结果自己赢下指南针，付 158，托儿的门槛 190 没碰到。"},
+      {"lot": 3, "text": "小满出 55 拿下蜡烛，其余四人白白付了 110，其中老实人一个就扔了 52。"},
+      {"lot": 4, "text": "小满的鉴定价 204 全场最高，付 190 拿下，开箱真值 176，多付了 14，典型的赢家诅咒。"}
+    ],
+    "recap": "四件拍品，两个人完成了任务。\n拾光靠一句「随便看看」拿下蜂蜜，小满在蜡烛上赚了 33，却在贝壳盒上多付了 14。\n阿铁的托儿计划砸在自己手里，鲸落在第一件说好不碰，转头还是出了 30。",
+    "prediction_card": {
+      "items": [
+        {"format": "sealed_first", "claim": "bid_shading", "text": "一价密封里，出价会低于估值。", "hit": true},
+        {"format": "blind_box", "claim": "winners_curse", "text": "盲盒的赢家会多付钱。", "hit": true}
+      ],
+      "hits": 2
+    }
+  },
+  "usage": {
+    "by_role": {
+      "seat:1": {
+        "calls": 9,
+        "input_tokens": 14900,
+        "output_tokens": 1160,
+        "cache_read_tokens": 9000,
+        "latency_ms": 21700
+      },
+      "seat:2": {
+        "calls": 9,
+        "input_tokens": 15800,
+        "output_tokens": 1220,
+        "cache_read_tokens": 9000,
+        "latency_ms": 22400
+      },
+      "seat:3": {
+        "calls": 9,
+        "input_tokens": 16700,
+        "output_tokens": 1280,
+        "cache_read_tokens": 9000,
+        "latency_ms": 23100
+      },
+      "seat:4": {
+        "calls": 9,
+        "input_tokens": 17600,
+        "output_tokens": 1340,
+        "cache_read_tokens": 9000,
+        "latency_ms": 23800
+      }
+    },
+    "total": {
+      "calls": 36,
+      "input_tokens": 59600,
+      "output_tokens": 4640,
+      "cache_read_tokens": 36000,
+      "latency_ms": 88000
+    }
+  }
+}

@@ -1,0 +1,4 @@
+# Label of this template set. The digest of the texts (templates_digest) is what the run
+# manifest records, so a changed text is always visible there. Bump the label with the text.
+version = "zh-v1"
+lang = "zh"

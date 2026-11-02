@@ -1,0 +1,83 @@
+# Price list of the first night with real models, on Alibaba Cloud Model Studio (Bailian).
+#
+# Prices are in yuan (CNY) per million tokens, for the mainland China deployment, as the price
+# page listed them on 2026-11-01. Every entry takes the lowest tier (a request of a night is far
+# below 32K tokens) and the busy-hours price where the page lists two. Limited-time discounts are
+# not counted. Cache prices are left out on purpose: a missing cache price is billed at the input
+# price, which can only overstate the cost. Reasoning tokens are part of the output tokens that
+# the API reports, so they are billed once, as output.
+#
+# The cost gate and the cost cap count US dollars. A price in CNY is divided by the exchange
+# rate below when the cost of a call is worked out, and a price list that uses CNY without a
+# rate is refused, because no rate is ever assumed. The rate is the reference rate of the
+# European Central Bank on the date given, and `estimate` prints it next to the yuan amounts.
+version: 1
+
+exchange_rates:
+  CNY:
+    units_per_usd: 6.6529        # 1 USD = 6.6529 CNY
+    as_of: 2026-10-30
+    source: https://api.frankfurter.dev/v1/latest?base=USD&symbols=CNY
+    note: 欧洲央行参考汇率
+
+prices:
+  # Qwen
+  qwen3.7-plus:
+    input_per_mtok: 2
+    output_per_mtok: 8
+    currency: CNY
+    as_of: 2026-11-01
+    source: https://help.aliyun.com/zh/model-studio/model-pricing
+    note: 中国内地部署、最低档、忙时价、未计限时折扣与缓存折扣
+  qwen-flash:
+    input_per_mtok: 0.15
+    output_per_mtok: 1.5
+    currency: CNY
+    as_of: 2026-11-01
+    source: https://help.aliyun.com/zh/model-studio/model-pricing
+    note: 中国内地部署、最低档、忙时价、未计限时折扣与缓存折扣
+  qwen-plus:
+    input_per_mtok: 0.8
+    output_per_mtok: 8           # the page lists this one for the thinking mode
+    currency: CNY
+    as_of: 2026-11-01
+    source: https://help.aliyun.com/zh/model-studio/model-pricing
+    note: 中国内地部署、最低档、忙时价、未计限时折扣与缓存折扣
+  # DeepSeek
+  deepseek-v4.1-flash:
+    input_per_mtok: 2
+    output_per_mtok: 8
+    currency: CNY
+    as_of: 2026-11-01
+    source: https://help.aliyun.com/zh/model-studio/model-pricing
+    note: 中国内地部署、最低档、忙时价、未计限时折扣与缓存折扣
+  deepseek-v4-flash-0731:
+    input_per_mtok: 3
+    output_per_mtok: 9
+    currency: CNY
+    as_of: 2026-11-01
+    source: https://help.aliyun.com/zh/model-studio/model-pricing
+    note: 中国内地部署、最低档、忙时价、未计限时折扣与缓存折扣
+  # Zhipu
+  glm-5:
+    input_per_mtok: 4
+    output_per_mtok: 18
+    currency: CNY
+    as_of: 2026-11-01
+    source: https://help.aliyun.com/zh/model-studio/model-pricing
+    note: 中国内地部署、最低档、忙时价、未计限时折扣与缓存折扣
+  glm-5.1:
+    input_per_mtok: 6
+    output_per_mtok: 24
+    currency: CNY
+    as_of: 2026-11-01
+    source: https://help.aliyun.com/zh/model-studio/model-pricing
+    note: 中国内地部署、最低档、忙时价、未计限时折扣与缓存折扣
+  # Moonshot (host, judge and content classifier)
+  kimi-k2.5:
+    input_per_mtok: 4
+    output_per_mtok: 21
+    currency: CNY
+    as_of: 2026-11-01
+    source: https://help.aliyun.com/zh/model-studio/model-pricing
+    note: 中国内地部署、最低档、忙时价、未计限时折扣与缓存折扣
