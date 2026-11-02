@@ -56,7 +56,7 @@ python3 -m http.server --bind 127.0.0.1 8000
 - [TRANSPARENCY_zh.md](TRANSPARENCY_zh.md)：一夜怎么跑、怎样查围标、种子怎样承诺、哪些内容会发布
 - [docs/contracts_zh.md](docs/contracts_zh.md)：数据格式和六种规则的定义
 - [CHANGELOG_zh.md](CHANGELOG_zh.md)：各版本的变化
-- [CONTRIBUTING_zh.md](CONTRIBUTING_zh.md)：提交署名和检查
+- [CONTRIBUTING_zh.md](CONTRIBUTING_zh.md)：检查和文本扫描器
 
 ## 致谢
 

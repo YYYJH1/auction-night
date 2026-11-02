@@ -17,7 +17,7 @@ python3 tools/scan_text.py
 node --test tests/viewer/
 ```
 
-CI 在 Python 3.12 和 3.13 上运行 ruff 和 pytest 检查，在 Node 22 上运行回放页的测试，并运行文本扫描器、`tools/check_leaderboard.py`、`tools/check_seeds.py` 和上文的历史检查。CI 里任何地方都不使用密钥。第一次提交新文件之前，给扫描器加上 `--include-untracked`，让它也读取 git 还没有跟踪的文件。
+CI 在 Python 3.12 和 3.13 上运行 ruff 和 pytest 检查，在 Node 22 上运行回放页的测试，并运行文本扫描器、`tools/check_leaderboard.py` 和 `tools/check_seeds.py`。CI 里任何地方都不使用密钥。第一次提交新文件之前，给扫描器加上 `--include-untracked`，让它也读取 git 还没有跟踪的文件。
 
 改英文文档时，请在同一次提交里同步改它的中文版，因为 `tests/test_doc_mirrors.py` 会核对两份文档的第一行语言切换、标题级别的顺序和代码块的数目是否一致。
 

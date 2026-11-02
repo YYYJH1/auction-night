@@ -56,7 +56,7 @@ A night with real models goes through the API of Alibaba Cloud Model Studio (Bai
 - [TRANSPARENCY.md](TRANSPARENCY.md): how a night is run, how collusion is looked for, how seeds are committed and what is published
 - [docs/contracts.md](docs/contracts.md): the data shapes and the six mechanism definitions
 - [CHANGELOG.md](CHANGELOG.md): what changed in each version
-- [CONTRIBUTING.md](CONTRIBUTING.md): commit identity and checks
+- [CONTRIBUTING.md](CONTRIBUTING.md): the checks and the text scanner
 
 ## Acknowledgements
 

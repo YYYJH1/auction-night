@@ -17,7 +17,7 @@ python3 tools/scan_text.py
 node --test tests/viewer/
 ```
 
-CI runs the ruff and pytest checks on Python 3.12 and 3.13, the replay page tests on Node 22, the text scanner, `tools/check_leaderboard.py`, `tools/check_seeds.py` and the history check above. No secrets are used anywhere in CI. Before the first commit of new files, add `--include-untracked` to the scanner so that it also reads files git does not track yet.
+CI runs the ruff and pytest checks on Python 3.12 and 3.13, the replay page tests on Node 22, the text scanner, `tools/check_leaderboard.py` and `tools/check_seeds.py`. No secrets are used anywhere in CI. Before the first commit of new files, add `--include-untracked` to the scanner so that it also reads files git does not track yet.
 
 When you change an English document, change its Chinese version in the same commit, because `tests/test_doc_mirrors.py` checks that the two carry the language switch on the first line, have the same heading levels in the same order and have the same number of code blocks.
 
@@ -25,7 +25,7 @@ When you change an English document, change its Chinese version in the same comm
 
 `tools/scan_text.py` reads every tracked text file and fails on two things:
 
-- absolute paths that point into a local home or data directory,
-- strings shaped like API keys, or a literal assigned to `api_key`,
+- absolute paths that point into a local home or data directory
+- strings shaped like API keys, or a literal assigned to `api_key`
 
 A justified exception goes in `tools/scan_allow.txt` as `path:line-substring`, with the reason in the commit message.
