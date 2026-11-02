@@ -1,0 +1,17 @@
+{
+  "schema": "auction-night/season-commitments@1",
+  "season": "s1",
+  "algorithm": "sha256",
+  "created_utc": "2026-11-02T13:06:22Z",
+  "generator": {
+    "name": "auction-night",
+    "version": "0.1.0",
+    "rng": "rng@1"
+  },
+  "decks": [
+    {
+      "deck": "d01",
+      "commitment": "sha256:64fe7d5159e09395775ebb2cbba070f4def07b1d3b6c98a0db3bb0d548c0b3fe"
+    }
+  ]
+}
