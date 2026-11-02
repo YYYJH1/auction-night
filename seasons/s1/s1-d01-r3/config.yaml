@@ -1,0 +1,160 @@
+# Night s1-d01-r3: deck d01, rotation 3 of season s1.
+# Written by `auction-night seeds plan`. The deal seed is not in this file. It is read
+# from the environment variable AUCTION_NIGHT_SEED_S1_D01 and must open night.deal_seed_commitment.
+night:
+  id: s1-d01-r3
+  seed_env: AUCTION_NIGHT_SEED_S1_D01
+  deal_seed_commitment: sha256:64fe7d5159e09395775ebb2cbba070f4def07b1d3b6c98a0db3bb0d548c0b3fe
+  lang: zh
+  mode: plain
+  lots_per_format: 2
+  tags:
+  - 海洋
+  - 机械
+  - 甜品
+  - 怪谈
+  tiers:
+    100: 5
+    200: 4
+    400: 3
+  budget:
+    c: 300
+    spread:
+    - 0.5
+    - 1.5
+    rounding: floor
+  dutch:
+    levels: 10
+    mode: one_shot
+  english:
+    revise_when_remaining_le: 4
+    revise_timeout: keep_previous
+  blind:
+    value_range:
+    - 0.5
+    - 1.5
+    noise: 0.2
+  missions:
+    bonus: 150
+    collectors: 3
+    shills: 3
+    shill_threshold: 0.95
+    shill_formats:
+    - english
+    - sealed_second
+  plan_and_mindreading: true
+  chat:
+    max_chars: 60
+    window_lots: 2
+    order: rotate
+    persona_max_chars: 60
+  thought:
+    max_chars: 100
+    keep_last: 2
+season:
+  id: s1
+  format: rotation
+  decks:
+  - id: d01
+    seed_commitment: sha256:64fe7d5159e09395775ebb2cbba070f4def07b1d3b6c98a0db3bb0d548c0b3fe
+  deck: d01
+  rotation: 3
+  max_seats_per_vendor: 2
+seats:
+- seat: 1
+  codename: 鲸落
+  kind: llm
+  vendor: deepseek
+  endpoint: bailian
+  model: deepseek-v4-flash-0731
+  max_tokens: 8192
+- seat: 2
+  codename: 阿铁
+  kind: llm
+  vendor: zhipu
+  endpoint: bailian
+  model: glm-5
+  max_tokens: 8192
+- seat: 3
+  codename: 小满
+  kind: llm
+  vendor: zhipu
+  endpoint: bailian
+  model: glm-5.1
+  max_tokens: 8192
+- seat: 4
+  codename: 拾光
+  kind: llm
+  vendor: qwen
+  endpoint: bailian
+  model: qwen3.7-plus
+  max_tokens: 8192
+- seat: 5
+  codename: 青柠
+  kind: llm
+  vendor: qwen
+  endpoint: bailian
+  model: qwen-flash
+  max_tokens: 8192
+- seat: 6
+  codename: 麦芽
+  kind: llm
+  vendor: deepseek
+  endpoint: bailian
+  model: deepseek-v4.1-flash
+  max_tokens: 8192
+- seat: 7
+  codename: 老实人
+  kind: bot
+  policy: truthful
+- seat: 8
+  codename: 经济学家
+  kind: bot
+  policy: economist
+  pacing: true
+endpoints:
+  bailian:
+    kind: openai_compatible
+    base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    api_key_env: DASHSCOPE_API_KEY
+    tool_choice: auto
+    strict_tools: false
+    capabilities:
+      supports_sampling_params: false
+      supports_forced_tool_choice: false
+      supports_strict_tools: false
+    model_capabilities:
+      qwen3.7-plus:
+        supports_sampling_params: false
+        supports_forced_tool_choice: true
+        supports_strict_tools: false
+show:
+  host_offline:
+    kind: llm
+    vendor: moonshot
+    endpoint: bailian
+    model: kimi-k2.5
+  judges:
+  - kind: llm
+    vendor: moonshot
+    endpoint: bailian
+    model: kimi-k2.5
+  - kind: llm
+    vendor: qwen
+    endpoint: bailian
+    model: qwen-plus
+  content_scan:
+    wordlist: null
+    classifier:
+      kind: llm
+      vendor: moonshot
+      endpoint: bailian
+      model: kimi-k2.5
+  allow_judge_vendor_overlap: true
+limits:
+  call_timeout_s: 300
+  human_timeout_s: null
+  syntax_retries: 1
+  transient_retries: 2
+  max_cost_per_night_usd: 1.5
+  prices_file: configs/prices.bailian.yaml

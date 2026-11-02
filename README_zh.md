@@ -46,13 +46,14 @@ python3 -m http.server --bind 127.0.0.1 8000
 
 ## 接真模型
 
-真实模型的一夜走阿里云百炼（Bailian）的 API。动图里那一夜约花 \$1（¥6.5）。在自己的机器上，也可以用 vLLM 或 Ollama 提供的开源模型跑一夜，不花钱。命令和细节见 [docs/models_zh.md](docs/models_zh.md)。
+真实模型的一夜走阿里云百炼（Bailian）的 API。动图里那一夜约花 \$1（¥6.5）。赛季 s1 用这套阵容打了六夜，每个模型把每个座位都坐过一次，积分榜和回放见 [docs/seasons_zh.md](docs/seasons_zh.md)。在自己的机器上，也可以用 vLLM 或 Ollama 提供的开源模型跑一夜，不花钱。命令和细节见 [docs/models_zh.md](docs/models_zh.md)。
 
 ## 了解更多
 
 - [docs/how-it-works_zh.md](docs/how-it-works_zh.md)：一晚是什么样、一夜怎么过、夜后的复盘和架构
 - [docs/models_zh.md](docs/models_zh.md)：真实模型、自己机器上的开源模型，以及一夜的成本
 - [docs/commands_zh.md](docs/commands_zh.md)：全部命令和退出状态
+- [docs/seasons_zh.md](docs/seasons_zh.md)：赛季 s1、它的积分榜和六夜回放
 - [TRANSPARENCY_zh.md](TRANSPARENCY_zh.md)：一夜怎么跑、怎样查合谋、种子怎样承诺、哪些内容会发布
 - [docs/contracts_zh.md](docs/contracts_zh.md)：数据格式和六种规则的定义
 - [CHANGELOG_zh.md](CHANGELOG_zh.md)：各版本的变化

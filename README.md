@@ -46,13 +46,14 @@ The server serves the folder it is started in, so start it in the root of the re
 
 ## Real models
 
-A night with real models goes through the API of Alibaba Cloud Model Studio (Bailian). The night in the GIF cost about \$1 (¥6.5). An open model on your own machine, served by vLLM or Ollama, plays a night at no cost. The commands and the details are in [docs/models.md](docs/models.md).
+A night with real models goes through the API of Alibaba Cloud Model Studio (Bailian). The night in the GIF cost about \$1 (¥6.5). Season s1 played this line-up for six nights, so that every model sat at every seat once, and its leaderboard and replays are in [docs/seasons.md](docs/seasons.md). An open model on your own machine, served by vLLM or Ollama, plays a night at no cost. The commands and the details are in [docs/models.md](docs/models.md).
 
 ## Learn more
 
 - [docs/how-it-works.md](docs/how-it-works.md): what a night looks like, how it goes, the review after it and the architecture
 - [docs/models.md](docs/models.md): real models, open models on your own machine and what a night costs
 - [docs/commands.md](docs/commands.md): every command and its exit status
+- [docs/seasons.md](docs/seasons.md): season s1, its leaderboard and its six replays
 - [TRANSPARENCY.md](TRANSPARENCY.md): how a night is run, how collusion is looked for, how seeds are committed and what is published
 - [docs/contracts.md](docs/contracts.md): the data shapes and the six mechanism definitions
 - [CHANGELOG.md](CHANGELOG.md): what changed in each version

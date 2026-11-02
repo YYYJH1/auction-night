@@ -1,0 +1,423 @@
+{
+  "schema": "auction-night/leaderboard@1",
+  "season": {
+    "id": "s1",
+    "format": "rotation",
+    "format_known": true,
+    "unit": "deck",
+    "units": 1,
+    "nights": 6,
+    "left_out": [],
+    "decks": [
+      {
+        "deck": "d01",
+        "nights": 6,
+        "rotations": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "complete": true
+      }
+    ]
+  },
+  "method": {
+    "metric": "surplus",
+    "resamples": 10000,
+    "seed": "season-leaderboard",
+    "interval_per_mille": [
+      25,
+      975
+    ],
+    "ties": "shared_best_rank",
+    "gap": {
+      "alpha_per_mille": 50,
+      "power_per_mille": 800
+    }
+  },
+  "columns": [],
+  "entries": [
+    {
+      "entry": "deepseek-v4-flash-0731",
+      "label": "deepseek-v4-flash-0731",
+      "kind": "model",
+      "rank": 1,
+      "rank_low": null,
+      "rank_high": null,
+      "mean_milli": 32500,
+      "mean_low_milli": null,
+      "mean_high_milli": null,
+      "nights": 6,
+      "seat_nights": 6,
+      "actions": 163,
+      "abstain_rate_milli": 55,
+      "refusal_rate_milli": 0,
+      "abstentions": {
+        "missing": 7,
+        "parse_failed": 0,
+        "timeout": 0,
+        "refusal": 0,
+        "budget_aborted": 0,
+        "not_asked": 0,
+        "kept_previous": 2
+      },
+      "columns": {}
+    },
+    {
+      "entry": "glm-5.1",
+      "label": "glm-5.1",
+      "kind": "model",
+      "rank": 2,
+      "rank_low": null,
+      "rank_high": null,
+      "mean_milli": 29500,
+      "mean_low_milli": null,
+      "mean_high_milli": null,
+      "nights": 6,
+      "seat_nights": 6,
+      "actions": 165,
+      "abstain_rate_milli": 0,
+      "refusal_rate_milli": 0,
+      "abstentions": {
+        "missing": 0,
+        "parse_failed": 0,
+        "timeout": 0,
+        "refusal": 0,
+        "budget_aborted": 0,
+        "not_asked": 0,
+        "kept_previous": 0
+      },
+      "columns": {}
+    },
+    {
+      "entry": "deepseek-v4.1-flash",
+      "label": "deepseek-v4.1-flash",
+      "kind": "model",
+      "rank": 3,
+      "rank_low": null,
+      "rank_high": null,
+      "mean_milli": 23667,
+      "mean_low_milli": null,
+      "mean_high_milli": null,
+      "nights": 6,
+      "seat_nights": 6,
+      "actions": 171,
+      "abstain_rate_milli": 0,
+      "refusal_rate_milli": 0,
+      "abstentions": {
+        "missing": 0,
+        "parse_failed": 0,
+        "timeout": 0,
+        "refusal": 0,
+        "budget_aborted": 0,
+        "not_asked": 0,
+        "kept_previous": 0
+      },
+      "columns": {}
+    },
+    {
+      "entry": "glm-5",
+      "label": "glm-5",
+      "kind": "model",
+      "rank": 4,
+      "rank_low": null,
+      "rank_high": null,
+      "mean_milli": 23167,
+      "mean_low_milli": null,
+      "mean_high_milli": null,
+      "nights": 6,
+      "seat_nights": 6,
+      "actions": 174,
+      "abstain_rate_milli": 0,
+      "refusal_rate_milli": 0,
+      "abstentions": {
+        "missing": 0,
+        "parse_failed": 0,
+        "timeout": 0,
+        "refusal": 0,
+        "budget_aborted": 0,
+        "not_asked": 0,
+        "kept_previous": 0
+      },
+      "columns": {}
+    },
+    {
+      "entry": "qwen3.7-plus",
+      "label": "qwen3.7-plus",
+      "kind": "model",
+      "rank": 5,
+      "rank_low": null,
+      "rank_high": null,
+      "mean_milli": 22000,
+      "mean_low_milli": null,
+      "mean_high_milli": null,
+      "nights": 6,
+      "seat_nights": 6,
+      "actions": 161,
+      "abstain_rate_milli": 12,
+      "refusal_rate_milli": 0,
+      "abstentions": {
+        "missing": 0,
+        "parse_failed": 0,
+        "timeout": 2,
+        "refusal": 0,
+        "budget_aborted": 0,
+        "not_asked": 0,
+        "kept_previous": 0
+      },
+      "columns": {}
+    },
+    {
+      "entry": "qwen-flash",
+      "label": "qwen-flash",
+      "kind": "model",
+      "rank": 6,
+      "rank_low": null,
+      "rank_high": null,
+      "mean_milli": -19667,
+      "mean_low_milli": null,
+      "mean_high_milli": null,
+      "nights": 6,
+      "seat_nights": 6,
+      "actions": 161,
+      "abstain_rate_milli": 0,
+      "refusal_rate_milli": 0,
+      "abstentions": {
+        "missing": 0,
+        "parse_failed": 0,
+        "timeout": 0,
+        "refusal": 0,
+        "budget_aborted": 0,
+        "not_asked": 0,
+        "kept_previous": 0
+      },
+      "columns": {}
+    },
+    {
+      "entry": "bot:truthful",
+      "label": "老实人",
+      "kind": "bot",
+      "rank": 7,
+      "rank_low": null,
+      "rank_high": null,
+      "mean_milli": -70333,
+      "mean_low_milli": null,
+      "mean_high_milli": null,
+      "nights": 6,
+      "seat_nights": 6,
+      "actions": 127,
+      "abstain_rate_milli": 0,
+      "refusal_rate_milli": 0,
+      "abstentions": {
+        "missing": 0,
+        "parse_failed": 0,
+        "timeout": 0,
+        "refusal": 0,
+        "budget_aborted": 0,
+        "not_asked": 0,
+        "kept_previous": 0
+      },
+      "columns": {}
+    },
+    {
+      "entry": "bot:economist",
+      "label": "经济学家",
+      "kind": "bot",
+      "rank": 8,
+      "rank_low": null,
+      "rank_high": null,
+      "mean_milli": -158000,
+      "mean_low_milli": null,
+      "mean_high_milli": null,
+      "nights": 6,
+      "seat_nights": 6,
+      "actions": 138,
+      "abstain_rate_milli": 0,
+      "refusal_rate_milli": 0,
+      "abstentions": {
+        "missing": 0,
+        "parse_failed": 0,
+        "timeout": 0,
+        "refusal": 0,
+        "budget_aborted": 0,
+        "not_asked": 0,
+        "kept_previous": 0
+      },
+      "columns": {}
+    }
+  ],
+  "missions": [
+    {
+      "entry": "deepseek-v4-flash-0731",
+      "label": "deepseek-v4-flash-0731",
+      "nights": 6,
+      "held": 6,
+      "completed": 2,
+      "completion_milli": 333,
+      "by_kind": {
+        "collector": {
+          "held": 3,
+          "completed": 1
+        },
+        "shill": {
+          "held": 3,
+          "completed": 1
+        }
+      },
+      "bonus_total": 300,
+      "bonus_mean_milli": 50000
+    },
+    {
+      "entry": "deepseek-v4.1-flash",
+      "label": "deepseek-v4.1-flash",
+      "nights": 6,
+      "held": 6,
+      "completed": 1,
+      "completion_milli": 167,
+      "by_kind": {
+        "collector": {
+          "held": 3,
+          "completed": 0
+        },
+        "shill": {
+          "held": 3,
+          "completed": 1
+        }
+      },
+      "bonus_total": 150,
+      "bonus_mean_milli": 25000
+    },
+    {
+      "entry": "glm-5",
+      "label": "glm-5",
+      "nights": 6,
+      "held": 6,
+      "completed": 0,
+      "completion_milli": 0,
+      "by_kind": {
+        "collector": {
+          "held": 3,
+          "completed": 0
+        },
+        "shill": {
+          "held": 3,
+          "completed": 0
+        }
+      },
+      "bonus_total": 0,
+      "bonus_mean_milli": 0
+    },
+    {
+      "entry": "glm-5.1",
+      "label": "glm-5.1",
+      "nights": 6,
+      "held": 6,
+      "completed": 0,
+      "completion_milli": 0,
+      "by_kind": {
+        "collector": {
+          "held": 3,
+          "completed": 0
+        },
+        "shill": {
+          "held": 3,
+          "completed": 0
+        }
+      },
+      "bonus_total": 0,
+      "bonus_mean_milli": 0
+    },
+    {
+      "entry": "qwen-flash",
+      "label": "qwen-flash",
+      "nights": 6,
+      "held": 6,
+      "completed": 0,
+      "completion_milli": 0,
+      "by_kind": {
+        "collector": {
+          "held": 3,
+          "completed": 0
+        },
+        "shill": {
+          "held": 3,
+          "completed": 0
+        }
+      },
+      "bonus_total": 0,
+      "bonus_mean_milli": 0
+    },
+    {
+      "entry": "qwen3.7-plus",
+      "label": "qwen3.7-plus",
+      "nights": 6,
+      "held": 6,
+      "completed": 0,
+      "completion_milli": 0,
+      "by_kind": {
+        "collector": {
+          "held": 3,
+          "completed": 0
+        },
+        "shill": {
+          "held": 3,
+          "completed": 0
+        }
+      },
+      "bonus_total": 0,
+      "bonus_mean_milli": 0
+    }
+  ],
+  "nights": [
+    {
+      "night": "s1-d01-r0",
+      "unit": "d01",
+      "deck": "d01",
+      "rotation": 0
+    },
+    {
+      "night": "s1-d01-r1",
+      "unit": "d01",
+      "deck": "d01",
+      "rotation": 1
+    },
+    {
+      "night": "s1-d01-r2",
+      "unit": "d01",
+      "deck": "d01",
+      "rotation": 2
+    },
+    {
+      "night": "s1-d01-r3",
+      "unit": "d01",
+      "deck": "d01",
+      "rotation": 3
+    },
+    {
+      "night": "s1-d01-r4",
+      "unit": "d01",
+      "deck": "d01",
+      "rotation": 4
+    },
+    {
+      "night": "s1-d01-r5",
+      "unit": "d01",
+      "deck": "d01",
+      "rotation": 5
+    }
+  ],
+  "footer": {
+    "unit": "deck",
+    "units": 1,
+    "model_pairs": 15,
+    "sigma_milli": null,
+    "gap_milli": null,
+    "text_en": "Too few nights so far to say which differences can be told apart: at least two decks and two models are needed.",
+    "text_zh": "按现有夜数，还算不出多大的差距才分得出来：至少要有两副牌和两个模型。",
+    "basis_en": null,
+    "basis_zh": null
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schema": "auction-night/season-seeds@1",
+  "season": "s1",
+  "revealed_utc": "2026-11-02T14:34:44Z",
+  "decks": [
+    {
+      "deck": "d01",
+      "seed": "98fa28930c35382bfcf8d9e669305340c2102c0249a7110f3c31d3c685492229"
+    }
+  ]
+}
