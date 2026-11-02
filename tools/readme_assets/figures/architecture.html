@@ -76,8 +76,8 @@
         <p><span class="en">Two judge models, and program checks of pledges and bids.</span><span class="zh">两位评委模型，以及程序对誓约和出价的核对。</span></p></div>
       <div class="chip" id="c4"><h4><span class="en">Content gate</span><span class="zh">内容闸门</span></h4>
         <p><span class="en">A word list, and a classifier model if configured, on every public text.</span><span class="zh">每段公开文字过词表，配置了分类器时再过分类器。</span></p></div>
-      <p class="note"><span class="en">A host, judge or classifier that is a model is called once by <span class="mono">auction-night show</span> and recorded. <span class="mono">export</span> reads the recording and calls nothing.</span>
-        <span class="zh">主持人、评委或分类器是模型时，由 <span class="mono">auction-night show</span> 调用一次并录下。<span class="mono">export</span> 读录像，不调用任何模型。</span></p>
+      <p class="note"><span class="en">A host, judge or classifier model is called only by <span class="mono">auction-night show</span>, which records every call. <span class="mono">export</span> reads the recording and calls nothing.</span>
+        <span class="zh">主持人、评委或分类器是模型时，只由 <span class="mono">auction-night show</span> 调用，每次调用都录下。<span class="mono">export</span> 读录像，不调用任何模型。</span></p>
     </div>
 
     <div class="node" id="replay">

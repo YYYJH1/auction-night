@@ -31,11 +31,11 @@ R=docs/demo/trial-d01-r1.json    # 配图用的那一夜，auction-night export 
 for t in light dark; do
   node tools/readme_assets/capture_replay.mjs --replay $R --lot 5 --lang zh --theme $t --out docs/assets/lot-$t.gif
   node tools/readme_assets/capture_replay.mjs --replay $R --view awards --lang zh --theme $t --height 582 --out docs/assets/awards-$t.png
-  node tools/readme_assets/capture_replay.mjs --replay $R --view review --lang zh --theme $t --height 560 --out docs/assets/review-$t.png
+  node tools/readme_assets/capture_replay.mjs --replay $R --view review --lang zh --theme $t --height 641 --out docs/assets/review-$t.png
 done
 ```
 
-要用真实模型的一夜，把 `R` 指向它的 `replay.json`，并用 `--lot` 选择拍品。
+要换一夜，把 `R` 指向它的 `replay.json`，并用 `--lot` 选择拍品。
 
 - `--lines N` 设置 GIF 显示几句聊天（默认 4）。`--fps` 和 `--width` 设置帧率（10）和宽度（960）。`--height` 设置每张图的高度（600）。GIF 的大小必须在 `--max-mb`（4）以内。脚本会不断减少颜色数，直到满足。
 - 拍品的静态截图使用 `--scene card|chat|bids|seats|host` 和 `--at <seconds>|end`。`--lens off` 会隐藏底牌。

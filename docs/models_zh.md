@@ -2,7 +2,7 @@
 
 # 模型与成本
 
-命令在仓库根目录运行。先按 [试一试](../README_zh.md) 做 `uv sync`。
+命令在仓库根目录运行。先按 [试一试](../README_zh.md#试一试) 做 `uv sync`。
 
 ## 阿里云百炼
 
@@ -24,9 +24,9 @@ uv run auction-night export runs/night-01
 也可以在自己的机器上用开源模型跑一夜，不花一分钱。`configs/night_local.yaml` 让一个模型坐满六个模型座位，主持人和评委用脚本角色，所以一台模型服务就够。任何说 OpenAI 兼容接口的服务都能接：有 GPU 用 vLLM，笔记本上用 Ollama。
 
 ```
-vllm serve Qwen/Qwen3-4B --served-model-name qwen3-4b \
+vllm serve Qwen/Qwen3-4B --served-model-name qwen3-4b --port 8001 \
   --enable-auto-tool-choice --tool-call-parser hermes --reasoning-parser qwen3
-export LOCAL_LLM_BASE_URL=http://127.0.0.1:8000/v1
+export LOCAL_LLM_BASE_URL=http://127.0.0.1:8001/v1
 export AUCTION_NIGHT_SEED_LOCAL=$(python3 -c "import secrets; print(secrets.token_hex(16))")
 uv run auction-night run -c configs/night_local.yaml -o runs/local
 uv run auction-night export runs/local
@@ -46,4 +46,4 @@ uv run auction-night export runs/local
 | 主持人、评委和内容筛查 | \$0.04（¥0.27） | \$0.15（¥1.02） |
 | 合计 | \$0.29（¥1.95） | \$0.69（¥4.56） |
 
-低档假设没有思考 token，高档假设每次调用 1,000 个思考 token。2026-11-02（UTC）两个试跑夜里，模型想得更久，有的模型光作战计划就用了几千个思考 token。夜号 `trial-d01-r1` 打完全部 12 件，座位花 \$0.89（¥5.92），节目层花 \$0.06（¥0.42）。夜号 `trial-d01-r0` 的上限是 \$0.60，打到第 10 件时触顶。该文件把 `limits.max_cost_per_night_usd` 设为 1.50（约 ¥10），达到上限的一夜会让模型沉默着打完，并加上标记。模板里还留着发牌种子承诺的占位符，`estimate` 会指出来，`seeds plan` 会填上。
+低档假设没有思考 token，高档假设每次调用 1,000 个思考 token。2026-11-02（UTC）两个试跑夜里，模型想得更久，有的模型光作战计划就用了几千个思考 token。夜号 `trial-d01-r1` 打完全部 12 件，座位花 \$0.89（¥5.92），节目层花 \$0.09（¥0.59）。夜号 `trial-d01-r0` 的上限是 \$0.60，打到第 10 件时触顶。该文件把 `limits.max_cost_per_night_usd` 设为 1.50（约 ¥10），达到上限的一夜会让模型沉默着打完，并加上标记。模板里带有发牌种子承诺的占位符，`estimate` 会指出来，`seeds plan` 会填上。

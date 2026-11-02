@@ -267,7 +267,11 @@ def simulate(
         help="The night configuration (YAML). Its model seats are played by rule bots.",
     ),
     preset: str | None = typer.Option(
-        None, "--preset", "-p", help="A named setup instead of a configuration: s1-c300 or s2."
+        None,
+        "--preset",
+        "-p",
+        help="A named setup instead of a configuration: s1-c300 or s2. Both play 3000 nights at "
+        "budget scale 300, with different seeds.",
     ),
     nights: int | None = typer.Option(
         None, "--nights", "-n", min=1, help="Nights to play. Default: 3000 for a preset, else 1000."
@@ -286,11 +290,14 @@ def simulate(
     """Simulate nights with rule-based bots only: no model, nothing written.
 
     The model seats of the configuration are played by rule bots of three
-    styles (the textbook bid, 5/4 of it and 7/10 of it) that go after their
-    mission. The bot seats play as configured. The report gives the average
-    surplus of each style, how often a seat spent nine tenths of its budget,
-    the paired differences P-E and P-S, and how often each kind of mission
-    was completed. Intervals are 95% intervals over nights.
+    styles that go after their mission: E bids the textbook bid, O 5/4 of it
+    and S 7/10 of it. The bot seats play as configured: the economist is P
+    when it paces and E when it does not, and the truthful bot is T. The
+    report gives the average surplus of each style, how often a seat spent
+    nine tenths of its budget, the paired differences P-E and P-S (the surplus
+    of P minus that of E, and that of P minus that of S, within a night), and
+    how often each kind of mission was completed. Intervals are 95% intervals
+    over nights.
     """
     import yaml
 
@@ -469,9 +476,11 @@ def season(
 
     The footer says how large a difference between models must be to be told apart.
 
-    A night with budget_aborted in its night_end, or with a person at the table, does not count.
+    A night does not count if its night_end says budget_aborted, if a person was at the table,
+    if it was played in variety mode, or if its log has no night_end.
 
-    Such a night is listed as left out.
+    Such a night is listed as left out, with its reason: budget_aborted, human, variety or
+    no_night_end.
 
     The same logs, seed and number of resamples always give the same board.
 

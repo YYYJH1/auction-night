@@ -13,8 +13,8 @@ than one coin in the pair differences (measured once, 4000 cards).
 
 A number passes when it lies within ``Z`` standard errors of the reference, taking the error of
 both samples together. ``Z`` is 4, so that about one faithful run in a thousand fails any of the
-twenty comparisons. The reference errors come from the published intervals, or, where none was
-published, from the same calibration run.
+twenty comparisons. The reference errors come from the intervals that the calibration run
+reported.
 """
 
 import math
@@ -31,7 +31,7 @@ JOBS = min(4, os.cpu_count() or 1)
 
 @dataclass(frozen=True)
 class Reference:
-    """A published number, the standard error of its sample and half its last digit."""
+    """A reference number, the standard error of its sample and half its last digit."""
 
     value: float
     error: float

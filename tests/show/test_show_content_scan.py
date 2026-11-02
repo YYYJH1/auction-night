@@ -56,9 +56,8 @@ from auction_night.show.content_scan import (
 from auction_night.show.host import BANNED_WORDS
 from auction_night.show.replay_export import ExportError, export_replay, usage_from_cassettes
 
-# Words of the public-copy rule are assembled from pieces, so that this file passes its own scan.
-WELFARE = "wel" + "fare"
-EFFICIENCY = "effi" + "ciency"
+WELFARE = "welfare"
+EFFICIENCY = "efficiency"
 
 
 def sample() -> Replay:

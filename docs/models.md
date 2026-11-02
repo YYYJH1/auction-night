@@ -2,7 +2,7 @@
 
 # Models and cost
 
-Run the commands in the root of the repository, after `uv sync` as in [Try it](../README.md).
+Run the commands in the root of the repository, after `uv sync` as in [Try it](../README.md#try-it).
 
 ## Alibaba Cloud Model Studio
 
@@ -24,9 +24,9 @@ uv run auction-night export runs/night-01
 A night can also run on an open model on your own machine, with nothing paid. `configs/night_local.yaml` puts one model in all six model seats and keeps the host and the judges scripted, so one model server is enough. Any server that speaks the OpenAI-compatible API works: vLLM on a GPU, or Ollama on a laptop.
 
 ```
-vllm serve Qwen/Qwen3-4B --served-model-name qwen3-4b \
+vllm serve Qwen/Qwen3-4B --served-model-name qwen3-4b --port 8001 \
   --enable-auto-tool-choice --tool-call-parser hermes --reasoning-parser qwen3
-export LOCAL_LLM_BASE_URL=http://127.0.0.1:8000/v1
+export LOCAL_LLM_BASE_URL=http://127.0.0.1:8001/v1
 export AUCTION_NIGHT_SEED_LOCAL=$(python3 -c "import secrets; print(secrets.token_hex(16))")
 uv run auction-night run -c configs/night_local.yaml -o runs/local
 uv run auction-night export runs/local
@@ -46,4 +46,4 @@ For `configs/night_bailian.yaml` with `configs/prices.bailian.yaml` (prices of 2
 | Host, judges and content scan | \$0.04 (¥0.27) | \$0.15 (¥1.02) |
 | Together | \$0.29 (¥1.95) | \$0.69 (¥4.56) |
 
-Low assumes no thinking tokens, and High assumes 1,000 thinking tokens per call. The models of the two trial nights of 2026-11-02 (UTC) thought for longer, and the opening plan alone took some of them several thousand tokens. Night `trial-d01-r1` played all twelve lots for \$0.89 (¥5.92) in the seats and \$0.06 (¥0.42) in the show layer. Night `trial-d01-r0` had a cap of \$0.60 and reached it at lot 10. The file sets `limits.max_cost_per_night_usd` to 1.50 (about ¥10), and a night that reaches the cap is played on with the models silent and flagged. The template still carries a placeholder for the commitment of the deal seed, which `estimate` points out and `seeds plan` fills in.
+Low assumes no thinking tokens, and High assumes 1,000 thinking tokens per call. The models of the two trial nights of 2026-11-02 (UTC) thought for longer, and the opening plan alone took some of them several thousand tokens. Night `trial-d01-r1` played all twelve lots for \$0.89 (¥5.92) in the seats and \$0.09 (¥0.59) in the show layer. Night `trial-d01-r0` had a cap of \$0.60 and reached it at lot 10. The file sets `limits.max_cost_per_night_usd` to 1.50 (about ¥10), and a night that reaches the cap is played on with the models silent and flagged. The template carries a placeholder for the commitment of the deal seed, which `estimate` points out and `seeds plan` fills in.

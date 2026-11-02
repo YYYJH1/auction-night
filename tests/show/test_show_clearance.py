@@ -32,9 +32,8 @@ from auction_night.show.content_scan import (
 )
 from auction_night.show.replay_export import export_replay
 
-# Words of the public-copy rule are assembled from pieces, so that this file passes its own scan.
-WELFARE = "wel" + "fare"
-EFFICIENCY = "effi" + "ciency"
+WELFARE = "welfare"
+EFFICIENCY = "efficiency"
 OPENING = "祝大家好运"  # the first words of six lines of the mock night
 SIX = [
     "timeline[0].talk[0].text",

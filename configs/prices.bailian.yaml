@@ -1,4 +1,5 @@
-# Price list of the first night with real models, on Alibaba Cloud Model Studio (Bailian).
+# Price list of the models in configs/night_bailian.yaml, a night with real models on Alibaba
+# Cloud Model Studio (Bailian).
 #
 # Prices are in yuan (CNY) per million tokens, for the mainland China deployment, as the price
 # page listed them on 2026-11-01. Every entry takes the lowest tier (a request of a night is far

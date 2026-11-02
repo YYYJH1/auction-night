@@ -20,7 +20,7 @@ is in neither table, so a field added to the replay later cannot slip through un
 
 Check one: the word list
 ------------------------
-The words of the project's public copy rule (``BANNED_WORDS`` of the host) are always on. The
+The banned words of the host (``BANNED_WORDS``) are always on. The
 configuration may add a list of its own (``show.content_scan.wordlist``, a text file with one term
 per line, ``#`` for comments, ``re:`` in front of a regular expression). Text is compared after
 NFKC normalisation and case folding, with invisible format characters removed. A term made of ASCII
@@ -361,7 +361,7 @@ class Wordlist:
 
     @classmethod
     def builtin(cls) -> "Wordlist":
-        """The words the project's public copy never uses (the host's banned vocabulary)."""
+        """The banned words of the host (``BANNED_WORDS``)."""
         return cls.of(BANNED_WORDS, "banned vocabulary")
 
     def merged(self, other: "Wordlist") -> "Wordlist":

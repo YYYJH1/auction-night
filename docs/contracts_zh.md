@@ -184,7 +184,7 @@ N 号座位的提示词只用 `public` 和 `seat:N` 事件构建。`visible_to(v
 * `act_tool_openai(strict=...)` 返回 chat-completions 的格式，带 `parameters` 和类型数组。
 * `validate_act(args, phase, ctx)` 按阶段表检查一个已解析的字典，返回 `FieldError(field, code, message)` 的列表，其中 code 取 `missing_required`、`wrong_type`、`out_of_range`、`phase_mismatch` 和 `inconsistent_pledge`。阶段用不到的字段会被忽略。高于预算的出价不算错误，因为引擎会把它夹取到预算。把回复变成这种字典的解析阶梯在 `src/auction_night/llm/parse.py`。
 
-Anthropic 关于严格工具调用的文档，在受支持的 schema 特性里列出了 `anyOf` 和 null。文档没有提到 `["integer", "null"]` 这样的类型数组。所以 Anthropic 的导出使用 `anyOf`。它还没有在完整的一夜里用过。如果某个端点拒绝它，`act_tool_anthropic("type_array")` 给出另一种写法，其余一概不动。兼容 OpenAI 的端点的严格模式因端点而异，`act_tool_openai(nullable_style="any_of")` 也能在那里给出第一种写法。
+Anthropic 关于严格工具调用的文档，在受支持的 schema 特性里列出了 `anyOf` 和 null。文档没有提到 `["integer", "null"]` 这样的类型数组。所以 Anthropic 的导出使用 `anyOf`。如果某个端点拒绝它，`act_tool_anthropic("type_array")` 给出另一种写法，其余一概不动。兼容 OpenAI 的端点的严格模式因端点而异，`act_tool_openai(nullable_style="any_of")` 也能在那里给出第一种写法。
 
 ## 回放（`replay.py`）
 

@@ -4,7 +4,7 @@
 
 ## What a night looks like
 
-Eight seats sit at the table. Six are language models. Two are rule-based bots: an "economist" that bids the textbook equilibrium scaled down to its budget, and an "honest" bot that bids its own value. Models see only code names for each other, and the audience sees the model IDs.
+Eight seats sit at the table. Six are language models. Two are rule-based bots: an "economist" that bids the textbook equilibrium scaled down to its budget, and a "truthful" bot that bids its own value. Models see only code names for each other, and the audience sees the model IDs.
 
 Every model has a private budget, a private value for each lot and a secret mission. A collector must win two lots that carry a given tag. A shill must drive one given lot up to a target price without being the one who buys it. The bots have no mission. All money is fictional coins.
 
@@ -33,7 +33,7 @@ The replay page plays each lot on its own and offers a three-minute version of t
 <details>
 <summary>The host's review</summary>
 
-Before the first lot the host reads four fixed predictions about how the models will bid, one for each of four auction rules. They are taken from a published study of how language models bid (arXiv 2507.09083). After the night the program settles each prediction from the results.
+Before the first lot the host reads four fixed predictions about how the models will bid, one for each of four auction rules. They are the show's own bets, written with reference to a study of how language models bid (arXiv 2507.09083). After the night the program settles each prediction from the results.
 
 <p align="center"><picture>
 <source media="(prefers-color-scheme: dark)" srcset="assets/review-dark.png">
@@ -41,7 +41,7 @@ Before the first lot the host reads four fixed predictions about how the models 
 
 </details>
 
-The replay page has no dependencies. Besides the replay named in its address, it opens one chosen with its file button. A link can name a lot or a view after `#/n/<night id>`: `/lot/<k>`, `/recap`, `/highlights`, `/awards` or `/review`. The night of the pictures in this file and of the GIF in the README is in `docs/demo/trial-d01-r1.json`, so with the server of [Try it](../README.md) running, <http://127.0.0.1:8000/viewer/index.html?replay=../docs/demo/trial-d01-r1.json#/n/trial-d01-r1/lot/5> opens the lot of the GIF.
+The replay page has no dependencies. Besides the replay named in its address, it opens one chosen with its file button. A link can name a lot or a view after `#/n/<night id>`: `/lot/<k>`, `/recap`, `/highlights`, `/awards` or `/review`. The night of the pictures in this file and of the GIF in the README is in `docs/demo/trial-d01-r1.json`, so with the server of [Try it](../README.md#try-it) running, <http://127.0.0.1:8000/viewer/index.html?replay=../docs/demo/trial-d01-r1.json#/n/trial-d01-r1/lot/5> opens the lot of the GIF.
 
 ## How it is built
 

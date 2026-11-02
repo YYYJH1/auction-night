@@ -1,10 +1,10 @@
-# Template of the first night with real models, played through Alibaba Cloud Model Studio
+# Template of a night with real models, played through Alibaba Cloud Model Studio
 # (Bailian): the OpenAI-compatible interface of DashScope, mainland China endpoint.
 #
 # This is a trial line-up, and every model in it is cheap: six seats with two models each from
 # Qwen, DeepSeek and Zhipu, and the two rule bots. Prices are in configs/prices.bailian.yaml
 # (yuan, converted to dollars at the dated rate written there). The cost cap is 1.50 USD, about
-# 10 yuan. On 2026-11-02 (UTC) a whole night of this line-up cost 0.89 USD in the seats and 0.06 USD in
+# 10 yuan. On 2026-11-02 (UTC) a whole night of this line-up cost 0.89 USD in the seats and 0.09 USD in
 # the show layer, above the high estimate of `auction-night estimate -c configs/night_bailian.yaml`,
 # because the opening plan made some models think for several thousand tokens.
 #

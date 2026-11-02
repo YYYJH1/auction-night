@@ -6,9 +6,9 @@
 # at a model as in configs/night_api.example.yaml to have a model host and model judges.
 #
 # Serve a model with tool calling, and give its address in LOCAL_LLM_BASE_URL:
-#   vllm serve Qwen/Qwen3-4B --served-model-name qwen3-4b \
+#   vllm serve Qwen/Qwen3-4B --served-model-name qwen3-4b --port 8001 \
 #     --enable-auto-tool-choice --tool-call-parser hermes --reasoning-parser qwen3
-#   export LOCAL_LLM_BASE_URL=http://127.0.0.1:8000/v1
+#   export LOCAL_LLM_BASE_URL=http://127.0.0.1:8001/v1
 # With Ollama, pull the model and write `model: qwen3:4b` in the seats below:
 #   ollama pull qwen3:4b
 #   export LOCAL_LLM_BASE_URL=http://127.0.0.1:11434/v1
@@ -17,9 +17,6 @@
 # a valid action at the first attempt, 21 of them with a value clamped into range, and the median
 # call took 1.2 s. A model of 0.8B parameters filled the fields of the wrong phase in most
 # requests, so use 4B parameters or more.
-# Offline night for tests and CI. Every model seat is a scripted mock and both bots are
-# rule bots, so no endpoint, key or network is involved. The night is a full one: 12 lots,
-# all six formats, all phases, missions and plans.
 night:
   id: local-0001
   seed_env: AUCTION_NIGHT_SEED_LOCAL   # the deal seed, for example a random hex string

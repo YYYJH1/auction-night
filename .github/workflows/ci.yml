@@ -30,9 +30,9 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run pytest -q
-      - name: Season leaderboards match their logs (nothing to do while there is no season)
+      - name: Season leaderboards match their logs
         run: uv run python tools/check_leaderboard.py
-      - name: Seed commitments hold and no private seed file is committed (with no season, only the latter)
+      - name: Seed commitments hold and no private seed file is committed
         run: uv run python tools/check_seeds.py
 
   viewer:

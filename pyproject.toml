@@ -12,6 +12,7 @@ classifiers = [
   "Environment :: Console",
   "Intended Audience :: Education",
   "Natural Language :: Chinese (Simplified)",
+  "Natural Language :: English",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Topic :: Games/Entertainment",

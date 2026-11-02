@@ -31,11 +31,11 @@ R=docs/demo/trial-d01-r1.json    # the night of the pictures; any replay.json fr
 for t in light dark; do
   node tools/readme_assets/capture_replay.mjs --replay $R --lot 5 --lang zh --theme $t --out docs/assets/lot-$t.gif
   node tools/readme_assets/capture_replay.mjs --replay $R --view awards --lang zh --theme $t --height 582 --out docs/assets/awards-$t.png
-  node tools/readme_assets/capture_replay.mjs --replay $R --view review --lang zh --theme $t --height 560 --out docs/assets/review-$t.png
+  node tools/readme_assets/capture_replay.mjs --replay $R --view review --lang zh --theme $t --height 641 --out docs/assets/review-$t.png
 done
 ```
 
-For a night with real models, point `R` at its `replay.json` and choose the lot with `--lot`.
+For another night, point `R` at its `replay.json` and choose the lot with `--lot`.
 
 - `--lines N` sets how many chat lines the GIF shows (default 4), `--fps` and `--width` the frame rate (10) and the width (960), and `--height` the height of every picture (600). A GIF has to stay under `--max-mb` (4), and the script lowers the number of colours until it does.
 - A still of a lot takes `--scene card|chat|bids|seats|host` and `--at <seconds>|end`. `--lens off` hides the hole cards.

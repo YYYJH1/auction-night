@@ -33,7 +33,7 @@
 <details>
 <summary>主持人复盘</summary>
 
-开场前，主持人读出四条固定的预测，说的是模型会怎样出价，四种拍卖规则各一条。预测取自一项已发表的语言模型竞拍研究（arXiv 2507.09083）。夜后由程序按结果逐条对账。
+开场前，主持人读出四条固定的预测，说的是模型会怎样出价，四种拍卖规则各一条。这些预测是节目自己的押注，参照一项语言模型竞拍研究（arXiv 2507.09083）写成。夜后由程序按结果逐条对账。
 
 <p align="center"><picture>
 <source media="(prefers-color-scheme: dark)" srcset="assets/review-dark.png">
@@ -41,7 +41,7 @@
 
 </details>
 
-回放页没有任何依赖。除了地址里指明的回放，它也可以用页面上的文件按钮打开一份回放。链接可以在 `#/n/<夜号>` 后面指明一件拍品或一个页面：`/lot/<k>`、`/recap`、`/highlights`、`/awards` 或 `/review`。本文配图和 README 动图用的那一夜在 `docs/demo/trial-d01-r1.json`。按 [试一试](../README_zh.md) 启动服务器后，打开 <http://127.0.0.1:8000/viewer/index.html?replay=../docs/demo/trial-d01-r1.json#/n/trial-d01-r1/lot/5> 就是动图里那件拍品。
+回放页没有任何依赖。除了地址里指明的回放，它也可以用页面上的文件按钮打开一份回放。链接可以在 `#/n/<夜号>` 后面指明一件拍品或一个页面：`/lot/<k>`、`/recap`、`/highlights`、`/awards` 或 `/review`。本文配图和 README 动图用的那一夜在 `docs/demo/trial-d01-r1.json`。按 [试一试](../README_zh.md#试一试) 启动服务器后，打开 <http://127.0.0.1:8000/viewer/index.html?replay=../docs/demo/trial-d01-r1.json#/n/trial-d01-r1/lot/5> 就是动图里那件拍品。
 
 ## 怎么搭的
 

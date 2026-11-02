@@ -4,8 +4,7 @@ No model is called and nothing is written. A night is dealt from a seed, played 
 scores through :func:`~auction_night.engine.night.start` and
 :func:`~auction_night.engine.night.step` by rule bots, and summarised. Many nights, each with
 its own seed, give averages with intervals. This is how the budget scale, the mission bonus and
-the pacing switch of the economist are tuned, and how the claims in the documentation about
-them can be checked again.
+the pacing switch of the economist are tuned.
 
 Who sits where
 --------------

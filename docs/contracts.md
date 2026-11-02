@@ -284,7 +284,7 @@ fields rather than one object; `extract_pledge` builds the structured `Pledge`.
 
 The Anthropic documentation for strict tool use lists `anyOf` and null among the supported
 schema features and does not mention type arrays such as `["integer", "null"]`, so the Anthropic
-export uses `anyOf`. It has not been used in a full night yet. If an endpoint refuses it,
+export uses `anyOf`. If an endpoint refuses it,
 `act_tool_anthropic("type_array")` gives the other form without touching anything else. Strict
 mode of OpenAI-compatible endpoints is endpoint specific, and
 `act_tool_openai(nullable_style="any_of")` gives the first form there as well.

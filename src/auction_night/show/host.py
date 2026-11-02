@@ -90,15 +90,14 @@ RECAP_HIGH: Final = 500
 RECAP_HARD_CHARS: Final = 1000
 MAX_ECHO_CHARS: Final = 2000
 
-# The vocabulary that public copy must not contain. The repository scan looks for the same
-# words, and tools/scan_allow.txt exempts the lines of this list from it.
+# The vocabulary that public copy must not contain.
 BANNED_WORDS: Final[tuple[str, ...]] = (
-    "效率",  # banned-word list
-    "福利",  # banned-word list
-    "PoA",  # banned-word list
-    "welfare",  # banned-word list
-    "price of anarchy",  # banned-word list
-    "efficiency",  # banned-word list
+    "效率",
+    "福利",
+    "PoA",
+    "welfare",
+    "price of anarchy",
+    "efficiency",
 )
 _BANNED: Final = re.compile(
     "|".join(
