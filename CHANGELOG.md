@@ -4,6 +4,24 @@
 
 All notable changes to this project are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-11-02
+
+### Added
+
+- **Season s1.** Six nights of the Bailian line-up on one deck, every model at every seat once. The commitments were pushed before the first night and the seeds revealed after the last. `seasons/s1/` holds the configurations, logs and replays of the nights with the leaderboard and the seeds, and `docs/seasons.md` describes the season.
+
+### Changed
+
+- The review picture shows all four predictions, and the architecture figure says that only `show` calls the models of the show layer.
+- The vLLM example serves on port 8001, so that it leaves port 8000 to the server of the replay page.
+
+### Fixed
+
+- `configs/night_local.yaml` carried a comment of the mock night. It is gone.
+- The documents give the show-layer cost of the demo night as it was recorded and put the budget guesses in the chat instead of the opening plan. The predictions of the host are described as the show's own bets, written with reference to a study.
+- The help of `season` lists every reason a night is left out, the help of `simulate` defines its styles, and `--preset` says what its setups are.
+- The replay page names all three arrangements of the chat side of collusion, and the awards page says once that it shows recorded results.
+
 ## [0.1.0] - 2026-11-02
 
 The first release. From this version on the contracts are frozen: fields and values may be added, and nothing is changed or removed (see [docs/contracts.md](docs/contracts.md)).
@@ -20,4 +38,5 @@ The first release. From this version on the contracts are frozen: fields and val
 - **The command line.** `run`, `replay`, `play`, `simulate`, `estimate`, `season`, `export`, `show` and `seeds`.
 - **Schemas.** JSON Schemas of the configuration, the events, the replay and the price list, and of the two `act` tool definitions, in `schemas/`.
 
+[0.1.1]: https://github.com/YYYJH1/auction-night/releases/tag/v0.1.1
 [0.1.0]: https://github.com/YYYJH1/auction-night/releases/tag/v0.1.0

@@ -4,6 +4,24 @@
 
 本项目所有值得注意的改动都列在这里。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)。项目遵循 [Semantic Versioning](https://semver.org/)。
 
+## [0.1.1] - 2026-11-02
+
+### 新增
+
+- **赛季 s1。** 百炼阵容在一副牌上打了六夜，每个模型把每个座位坐过一次。承诺在第一夜之前推送，种子在最后一夜之后揭晓。`seasons/s1/` 里有各夜的配置、日志和回放，以及积分榜和种子，`docs/seasons_zh.md` 介绍这个赛季。
+
+### 变更
+
+- 复盘截图露出全部四条预测，架构图写明节目层的模型只由 `show` 调用。
+- vLLM 示例改用 8001 端口，把 8000 端口留给回放页的服务器。
+
+### 修复
+
+- `configs/night_local.yaml` 里混进了模拟夜的注释，已删除。
+- 文档按录下的数字写演示夜的节目层费用，并把预算猜测放回聊天环节，不再写在开场计划里。主持人的预测改称节目自己的押注，参照一项研究写成。
+- `season` 的帮助列出一夜不计入的全部原因，`simulate` 的帮助说明各种风格，`--preset` 说明它的设定。
+- 回放页写全合谋聊天一侧的三种约定，颁奖页只说一次页面摆出的是记录下的结果。
+
 ## [0.1.0] - 2026-11-02
 
 第一个版本。从这个版本起契约冻结：可以新增字段和取值，已有的内容不改动也不删除（见 [docs/contracts_zh.md](docs/contracts_zh.md)）。
@@ -20,4 +38,5 @@
 - **命令行。** `run`、`replay`、`play`、`simulate`、`estimate`、`season`、`export`、`show` 和 `seeds`。
 - **Schema。** 配置、事件、回放和价目表的 JSON Schema，以及两份 `act` 工具定义的 JSON Schema，放在 `schemas/` 里。
 
+[0.1.1]: https://github.com/YYYJH1/auction-night/releases/tag/v0.1.1
 [0.1.0]: https://github.com/YYYJH1/auction-night/releases/tag/v0.1.0
