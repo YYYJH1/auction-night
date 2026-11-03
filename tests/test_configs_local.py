@@ -1,10 +1,13 @@
-"""configs/night_local.yaml: a night on an open model behind a local OpenAI-compatible server."""
+"""configs/night_local.yaml: a night on an open model behind a local OpenAI-compatible server,
+and configs/night_local_memory.yaml, the same night with the memory section turned on."""
 
 from pathlib import Path
 
 from auction_night.contracts import load_config
 
-CONFIG = Path(__file__).resolve().parents[1] / "configs" / "night_local.yaml"
+CONFIGS = Path(__file__).resolve().parents[1] / "configs"
+CONFIG = CONFIGS / "night_local.yaml"
+MEMORY = CONFIGS / "night_local_memory.yaml"
 
 
 def test_one_local_model_takes_all_six_model_seats() -> None:
@@ -29,3 +32,12 @@ def test_the_show_needs_no_second_model() -> None:
     assert config.show.host_offline is not None and config.show.host_offline.kind == "mock"
     assert [judge.kind for judge in config.show.judges] == ["mock", "mock"]
     assert config.show.content_scan.classifier is None
+
+
+def test_the_memory_night_is_the_local_night_with_that_one_setting_turned_on() -> None:
+    plain, memory = load_config(CONFIG), load_config(MEMORY)
+    assert plain.night.memory == "off" and memory.night.memory == "plan_pledges"
+    only_memory = memory.night.model_copy(update={"memory": "off"})
+    assert only_memory == plain.night
+    assert memory.model_copy(update={"night": only_memory}) == plain
+    assert memory.night.seed_env == "AUCTION_NIGHT_SEED_LOCAL"

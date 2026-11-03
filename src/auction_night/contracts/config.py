@@ -87,6 +87,10 @@ SeatKind = Literal["llm", "mock", "bot", "human"]
 BotPolicy = Literal["truthful", "economist"]
 MockPolicy = Literal["honest", "collude", "backstab", "random", "abstain"]
 ShillFormat = Literal["english", "sealed_second"]
+# What a model is shown of its own past besides the chat window: nothing, or its opening plan
+# and the pledges that are still in force.
+MemoryMode = Literal["off", "plan_pledges"]
+MEMORY_MODES: Final[tuple[MemoryMode, ...]] = get_args(MemoryMode)
 
 
 def _is_placeholder(text: str) -> bool:
@@ -206,6 +210,11 @@ class NightSettings(ContractModel):
     (``seed_commitment(seed)``). Code that needs the seed calls ``resolve_seed``, which also
     checks the commitment. A value written as ``<like-this>`` stands in for a commitment that
     has not been published yet.
+
+    ``memory`` is what the observation of a model seat holds besides the chat window and the
+    seat's last monologues. ``off`` adds nothing. ``plan_pledges`` adds a section with the seat's
+    own opening plan for the lot in progress, the part of that plan which is still to be spent,
+    and every public pledge that is still in force.
     """
 
     model_config = ConfigDict(
@@ -229,6 +238,7 @@ class NightSettings(ContractModel):
     blind: BlindConfig = Field(default_factory=BlindConfig)
     missions: MissionConfig = Field(default_factory=MissionConfig)
     plan_and_mindreading: bool = True
+    memory: MemoryMode = "off"
     chat: ChatConfig = Field(default_factory=ChatConfig)
     thought: ThoughtConfig = Field(default_factory=ThoughtConfig)
 
@@ -773,9 +783,24 @@ class PricesFile(ContractModel):
 # --------------------------------------------------------------------------------- helpers
 
 
+# Settings that were added after the contracts were frozen, as (section, name, default). The
+# manifest of a replay carries the ``config_hash`` of the configuration it was made with, and
+# ``seeds verify`` compares it with the hash of the ``config.yaml`` beside the replay. A setting
+# that holds its default is therefore left out of the digest, so that a configuration written
+# before the setting existed keeps the digest it was published with.
+_ADDED_AFTER_FREEZE: Final[tuple[tuple[str, str, Any], ...]] = (("night", "memory", "off"),)
+
+
 def config_hash(config: NightConfig) -> str:
-    """Digest of the canonical JSON of a configuration. It enters the run manifest."""
-    return sha256_digest(canonical_json(config, allow_float=True))
+    """Digest of the canonical JSON of a configuration. It enters the run manifest.
+
+    A setting added after the freeze is part of the digest only once it differs from its default.
+    """
+    data = config.model_dump(mode="json", by_alias=True)
+    for section, name, default in _ADDED_AFTER_FREEZE:
+        if data[section].get(name) == default:
+            del data[section][name]
+    return sha256_digest(canonical_json(data, allow_float=True))
 
 
 def find_placeholders(config: NightConfig) -> list[str]:

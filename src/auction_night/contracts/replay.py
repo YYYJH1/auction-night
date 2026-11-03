@@ -322,12 +322,14 @@ class Usage(ContractModel):
 
 
 class ClearedFinding(ContractModel):
-    """A finding of the content gate that a person read and released for publication.
+    """A finding of the content gate that was released for publication.
 
-    ``path`` and ``category`` are the place and the category that the gate reported: a category
-    of the classifier, or ``banned_word`` or ``wordlist`` for a word list. ``detail`` is what the
-    gate said (the reason of the classifier, or the term of the word list), and ``reason`` is the
-    reason that the person gave.
+    A person who read it released it (``Manifest.cleared_findings``), or a rule of the gate did
+    after the classifier had read the texts (``Manifest.auto_cleared_findings``). ``path`` and
+    ``category`` are the place and the category that the gate reported: a category of the
+    classifier, or ``banned_word`` or ``wordlist`` for a word list. ``detail`` is what the gate
+    said (the reason of the classifier, or the term of the word list), and ``reason`` is the
+    reason that the person or the rule gave.
     """
 
     path: Name
@@ -340,7 +342,9 @@ class Manifest(ContractModel):
     """What is needed to reproduce and audit the run.
 
     ``cleared_findings`` lists the findings of the content gate that a person released, in the
-    order of the gate's report. It is empty for a night the gate passed on its own.
+    order of the gate's report. ``auto_cleared_findings`` lists the findings that a rule of the
+    gate released itself, in the same order, each with the reason of the rule. Both are empty for
+    a night the gate passed on its own.
     """
 
     config_hash: Sha256
@@ -359,6 +363,7 @@ class Manifest(ContractModel):
     judge_prompt_hash: Sha256 | None = None
     scan_prompt_hash: Sha256 | None = None
     cleared_findings: list[ClearedFinding] = Field(default_factory=list)
+    auto_cleared_findings: list[ClearedFinding] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def _reveal_opens_commitment(self) -> Self:

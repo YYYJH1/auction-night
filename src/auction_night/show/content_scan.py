@@ -45,7 +45,10 @@ being the same as one of them. Any other clue to a real person in the same text 
 list is part of the request, so a recording made for another line-up is a drift.
 
 A finding that a person has read and decided to publish is released in
-:mod:`auction_night.show.clearance`, which works on the report of this module.
+:mod:`auction_night.show.clearance`, which works on the report of this module. Two kinds of
+objection that are false by what the replay itself holds are released by rule in
+:mod:`auction_night.show.autoclear`, after the classification and without touching the texts that
+the classifier read.
 """
 
 import copy
@@ -428,27 +431,38 @@ class ScanReport:
     """The outcome of a scan: how much was read, and every finding. ``ok`` is the verdict.
 
     ``findings`` are the ones that stand. ``cleared`` are the ones that a person released
-    (:func:`auction_night.show.clearance.release`). A scan on its own never fills it.
+    (:func:`auction_night.show.clearance.release`) and ``auto_cleared`` the ones that a rule of
+    the gate released (:func:`auction_night.show.autoclear.auto_release`). A scan on its own
+    never fills either of them.
     """
 
     scanned: int
     findings: tuple[Finding, ...] = ()
     batches: int = 0
     cleared: tuple[Finding, ...] = ()
+    auto_cleared: tuple[Finding, ...] = ()
 
     @property
     def ok(self) -> bool:
         return not self.findings
 
     def summary(self) -> str:
-        released = len(self.cleared)
+        by_hand, by_rule = len(self.cleared), len(self.auto_cleared)
         if self.ok:
             read = f"content scan: {self.scanned} texts read"
-            if released:
-                return f"{read}, {released} finding(s) cleared by hand"
-            return f"{read}, nothing found"
+            notes = []
+            if by_hand:
+                notes.append(f"{by_hand} finding(s) cleared by hand")
+            if by_rule:
+                notes.append(f"{by_rule} finding(s) cleared by rule")
+            return ", ".join([read, *notes]) if notes else f"{read}, nothing found"
         standing = f"content scan: {len(self.findings)} finding(s) in {self.scanned} texts"
-        return f"{standing}, {released} cleared by hand" if released else standing
+        notes = []
+        if by_hand:
+            notes.append(f"{by_hand} cleared by hand")
+        if by_rule:
+            notes.append(f"{by_rule} cleared by rule")
+        return ", ".join([standing, *notes])
 
     def lines(self, limit: int = SHOWN_FINDINGS) -> list[str]:
         """The summary and the first ``limit`` findings, one per line."""

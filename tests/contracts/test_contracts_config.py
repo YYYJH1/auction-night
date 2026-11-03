@@ -243,6 +243,10 @@ def test_endpoint_access_rules(api_raw: dict[str, Any]) -> None:
         (("night", "missions", "shill_threshold"), 0.9512345, "decimal"),
         (("night", "missions", "shill_formats"), ["blind_box"], "english"),
         (("night", "lang"), "en", "zh"),
+        (("night", "memory"), "everything", "plan_pledges"),
+        (("night", "memory"), "Plan_Pledges", "off"),
+        (("night", "memory"), True, "off"),
+        (("night", "memory"), None, "off"),
         (("show", "judges"), [{"kind": "mock"}], "exactly two"),
     ],
 )
@@ -254,6 +258,16 @@ def test_night_rules_are_validated(
         node = node[key]
     node[path[-1]] = value
     rejects(mock_raw, message)
+
+
+def test_the_memory_of_a_night_is_off_unless_the_file_says_otherwise(
+    mock_raw: dict[str, Any],
+) -> None:
+    assert "memory" not in mock_raw["night"]
+    assert NightConfig.model_validate(mock_raw).night.memory == "off"
+    for value in ("off", "plan_pledges"):
+        mock_raw["night"]["memory"] = value
+        assert NightConfig.model_validate(mock_raw).night.memory == value
 
 
 def test_a_small_night_is_a_valid_variant(mock_raw: dict[str, Any]) -> None:
@@ -389,6 +403,22 @@ def test_config_hash_is_stable_and_sensitive(mock_raw: dict[str, Any]) -> None:
     assert config_hash(NightConfig.model_validate(shuffled)) == first
     mock_raw["night"]["seed"] = "another-seed"
     assert config_hash(NightConfig.model_validate(mock_raw)) != first
+
+
+def test_a_setting_added_after_the_freeze_leaves_the_hash_alone_until_it_is_used(
+    mock_raw: dict[str, Any],
+) -> None:
+    """The hash of a published replay must stay the hash of its configuration. ``memory`` came
+    after the freeze, so while it is off it is not part of the digest."""
+    first = config_hash(NightConfig.model_validate(mock_raw))
+    mock_raw["night"]["memory"] = "off"
+    assert config_hash(NightConfig.model_validate(mock_raw)) == first
+    mock_raw["night"]["memory"] = "plan_pledges"
+    assert config_hash(NightConfig.model_validate(mock_raw)) != first
+    config = NightConfig.model_validate(mock_raw)
+    text = canonical_json(config, allow_float=True)
+    assert '"memory":"plan_pledges"' in text
+    assert NightConfig.model_validate_json(text) == config
 
 
 def test_integer_seeds_are_text(mock_raw: dict[str, Any]) -> None:
@@ -612,3 +642,12 @@ def test_only_offline_example_configs_hold_an_inline_seed() -> None:
             assert config.is_offline, f"{path.name}: an inline seed needs a mock or test config"
         else:
             assert config.night.seed_env, path.name
+
+
+def test_every_example_config_keeps_the_memory_section_off_but_the_memory_night() -> None:
+    root = Path(__file__).resolve().parents[2] / "configs"
+    names = sorted(path.name for path in root.glob("night_*.yaml"))
+    assert "night_local_memory.yaml" in names and len(names) >= 5
+    for name in names:
+        expected = "plan_pledges" if name == "night_local_memory.yaml" else "off"
+        assert load_config(root / name).night.memory == expected, name

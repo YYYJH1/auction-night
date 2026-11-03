@@ -1,0 +1,80 @@
+# The local night of configs/night_local.yaml with one more setting, night.memory: plan_pledges.
+# Nothing else differs from that file, so playing the two on one deal seed is a comparison of the
+# same deal with and without the setting.
+#
+# With the setting on, the observation of every call after the opening plan has one more section:
+# the seat's own plan for the lot in progress, the part of the plan that is still to be spent, and
+# the public pledges that are still in force. A seat sees no plan but its own. Without the setting
+# the observation is the one of night_local.yaml.
+#
+# Serve a model as described in night_local.yaml, which also covers Ollama and the size of model
+# to use. For example with vLLM, and then play the two nights on one deal seed:
+#   vllm serve Qwen/Qwen3-4B --served-model-name qwen3-4b --port 8001 \
+#     --enable-auto-tool-choice --tool-call-parser hermes --reasoning-parser qwen3
+#   export LOCAL_LLM_BASE_URL=http://127.0.0.1:8001/v1
+#   export AUCTION_NIGHT_SEED_LOCAL=$(python3 -c "import secrets; print(secrets.token_hex(16))")
+#   uv run auction-night run -c configs/night_local.yaml -o runs/local
+#   uv run auction-night run -c configs/night_local_memory.yaml -o runs/local-memory
+night:
+  id: local-0001
+  seed_env: AUCTION_NIGHT_SEED_LOCAL   # the deal seed, for example a random hex string
+  lang: zh
+  mode: plain
+  lots_per_format: 2              # 6 formats x 2 lots = 12 lots
+  tags: [海洋, 机械, 甜品, 怪谈]
+  tiers: {100: 5, 200: 4, 400: 3}
+  budget: {c: 300, spread: [0.5, 1.5], rounding: floor}
+  dutch: {levels: 10, mode: one_shot}
+  english: {revise_when_remaining_le: 4, revise_timeout: keep_previous}
+  blind: {value_range: [0.5, 1.5], noise: 0.2}
+  missions:
+    bonus: 150
+    collectors: 3
+    shills: 3
+    shill_threshold: 0.95
+    shill_formats: [english, sealed_second]
+  plan_and_mindreading: true
+  memory: plan_pledges            # off in night_local.yaml
+  chat: {max_chars: 60, window_lots: 2, order: rotate, persona_max_chars: 60}
+  thought: {max_chars: 100, keep_last: 2}
+
+season:
+  format: single
+  max_seats_per_vendor: 6
+
+seats:
+  - {seat: 1, codename: 鲸落, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 2, codename: 阿铁, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 3, codename: 小满, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 4, codename: 拾光, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 5, codename: 青柠, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 6, codename: 麦芽, kind: llm, vendor: qwen, endpoint: local, model: qwen3-4b, thinking: {type: disabled}, max_tokens: 2048}
+  - {seat: 7, codename: 老实人, kind: bot, policy: truthful}
+  - {seat: 8, codename: 经济学家, kind: bot, policy: economist, pacing: true}
+
+endpoints:
+  local:
+    kind: openai_compatible
+    base_url_env: LOCAL_LLM_BASE_URL
+    tool_choice: auto
+    strict_tools: false
+    capabilities:
+      supports_sampling_params: true
+      supports_forced_tool_choice: false   # forced, the model filled the fields of other phases
+      supports_strict_tools: false
+      thinking_modes: [disabled]           # sent as chat_template_kwargs.enable_thinking, which vLLM reads
+
+show:
+  host_offline: {kind: mock}
+  judges:
+    - {kind: mock}
+    - {kind: mock}
+  content_scan: {wordlist: null, classifier: null}
+
+limits:
+  call_timeout_s: 120
+  human_timeout_s: null
+  syntax_retries: 1
+  transient_retries: 1
+  max_cost_per_night_usd: null
+  prices_file: null

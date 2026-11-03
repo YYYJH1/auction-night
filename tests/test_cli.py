@@ -1305,7 +1305,46 @@ def test_a_night_the_gate_passes_on_its_own_has_no_cleared_findings(
 ) -> None:
     target = tmp_path / "plain.json"
     assert runner.invoke(app, export_args(night_copy, "-o", target, "--no-git")).exit_code == 0
-    assert json.loads(target.read_text(encoding="utf-8"))["manifest"]["cleared_findings"] == []
+    manifest = json.loads(target.read_text(encoding="utf-8"))["manifest"]
+    assert manifest["cleared_findings"] == [] and manifest["auto_cleared_findings"] == []
+
+
+def test_export_says_which_findings_a_rule_of_the_gate_released(
+    night_copy: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The gate and the rules are tested in tests/show. Here: what the command prints of them."""
+    from auction_night.contracts.replay import ClearedFinding
+    from auction_night.show import replay_export
+    from auction_night.show.content_scan import Finding, ScanReport
+
+    path = "timeline[10].host"
+    record = ClearedFinding(
+        path=path,
+        category="real_person",
+        detail="使用真实人物姓名「阿铁」指代座位",
+        reason="分类器指出的名字「阿铁」只是本夜的座位代号。",
+    )
+    sample = Replay.model_validate_json(SAMPLE.read_text(encoding="utf-8"))
+    manifest = sample.manifest.model_copy(update={"auto_cleared_findings": [record]})
+    replay = sample.model_copy(update={"manifest": manifest})
+    finding = Finding(path, "lot 11", "classifier", "real_person: x", category="real_person")
+    report = ScanReport(500, auto_cleared=(finding,))
+
+    def export_directory(config: Any, directory: Path, **options: Any) -> Any:
+        return replay_export.Exported(replay, replay_export.replay_text(replay), report)
+
+    monkeypatch.setattr(replay_export, "export_directory", export_directory)
+    target = tmp_path / "ruled.json"
+    result = runner.invoke(app, export_args(night_copy, "-o", target, "--no-git"))
+    assert result.exit_code == 0, result.output
+    first, second = result.output.strip().splitlines()
+    assert first.endswith("content scan: 500 texts read, 1 finding(s) cleared by rule")
+    assert second == (
+        "  cleared by rule: timeline[10].host (real_person) "
+        "分类器指出的名字「阿铁」只是本夜的座位代号。"
+    )
+    written = json.loads(target.read_text(encoding="utf-8"))["manifest"]
+    assert [c["path"] for c in written["auto_cleared_findings"]] == [path]
 
 
 def test_the_module_entry_point_exports_with_a_clearance(tmp_path: Path) -> None:

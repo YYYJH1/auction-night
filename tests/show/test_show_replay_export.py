@@ -532,6 +532,16 @@ def test_the_config_hash_changes_with_the_configuration() -> None:
     assert made.manifest.config_hash != build().manifest.config_hash
 
 
+def test_a_night_with_the_memory_section_names_its_texts_and_its_setting_in_the_manifest() -> None:
+    other = play(config_with(night={"memory": "plan_pledges"}))
+    made = build_replay(other.config, other.state, git=NO_GIT)
+    plain = build().manifest
+    assert made.manifest.config_hash == config_hash(other.config) != plain.config_hash
+    assert made.manifest.prompt_hash == templates_digest("zh", "memory")
+    assert plain.prompt_hash == templates_digest("zh") != made.manifest.prompt_hash
+    assert made.manifest.prompt_template_version == plain.prompt_template_version
+
+
 def test_an_inline_seed_can_be_revealed_and_gets_its_digest_as_commitment() -> None:
     made = build(reveal_seed=True)
     assert made.manifest.revealed_seed == "mock-seed-0001"

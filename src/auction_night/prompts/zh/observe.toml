@@ -45,6 +45,22 @@ pledge_other = '''{kind}'''
 
 thoughts_head = '''【你最近{count}次的内心独白】'''
 
+# Section of night.memory = "plan_pledges": the seat's own opening plan and the public pledges that
+# are still in force. These keys are used only when that setting is on, and the digest of the
+# templates leaves every key that starts with memory_ out while it is off.
+
+memory_head = '''【你的开场计划与仍然有效的誓约】'''
+
+memory_plan = '''你的开场计划，第 {lot} 件：重视程度 {priority}（0 到 3），打算最多花 {budget}。'''
+
+memory_plan_left = '''计划里本件和之后各件打算最多花的合计：{total}。'''
+
+memory_plan_none = '''你没有交开场计划。'''
+
+memory_pledges_head = '''仍然有效的誓约（公开，涉及本件和之后的拍品）：'''
+
+memory_pledge = '''{seat} 号「{codename}」立誓：{text}'''
+
 inprogress_head = '''【本件进行中】'''
 
 inprogress_english = '''已退出：{dropped}；当前价 {price}；在场：{present}；你的退出价 {mine}'''

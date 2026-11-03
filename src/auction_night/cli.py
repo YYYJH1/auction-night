@@ -611,6 +611,14 @@ def export(
 
     The manifest of the replay lists the findings that were cleared, with the reason given.
 
+    Two kinds of finding of the classifier are released by rule, and need no FILE.
+
+    One is a game word (a mission kind or a tag) in an extraction of a judge.
+
+    The other is a real_person finding that names only code names of the night.
+
+    The manifest lists them apart, in auto_cleared_findings, and this command prints them.
+
     The configuration is --config, else config.yaml in RUN_DIR.
 
     A deal seed that lives in an environment variable (seed_env) must be set, as for the run.
@@ -705,6 +713,8 @@ def export(
     typer.echo(
         f"wrote {target} ({size} bytes, {len(done.replay.timeline)} lots); {done.report.summary()}"
     )
+    for record in done.replay.manifest.auto_cleared_findings:
+        typer.echo(f"  cleared by rule: {record.path} ({record.category}) {record.reason}")
 
 
 @app.command()

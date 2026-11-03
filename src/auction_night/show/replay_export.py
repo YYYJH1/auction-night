@@ -66,7 +66,8 @@ Where each part comes from
     the mechanism versions, the seed commitment (from the configuration or the log) and, when
     asked for, the revealed seed, which must open it. When a person released findings of the
     content gate (:mod:`auction_night.show.clearance`), the manifest lists them in
-    ``cleared_findings``.
+    ``cleared_findings``, and the ones that a rule of the gate released
+    (:mod:`auction_night.show.autoclear`) in ``auto_cleared_findings``.
 the show-layer parts
     ``judges``, ``judges_absent``, ``verdicts``, ``judge_accuracy``, ``awards``,
     ``bots_reference`` and ``highlights`` are made by :func:`show_parts` from the finished night
@@ -152,6 +153,7 @@ from auction_night.llm.nightrun import (
     first_difference,
 )
 from auction_night.prompts import load_templates, templates_digest
+from auction_night.show.autoclear import auto_release
 from auction_night.show.awards import compute_awards
 from auction_night.show.clearance import Clearance, release
 from auction_night.show.content_scan import (
@@ -820,13 +822,15 @@ def _manifest(
     reveal_seed: bool,
     night: ReplayNight,
     cleared: Sequence[ClearedFinding] = (),
+    auto_cleared: Sequence[ClearedFinding] = (),
 ) -> Manifest:
     lang = config.night.lang
     commitment, revealed = _seed_fields(config, log, reveal_seed)
+    groups = () if config.night.memory == "off" else ("memory",)
     return Manifest(
         config_hash=config_hash(config),
         prompt_template_version=load_templates(lang).version,
-        prompt_hash=templates_digest(lang),
+        prompt_hash=templates_digest(lang, *groups),
         tool_schema_hash=act_tool_fingerprint(),
         engine_version=__version__,
         git_commit=git.commit,
@@ -840,6 +844,7 @@ def _manifest(
         judge_prompt_hash=judge_templates_digest(lang),
         scan_prompt_hash=scan_prompt_digest(),
         cleared_findings=list(cleared),
+        auto_cleared_findings=list(auto_cleared),
     )
 
 
@@ -860,6 +865,7 @@ def build_replay(
     created_utc: str | None = None,
     reveal_seed: bool = False,
     cleared: Sequence[ClearedFinding] = (),
+    auto_cleared: Sequence[ClearedFinding] = (),
 ) -> Replay:
     """Assemble the replay of a finished night. See the module text for the sources.
 
@@ -871,7 +877,8 @@ def build_replay(
     give the usage by role and the model ids that the APIs returned (``usage`` replaces the
     former). ``git`` and ``created_utc`` go into the manifest as given. With ``reveal_seed`` the
     deal seed is published in the manifest. ``cleared`` are the findings of the content gate that
-    a person released, which the manifest lists.
+    a person released and ``auto_cleared`` the ones that a rule of the gate released, which the
+    manifest lists apart.
 
     Raises :class:`PremiseError` when the log breaks a premise of the viewer, and
     :class:`ExportError` for everything else that makes the replay unfit to publish.
@@ -905,7 +912,15 @@ def build_replay(
         reveal=_reveal(state, log),
         scores=_scores(log, _stats(log, parts.stats)),
         manifest=_manifest(
-            config, log, returned, git or GitInfo(), created_utc, reveal_seed, night, cleared
+            config,
+            log,
+            returned,
+            git or GitInfo(),
+            created_utc,
+            reveal_seed,
+            night,
+            cleared,
+            auto_cleared,
         ),
         pledges=pledges,
         judges=list(parts.judges),
@@ -1053,10 +1068,17 @@ def export_replay(
     after them, and a clearance that matches no finding of the scan raises
     :class:`~auction_night.show.clearance.ClearanceError`. The released findings are in
     ``manifest.cleared_findings`` of the replay and in ``cleared`` of the report.
+
+    After the clearances, the findings that a rule of the gate releases are released
+    (:mod:`auction_night.show.autoclear`): they are in ``manifest.auto_cleared_findings`` and in
+    ``auto_cleared`` of the report. The texts that the classifier reads are the same with or
+    without these rules.
     """
     reference = list(analyse_night(state) if theory is None else theory)
 
-    def build(cleared: Sequence[ClearedFinding] = ()) -> Replay:
+    def build(
+        cleared: Sequence[ClearedFinding] = (), auto_cleared: Sequence[ClearedFinding] = ()
+    ) -> Replay:
         return build_replay(
             config,
             state,
@@ -1070,15 +1092,18 @@ def export_replay(
             created_utc=created_utc,
             reveal_seed=reveal_seed,
             cleared=cleared,
+            auto_cleared=auto_cleared,
         )
 
-    report = gate.scan(build())
+    scanned = build()
+    report = gate.scan(scanned)
     cleared: tuple[ClearedFinding, ...] = ()
     if clearances:
         report, cleared = release(report, clearances)
+    report, auto_cleared = auto_release(scanned, report)
     if not report.ok:
         raise ContentScanRejected(report)
-    final = build(cleared)  # again: the classifier's recording is part of the usage now
+    final = build(cleared, auto_cleared)  # again: the classifier's recording is part of the usage
     text = replay_text(final)
     if Replay.model_validate_json(text) != final:
         raise ExportError("the serialised replay does not parse back into the same replay")

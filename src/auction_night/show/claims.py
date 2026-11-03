@@ -76,6 +76,7 @@ from auction_night.show.truth import Truth, mission_kind_of
 __all__ = [
     "BUDGET_TOLERANCE_PERCENT",
     "MIN_OVERLAP_CHARS",
+    "MISSION_KIND_WORDS",
     "VALUATION_TOLERANCE_PERCENT",
     "ClaimCheck",
     "FalseClaim",
@@ -93,6 +94,7 @@ VALUATION_TOLERANCE_PERCENT: Final = 15  # of the tier of the lot
 MIN_OVERLAP_CHARS: Final = 6
 
 _KIND_ZH: Final = {"collector": "收藏家", "shill": "托儿", "none": "没有任务"}
+MISSION_KIND_WORDS: Final = frozenset(_KIND_ZH)  # the words a claim about one's mission is made in
 
 
 # ---------------------------------------------------------------------------- matching

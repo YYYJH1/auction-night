@@ -9,7 +9,8 @@ cannot reach it. Two texts are produced:
   night. That is what makes the request prefix cacheable;
 * the **observation** (:func:`render_observation`) is the single user message of one call: the
   lot in progress, the seat's standing, past results, the latest chat and thoughts, and the
-  instruction for the phase that is asked now.
+  instruction for the phase that is asked now. With ``night.memory`` on it also holds the seat's
+  own opening plan and the public pledges that are still in force (:func:`_memory_block`).
 
 The templates are plain data in ``auction_night/prompts/zh``. Rule texts come from an injected
 callable (``RenderSettings.rules_text``), because they are generated from the mechanism
@@ -23,7 +24,7 @@ from decimal import Decimal
 from typing import Final
 
 from auction_night.contracts.act import PHASE_TABLE, ActContext
-from auction_night.contracts.config import NightConfig
+from auction_night.contracts.config import MemoryMode, NightConfig
 from auction_night.contracts.events import (
     ActionEvent,
     AnyEvent,
@@ -36,6 +37,8 @@ from auction_night.contracts.events import (
     LotPlan,
     NightStartData,
     NightStartEvent,
+    PlanData,
+    PlanEvent,
     Pledge,
     SeatPublic,
     TalkEvent,
@@ -96,6 +99,7 @@ class RenderSettings:
     blind_range: tuple[float, float] = (0.5, 1.5)
     blind_noise: float = 0.2
     mindreading: bool = True
+    memory: MemoryMode = "off"
     templates: TemplateSet = field(default_factory=load_templates)
 
     @classmethod
@@ -120,6 +124,7 @@ class RenderSettings:
             blind_range=night.blind.value_range,
             blind_noise=night.blind.noise,
             mindreading=night.plan_and_mindreading,
+            memory=night.memory,
             templates=templates or load_templates(night.lang),
         )
 
@@ -608,6 +613,97 @@ def _own_thoughts(view: SeatView, settings: RenderSettings) -> list[str]:
     return thoughts[-keep:] if keep > 0 else []
 
 
+def _own_plan(view: SeatView) -> PlanData | None:
+    """The opening plan of the seat itself, if it handed one in.
+
+    The view holds the public events and the seat's own, so a plan of another seat cannot be in
+    it. The check of the seat is a second lock, not the first one.
+    """
+    plans = [
+        event.data
+        for event in view.log
+        if isinstance(event, PlanEvent) and event.data.seat == view.seat
+    ]
+    return plans[-1] if plans else None
+
+
+def _was_asked_for_a_plan(view: SeatView) -> bool:
+    """Whether the seat went through the plan phase. The engine records an action for it whether
+    or not a plan came out, so a night without a plan phase has none."""
+    return any(
+        isinstance(event, ActionEvent)
+        and event.data.phase == "plan"
+        and event.data.seat == view.seat
+        for event in view.log
+    )
+
+
+def _decided(view: SeatView) -> set[int]:
+    """The lots whose hammer has fallen."""
+    return {e.lot for e in view.log if isinstance(e, HammerEvent) and e.lot is not None}
+
+
+def _live_pledges(view: SeatView, lot: int) -> list[tuple[TalkEvent, Pledge]]:
+    """Pledges about the lot in progress or a later lot whose hammer has not fallen, whoever made
+    them. They come in the order of the lots they are about, and within a lot in the order they
+    were made. A pledge about a lot that is decided or past is over and is not listed."""
+    decided = _decided(view)
+    found = [
+        (event, event.data.pledge)
+        for event in view.log
+        if isinstance(event, TalkEvent)
+        and event.data.pledge is not None
+        and event.data.pledge.lot >= lot
+        and event.data.pledge.lot not in decided
+    ]
+    return sorted(found, key=lambda item: (item[1].lot, item[0].seq))
+
+
+def _memory_block(view: SeatView, texts: TemplateSet, lot: int) -> str:
+    """The section of ``night.memory = "plan_pledges"``: what the seat planned for the lot in
+    progress, how much of the plan is still to be spent, and the pledges in force.
+
+    The plan is the seat's own and nobody else's. The pledges were made in public, so every seat
+    may be told all of them, and each is listed with who made it. The part of the plan that is
+    still to be spent is the sum of the planned amounts of the lots whose hammer has not fallen,
+    the lot in progress included. A seat that was asked for a plan and handed in none is told so.
+    A seat that was never asked, in a night without the plan phase, is told nothing about a plan.
+    """
+    lines = [texts.get("observe.memory_head")]
+    plan = _own_plan(view)
+    if plan is None:
+        if _was_asked_for_a_plan(view):
+            lines.append(texts.get("observe.memory_plan_none"))
+    elif lot <= len(plan.priorities):
+        decided = _decided(view)
+        ahead = [n for n in sorted(view.lots) if n not in decided and n <= len(plan.budget_plan)]
+        lines.append(
+            texts.format(
+                "observe.memory_plan",
+                lot=lot,
+                priority=plan.priorities[lot - 1],
+                budget=plan.budget_plan[lot - 1],
+            )
+        )
+        lines.append(
+            texts.format(
+                "observe.memory_plan_left", total=sum(plan.budget_plan[n - 1] for n in ahead)
+            )
+        )
+    lines.append(texts.get("observe.memory_pledges_head"))
+    pledges = [
+        texts.format(
+            "observe.memory_pledge",
+            seat=event.data.seat,
+            codename=view.codename(event.data.seat),
+            text=_pledge_text(texts, pledge),
+        )
+        for event, pledge in _live_pledges(view, lot)
+    ]
+    lines.extend(pledges or [texts.get("observe.none")])
+    return "\n".join(lines)
+
+
 @dataclass(frozen=True)
 class EnglishState:
     """Where an English lot stands for one seat: who left, the price, who is still in."""
@@ -782,6 +878,8 @@ def render_observation(
             )
             thoughts = " / ".join(quote_literal(t) for t in _own_thoughts(view, settings))
             sections.append("\n".join([head, thoughts or texts.get("observe.none")]))
+        if settings.memory == "plan_pledges":
+            sections.append(_memory_block(view, texts, plan.lot))
         if english is not None:
             sections.append(_english_block(texts, english))
 

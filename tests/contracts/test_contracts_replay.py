@@ -440,7 +440,7 @@ def test_the_later_replay_fields_default_to_empty(full: dict[str, Any]) -> None:
     manifest = replay.manifest
     hashes = (manifest.host_prompt_hash, manifest.judge_prompt_hash, manifest.scan_prompt_hash)
     assert hashes == (None, None, None)
-    assert manifest.cleared_findings == []
+    assert manifest.cleared_findings == [] and manifest.auto_cleared_findings == []
 
 
 CLEARED = {
@@ -489,6 +489,35 @@ def test_a_cleared_finding_needs_a_place_a_category_and_one_line_of_reason(
     broken(full, lambda r: r["manifest"].update(cleared_findings=[{**CLEARED, **change}]))
     lacking = {k: v for k, v in CLEARED.items() if k != "reason"}
     broken(full, lambda r: r["manifest"].update(cleared_findings=[lacking]))
+
+
+def test_the_manifest_lists_what_a_rule_released_apart_from_what_a_person_released(
+    full: dict[str, Any],
+) -> None:
+    ok = copy.deepcopy(full)
+    ok["manifest"]["auto_cleared_findings"] = [CLEARED]
+    ok["manifest"]["cleared_findings"] = [{**CLEARED, "path": "host.recap"}]
+    replay = Replay.model_validate(ok)
+    assert [c.path for c in replay.manifest.auto_cleared_findings] == ["host.per_lot[0].text"]
+    assert [c.path for c in replay.manifest.cleared_findings] == ["host.recap"]
+    assert Replay.model_validate_json(canonical_json(replay)) == replay
+    written = json.loads(canonical_json(replay))["manifest"]
+    assert written["auto_cleared_findings"] == [CLEARED]
+    without = copy.deepcopy(ok)
+    del without["manifest"]["auto_cleared_findings"]
+    assert Replay.model_validate(without).manifest.auto_cleared_findings == []
+
+
+@pytest.mark.parametrize(
+    "change",
+    [{"reason": ""}, {"reason": "第一行\n第二行"}, {"path": ""}, {"category": ""}, {"extra": "x"}],
+)
+def test_a_finding_released_by_rule_is_checked_like_one_released_by_a_person(
+    full: dict[str, Any], change: dict[str, Any]
+) -> None:
+    broken(full, lambda r: r["manifest"].update(auto_cleared_findings=[{**CLEARED, **change}]))
+    lacking = {k: v for k, v in CLEARED.items() if k != "reason"}
+    broken(full, lambda r: r["manifest"].update(auto_cleared_findings=[lacking]))
 
 
 def test_the_later_replay_fields_are_checked(full: dict[str, Any]) -> None:

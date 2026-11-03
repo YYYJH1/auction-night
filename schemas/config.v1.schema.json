@@ -565,7 +565,7 @@
     },
     "NightSettings": {
       "additionalProperties": false,
-      "description": "The ``night`` section: rules and economy of one night.\n\nThe deal seed is the root of every random draw of the environment (lots, private cards,\nbudgets, missions, tie-break keys). Give it in exactly one of two ways:\n\n* ``seed_env`` names the environment variable that holds the seed. This is the form of\n  every committed season configuration, because the seed must stay private until the\n  night is published.\n* ``seed`` holds the seed inline. Only mock and test configurations do this.\n\n``deal_seed_commitment`` is the commitment published before the season\n(``seed_commitment(seed)``). Code that needs the seed calls ``resolve_seed``, which also\nchecks the commitment. A value written as ``<like-this>`` stands in for a commitment that\nhas not been published yet.",
+      "description": "The ``night`` section: rules and economy of one night.\n\nThe deal seed is the root of every random draw of the environment (lots, private cards,\nbudgets, missions, tie-break keys). Give it in exactly one of two ways:\n\n* ``seed_env`` names the environment variable that holds the seed. This is the form of\n  every committed season configuration, because the seed must stay private until the\n  night is published.\n* ``seed`` holds the seed inline. Only mock and test configurations do this.\n\n``deal_seed_commitment`` is the commitment published before the season\n(``seed_commitment(seed)``). Code that needs the seed calls ``resolve_seed``, which also\nchecks the commitment. A value written as ``<like-this>`` stands in for a commitment that\nhas not been published yet.\n\n``memory`` is what the observation of a model seat holds besides the chat window and the\nseat's last monologues. ``off`` adds nothing. ``plan_pledges`` adds a section with the seat's\nown opening plan for the lot in progress, the part of that plan which is still to be spent,\nand every public pledge that is still in force.",
       "oneOf": [
         {
           "required": [
@@ -651,6 +651,15 @@
           "minimum": 1,
           "title": "Lots Per Format",
           "type": "integer"
+        },
+        "memory": {
+          "default": "off",
+          "enum": [
+            "off",
+            "plan_pledges"
+          ],
+          "title": "Memory",
+          "type": "string"
         },
         "missions": {
           "$ref": "#/$defs/MissionConfig"

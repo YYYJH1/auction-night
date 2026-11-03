@@ -84,7 +84,7 @@
     },
     "ClearedFinding": {
       "additionalProperties": false,
-      "description": "A finding of the content gate that a person read and released for publication.\n\n``path`` and ``category`` are the place and the category that the gate reported: a category\nof the classifier, or ``banned_word`` or ``wordlist`` for a word list. ``detail`` is what the\ngate said (the reason of the classifier, or the term of the word list), and ``reason`` is the\nreason that the person gave.",
+      "description": "A finding of the content gate that was released for publication.\n\nA person who read it released it (``Manifest.cleared_findings``), or a rule of the gate did\nafter the classifier had read the texts (``Manifest.auto_cleared_findings``). ``path`` and\n``category`` are the place and the category that the gate reported: a category of the\nclassifier, or ``banned_word`` or ``wordlist`` for a word list. ``detail`` is what the gate\nsaid (the reason of the classifier, or the term of the word list), and ``reason`` is the\nreason that the person or the rule gave.",
       "properties": {
         "category": {
           "maxLength": 64,
@@ -1186,8 +1186,15 @@
     },
     "Manifest": {
       "additionalProperties": false,
-      "description": "What is needed to reproduce and audit the run.\n\n``cleared_findings`` lists the findings of the content gate that a person released, in the\norder of the gate's report. It is empty for a night the gate passed on its own.",
+      "description": "What is needed to reproduce and audit the run.\n\n``cleared_findings`` lists the findings of the content gate that a person released, in the\norder of the gate's report. ``auto_cleared_findings`` lists the findings that a rule of the\ngate released itself, in the same order, each with the reason of the rule. Both are empty for\na night the gate passed on its own.",
       "properties": {
+        "auto_cleared_findings": {
+          "items": {
+            "$ref": "#/$defs/ClearedFinding"
+          },
+          "title": "Auto Cleared Findings",
+          "type": "array"
+        },
         "cleared_findings": {
           "items": {
             "$ref": "#/$defs/ClearedFinding"

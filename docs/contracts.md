@@ -67,7 +67,7 @@ runtime dependency.
 
 | Section | Content |
 |---|---|
-| `night` | id, deal seed (inline or from an environment variable) and its commitment, language, mode (`plain` or `variety`), formats and lots per format, tags, tier counts, budget, Dutch levels, English theta, blind-box prior and noise, missions, chat and thought limits |
+| `night` | id, deal seed (inline or from an environment variable) and its commitment, language, mode (`plain` or `variety`), formats and lots per format, tags, tier counts, budget, Dutch levels, English theta, blind-box prior and noise, missions, `memory` (`off` or `plan_pledges`), chat and thought limits |
 | `season` | `single` or `rotation`, planned decks with seed commitments, this night's deck and rotation index, seat limit per vendor |
 | `seats` | 2 to 8 seats. `llm`, `mock` (scripted policy), `bot` (`truthful` or `economist`, with `pacing`) or `human` (at most one). A model seat may name a persona, see Modes |
 | `endpoints` | `anthropic` or `openai_compatible`, base URL or the name of the variable that holds it, name of the variable that holds the key, tool choice, strict tools, rate limits, capability records |
@@ -87,6 +87,10 @@ the tone and never the goal. The personas are `铁算盘`, `浪里个浪` and `�
 (`src/auction_night/llm/personas.py`). An `llm` seat of a variety night needs a persona, and a
 seat of a plain night has none. A night in variety mode is left out of the season leaderboard
 with the reason `variety`, and its replay has `ranked` false.
+
+### Memory
+
+`night.memory` is `off` (the default) or `plan_pledges`. With `plan_pledges`, the observation of a model seat in every phase after the opening plan has one more section. It holds the seat's own plan for the lot in progress (priority and planned amount), the planned amounts of that lot and of the lots after it added up, and every public pledge that is still in force, that is, one about the lot in progress or a later lot whose hammer has not fallen, with the seat that made it. A plan is shown to its own seat only, and a pledge is public anyway. While `memory` is `off`, `config_hash` leaves it out, so a configuration written before the setting existed keeps the hash that its replay carries, and `manifest.prompt_hash` covers the texts of the section only for a night that has it on.
 
 ### Deal seed
 
@@ -301,7 +305,7 @@ mode of OpenAI-compatible endpoints is endpoint specific, and
 | `pledges`, `judges`, `judges_absent`, `verdicts`, `judge_accuracy` | pledge outcomes decided by program, raw judge output, the judges that gave no usable answer and why, findings, judge accuracy on the missions |
 | `awards`, `bots_reference`, `highlights` | awards for model seats, the same for bots as reference, jump-to moments scored 0 to 10 |
 | `scores` | surplus, mission bonus and total kept apart, plus reference statistics |
-| `host`, `usage`, `manifest` | offline commentary, calls and tokens by role, config hash, prompt version, git commit, seed commitment and revealed seed, and the findings of the content gate that a person cleared |
+| `host`, `usage`, `manifest` | offline commentary, calls and tokens by role, config hash, prompt version, git commit, seed commitment and revealed seed, the findings of the content gate that a person cleared (`cleared_findings`) and the ones that a rule of the gate cleared (`auto_cleared_findings`) |
 
 A bid-phase action of the timeline with the status `abstain` and the reason `budget_aborted` is a
 bid that the cost gate skipped. The viewer gives such a lot one line that says so, and the overlay
@@ -315,6 +319,8 @@ revenue in thousandths of a coin and, for a blind box, the price minus the true 
 manifest must agree with the night on the mechanism versions
 and, when it carries a revealed seed, with the commitment. The replay never contains the
 canaries of the private missions.
+
+`manifest.cleared_findings` lists the findings of the content gate that a person read and released with `export --clear`. `manifest.auto_cleared_findings` lists the findings that the gate released itself after the classifier had read the texts, each with its path, category, what the classifier said and the reason of the rule. A `text_value` of a judge's extraction that is a word of the game's own lists (a mission kind, or a tag of the night) is released whatever the classifier thought of it, and so is a `real_person` finding whose reason names only code names of the night. Both lists are empty for a night the gate passed on its own.
 
 ## Season files
 
