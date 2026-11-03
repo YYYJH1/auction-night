@@ -1,0 +1,426 @@
+/* AI Auction Night home page. All styling lives here: the page has no inline styles.
+   The colours and the font are those of the replay page (viewer/style.css): tokens on :root, with a
+   light theme under prefers-color-scheme. --accent-text is the accent for small text and for the
+   fill of a button, a little darker in the light theme so that the text on it can be read. */
+
+:root {
+  --bg: #12141c;
+  --panel: #1a1e2a;
+  --panel-2: #232839;
+  --ink: #ebe7db;
+  --muted: #9ba1b6;
+  --line: #2f3550;
+  --accent: #f0b44c;
+  --accent-ink: #1b1405;
+  --accent-text: #f0b44c;
+  --gain: #5fcb92;
+  --loss: #ee8a74;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f6f2e9;
+    --panel: #fffdf8;
+    --panel-2: #f0eadb;
+    --ink: #2a261f;
+    --muted: #6c6658;
+    --line: #ddd3bd;
+    --accent: #b4730b;
+    --accent-ink: #ffffff;
+    --accent-text: #8a5600;
+    --gain: #1d7a4a;
+    --loss: #b13c27;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.55 system-ui, -apple-system, 'PingFang SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+}
+
+a {
+  color: var(--accent-text);
+}
+
+/* Chinese text breaks after its punctuation, not inside a word. A line of Latin text is not
+   affected, and a very long word still breaks rather than widen the page. */
+.lead,
+.block p,
+.card-body,
+.stage figcaption {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* ------------------------------------------------------------------------------ top bar */
+
+.top {
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.top-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.lang {
+  display: flex;
+  gap: 6px;
+}
+
+.lang-btn {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--ink);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.lang-btn:hover {
+  border-color: var(--accent);
+}
+
+.lang-btn[aria-pressed='true'] {
+  border-color: var(--accent-text);
+  background: var(--accent-text);
+  color: var(--accent-ink);
+  font-weight: 600;
+  cursor: default;
+}
+
+/* ------------------------------------------------------------------------------- title */
+
+.hero {
+  padding: 28px 0 0;
+}
+
+.hero h1 {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 6vw, 44px);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.lead {
+  margin: 0 0 20px;
+  max-width: 42em;
+  font-size: 18px;
+  line-height: 1.6;
+  text-wrap: balance;
+}
+
+/* The GIF carries its own one-pixel outline, so the figure adds no frame. */
+.stage {
+  margin: 0;
+}
+
+.stage img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.stage figcaption {
+  padding: 10px 2px 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+/* ---------------------------------------------------------------------------- sections */
+
+.block {
+  margin-top: 40px;
+}
+
+.block h2 {
+  margin: 0 0 12px;
+  padding-left: 10px;
+  border-left: 3px solid var(--accent);
+  font-size: 20px;
+}
+
+.block h3 {
+  margin: 24px 0 8px;
+  font-size: 16px;
+}
+
+.block p {
+  margin: 0 0 12px;
+}
+
+.note {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.card:hover {
+  border-color: var(--accent);
+}
+
+.card-title {
+  font-size: 16px;
+}
+
+.card-body {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.go {
+  margin-top: auto;
+  padding-top: 4px;
+  color: var(--accent-text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.go::after {
+  content: ' \2192';
+  content: ' \2192' / '';
+}
+
+.night-id {
+  color: var(--muted);
+  font: 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ------------------------------------------------------------------------- leaderboard */
+
+.board-wrap {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.board-wrap > .note {
+  margin: 0;
+  padding: 14px 16px;
+}
+
+.board-wrap + .note {
+  margin-top: 10px;
+}
+
+.board {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.board th,
+.board td {
+  padding: 9px 12px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  vertical-align: baseline;
+}
+
+.board thead th {
+  border-top: 0;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  word-break: keep-all; /* a Chinese heading stays on one line, an English one wraps at its spaces */
+}
+
+.board .num {
+  text-align: right;
+}
+
+.board .rank {
+  width: 3.5em;
+  color: var(--muted);
+  text-align: center;
+}
+
+.board .who {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.board .tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.is-gain {
+  color: var(--gain);
+}
+
+.is-loss {
+  color: var(--loss);
+}
+
+/* --------------------------------------------------------------------------- button, foot */
+
+.btn {
+  display: inline-block;
+  padding: 8px 20px;
+  border: 1px solid var(--accent-text);
+  border-radius: 999px;
+  background: var(--accent-text);
+  color: var(--accent-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn:hover {
+  filter: brightness(1.08);
+}
+
+.foot {
+  margin-top: 48px;
+  padding: 16px 0 32px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.foot-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.foot a {
+  color: inherit;
+}
+
+/* ------------------------------------------------------------------------------ phones */
+
+@media (max-width: 720px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero {
+    padding-top: 20px;
+  }
+
+  .lead {
+    font-size: 17px;
+  }
+
+  .block {
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 520px) {
+  .board {
+    font-size: 13.5px;
+  }
+
+  .board th,
+  .board td {
+    padding: 8px 5px;
+  }
+
+  .board thead th {
+    font-size: 12.5px;
+  }
+
+  .board .rank {
+    width: 2.6em;
+  }
+
+  .board .tag {
+    margin-left: 0;
+  }
+}
+
+/* Controls are at least 44 px high and wide on a phone, on a short window and on any screen used
+   with a finger. */
+@media (max-width: 640px), (max-height: 520px), (pointer: coarse) {
+  .lang-btn,
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .card {
+    min-height: 44px;
+  }
+
+  .foot a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}

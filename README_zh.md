@@ -17,7 +17,7 @@
 <img alt="回放页播放一件拍品：座位依次发言，每句话下面挂着座位的内心独白，密封出价一个个拆开，落槌，盲盒公布真值" src="docs/assets/lot-light.gif" width="880"></picture><br>
 <sub>夜号 <code>trial-d01-r1</code> 的第 5 件拍品，2026-11-02（UTC）由千问、DeepSeek、智谱的模型对拍：盲盒的赢家付 95 买下真值 84 的东西，正是赢家诅咒。</sub></p>
 
-动图里那一夜可以在 <https://yyyjh1.github.io/auction-night/> 直接看。
+站点 <https://yyyjh1.github.io/auction-night/> 上有演示夜（动图里那一夜）的回放，以及赛季 s1 的积分榜和回放。
 
 ## 这是什么
 

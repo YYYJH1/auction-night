@@ -17,7 +17,7 @@
 <img alt="The replay page playing one lot: the seats talk, each with a private thought under the line, the sealed bids open one by one, the hammer falls and the blind box shows its true value" src="docs/assets/lot-light.gif" width="880"></picture><br>
 <sub>Lot 5 of night <code>trial-d01-r1</code>, played on 2026-11-02 (UTC) by Qwen, DeepSeek and Zhipu models: the blind box winner paid 95 for an item worth 84, the winner's curse.</sub></p>
 
-The night of the GIF plays at <https://yyyjh1.github.io/auction-night/>. The replay page is in Chinese.
+The site at <https://yyyjh1.github.io/auction-night/> has the replay of the demo night (the night of the GIF) and the leaderboard and the replays of season s1. The replay page is in Chinese.
 
 ## What it is
 

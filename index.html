@@ -1,12 +1,128 @@
 <!doctype html>
-<html lang="zh">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Auction Night</title>
-<meta http-equiv="refresh" content="0; url=viewer/index.html?replay=../docs/demo/trial-d01-r1.json">
-</head>
-<body>
-<p><a href="viewer/index.html?replay=../docs/demo/trial-d01-r1.json">AI 拍卖之夜 · AI Auction Night</a></p>
-</body>
+<!--
+  AI Auction Night: the home page of the site (a static page, no build step, no dependencies).
+
+  What it shows, in this order
+    the title, a one-line description and the GIF of lot 5 of the demo night;
+    "Start here": three links into the replay page (that lot, the three-minute version, the awards);
+    season s1: the leaderboard, read when the page opens from seasons/s1/leaderboard.json, a line
+      on why it has no rank intervals, and a card for each of the six nights;
+    how to run a night yourself, and the footer with the repository and the license.
+  The page is in Chinese and in English, with the language buttons in the top right corner. It
+  opens in the language that the reader chose before, else in the first language of the browser
+  that the page has, else in English.
+
+  How to open it
+    Serve the repository folder with any static file server and open its root. Plain ES modules
+    do not load from file:// in most browsers, so a server is needed.
+
+  Safety rules
+    The page loads only files from its own site, has no inline script or style, and declares the
+    policy below. It sends nothing anywhere. The one thing it keeps is the language, in
+    localStorage, and only when the browser lets it. Text from the leaderboard file reaches the
+    page as text nodes only.
+
+  Layout of the folder site/
+    strings.js    every fixed text in both languages, and the choice of the language
+    board.js      reading and checking the leaderboard file, and the text of its numbers
+    dom.js        building elements: text as text nodes, tags, attributes and links on a list
+    page.js       putting a language into this page, and drawing the leaderboard and the cards
+    main.js       wiring: the stored language, the language buttons, the fetch
+    home.css      all styling, with the layout for phones at the end
+  An element of this page with data-i18n gets its text from strings.js, one with data-i18n-alt
+  its alt text, and one with data-href its address.
+-->
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <meta name="description" content="六个大模型和两个规则机器人，按六种教科书拍卖规则竞拍十二件拍品，拍完由主持人和两位评委复盘这一夜。 Six language models and two rule-based bots bid for twelve lots under six textbook auction rules, and afterwards a host and two judges review the night.">
+    <title>AI 拍卖之夜 · AI Auction Night</title>
+    <link rel="stylesheet" href="site/home.css">
+    <script type="module" src="site/main.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wrap top-row">
+        <div class="lang" role="group" aria-label="语言 Language">
+          <button type="button" class="lang-btn" data-lang="zh" lang="zh-CN">中文</button>
+          <button type="button" class="lang-btn" data-lang="en" lang="en">English</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero" aria-labelledby="hero-title">
+        <h1 id="hero-title" data-i18n="hero.title"></h1>
+        <p class="lead" data-i18n="hero.lead"></p>
+        <figure class="stage">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="docs/assets/lot-dark.gif">
+            <img src="docs/assets/lot-light.gif" width="960" height="600" alt="" data-i18n-alt="hero.alt">
+          </picture>
+          <figcaption data-i18n="hero.caption"></figcaption>
+        </figure>
+      </section>
+
+      <section class="block" aria-labelledby="start-title">
+        <h2 id="start-title" data-i18n="start.title"></h2>
+        <p class="note" data-i18n="start.note"></p>
+        <ul class="cards">
+          <li>
+            <a class="card" href="viewer/index.html?replay=../docs/demo/trial-d01-r1.json#/n/trial-d01-r1/lot/5">
+              <strong class="card-title" data-i18n="start.lot.title"></strong>
+              <span class="card-body" data-i18n="start.lot.body"></span>
+              <span class="go" data-i18n="start.lot.go"></span>
+            </a>
+          </li>
+          <li>
+            <a class="card" href="viewer/index.html?replay=../docs/demo/trial-d01-r1.json#/n/trial-d01-r1/recap">
+              <strong class="card-title" data-i18n="start.recap.title"></strong>
+              <span class="card-body" data-i18n="start.recap.body"></span>
+              <span class="go" data-i18n="start.recap.go"></span>
+            </a>
+          </li>
+          <li>
+            <a class="card" href="viewer/index.html?replay=../docs/demo/trial-d01-r1.json#/n/trial-d01-r1/awards">
+              <strong class="card-title" data-i18n="start.awards.title"></strong>
+              <span class="card-body" data-i18n="start.awards.body"></span>
+              <span class="go" data-i18n="start.awards.go"></span>
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="block" aria-labelledby="season-title">
+        <h2 id="season-title" data-i18n="season.title"></h2>
+        <p data-i18n="season.intro"></p>
+        <h3 id="board-title" data-i18n="season.boardTitle"></h3>
+        <p class="note" id="board-note" data-i18n="season.boardNote" hidden></p>
+        <div class="board-wrap" id="board"></div>
+        <p class="note" id="board-foot" hidden><span data-i18n="season.oneDeck"></span> <a data-href="link.seasons" data-i18n="season.more"></a></p>
+        <div id="nights-block" hidden>
+          <h3 data-i18n="season.nightsTitle"></h3>
+          <ul class="cards" id="nights"></ul>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="run-title">
+        <h2 id="run-title" data-i18n="run.title"></h2>
+        <p data-i18n="run.body"></p>
+        <p><a class="btn btn-primary" data-href="link.try" data-i18n="run.go"></a></p>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="wrap foot-row">
+        <a href="https://github.com/YYYJH1/auction-night" data-i18n="footer.repo"></a>
+        <a href="https://github.com/YYYJH1/auction-night/blob/main/LICENSE" data-i18n="footer.license"></a>
+      </div>
+    </footer>
+
+    <noscript>
+      <p class="wrap note">这个页面需要 JavaScript。This page needs JavaScript. <a href="https://github.com/YYYJH1/auction-night">GitHub</a></p>
+    </noscript>
+  </body>
 </html>
