@@ -54,6 +54,7 @@ A night with real models goes through the API of Alibaba Cloud Model Studio (Bai
 - [docs/models.md](docs/models.md): real models, open models on your own machine and what a night costs
 - [docs/commands.md](docs/commands.md): every command and its exit status
 - [docs/seasons.md](docs/seasons.md): season s1, its leaderboard and its six replays
+- [docs/case-memory.md](docs/case-memory.md): an experiment on 30 decks, does a seat keep closer to its plan when it can see it
 - [TRANSPARENCY.md](TRANSPARENCY.md): how a night is run, how collusion is looked for, how seeds are committed and what is published
 - [docs/contracts.md](docs/contracts.md): the data shapes and the six mechanism definitions
 - [CHANGELOG.md](CHANGELOG.md): what changed in each version

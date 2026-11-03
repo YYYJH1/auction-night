@@ -54,6 +54,7 @@ python3 -m http.server --bind 127.0.0.1 8000
 - [docs/models_zh.md](docs/models_zh.md)：真实模型、自己机器上的开源模型，以及一夜的成本
 - [docs/commands_zh.md](docs/commands_zh.md)：全部命令和退出状态
 - [docs/seasons_zh.md](docs/seasons_zh.md)：赛季 s1、它的积分榜和六夜回放
+- [docs/case-memory_zh.md](docs/case-memory_zh.md)：30 副牌的对照实验，座位看得见自己的计划时，会不会更按计划花钱
 - [TRANSPARENCY_zh.md](TRANSPARENCY_zh.md)：一夜怎么跑、怎样查合谋、种子怎样承诺、哪些内容会发布
 - [docs/contracts_zh.md](docs/contracts_zh.md)：数据格式和六种规则的定义
 - [CHANGELOG_zh.md](CHANGELOG_zh.md)：各版本的变化

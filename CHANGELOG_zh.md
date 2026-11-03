@@ -4,6 +4,18 @@
 
 本项目所有值得注意的改动都列在这里。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)。项目遵循 [Semantic Versioning](https://semver.org/)。
 
+## [Unreleased]
+
+### 新增
+
+- **首页。** 站点根目录通往演示夜，展示赛季 s1 的积分榜，并链接赛季六夜，中英双语。
+- **记忆。** `night.memory: plan_pledges` 让座位在开场计划之后的每次调用里看到：自己对当前拍品的计划、计划里还剩的部分，以及仍然有效的公开誓约。默认关闭。`configs/night_local_memory.yaml` 是打开这个设置的本地夜配置。
+- **技术案例。** `docs/case-memory_zh.md` 用 30 副牌分别在关闭和打开记忆下各打一夜，`tools/exp_memory.py` 和 `tools/exp_memory_plot.py` 生成汇总和图。
+
+### 变更
+
+- 内容闸门在分类器回答之后，自动放行两类发现：评委摘录里任务类型或标签的取值，以及只点名座位代号的真人发现，并把它们列进 `manifest.auto_cleared_findings`。
+
 ## [0.1.1] - 2026-11-02
 
 ### 新增

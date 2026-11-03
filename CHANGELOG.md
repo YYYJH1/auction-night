@@ -4,6 +4,18 @@
 
 All notable changes to this project are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **Landing page.** The root of the site leads to the demo night, shows the season s1 leaderboard and links the six nights of the season, in Chinese and English.
+- **Memory.** `night.memory: plan_pledges` shows a seat, in every call after the plan, its own plan for the lot in progress, what is left of the plan and the public pledges still in force. It is off by default. `configs/night_local_memory.yaml` is the local night with the setting on.
+- **Case study.** `docs/case-memory.md` plays 30 decks with the memory off and on, with `tools/exp_memory.py` and `tools/exp_memory_plot.py` for the summary and the figure.
+
+### Changed
+
+- The content gate clears, after the classifier has answered, a finding on a mission kind or tag in a judge's extraction and a real-person finding that names only seat code names, and lists them in `manifest.auto_cleared_findings`.
+
 ## [0.1.1] - 2026-11-02
 
 ### Added
